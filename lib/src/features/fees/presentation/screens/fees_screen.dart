@@ -1,9 +1,15 @@
 import 'package:sgt_school/src/imports/core_imports.dart';
 import 'package:sgt_school/src/imports/packages_imports.dart';
 import 'package:sgt_school/src/features/auth/presentation/providers/session_provider.dart';
+import 'package:intl/intl.dart';
 import '../providers/fee_provider.dart';
 import '../../domain/entities/fee_entity.dart';
 import '../../domain/entities/payment_entity.dart';
+
+String _formatCurrency(double amount) {
+  final format = NumberFormat('#,###', 'en_US');
+  return '${format.format(amount)} MMK';
+}
 
 /// Fee summary with details and payment history tabs.
 class FeesScreen extends StatefulWidget {
@@ -185,7 +191,7 @@ class _SummaryColumn extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          '\$${amount.toStringAsFixed(2)}',
+          _formatCurrency(amount),
           style: tt.bodyLarge?.copyWith(
             color: textColor,
             fontWeight: FontWeight.bold,
@@ -408,7 +414,7 @@ class _AmountItem extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          '\$${amount.toStringAsFixed(2)}',
+          _formatCurrency(amount),
           style: tt.bodyMedium?.copyWith(
             fontWeight: FontWeight.bold,
             color: valueColor ?? cs.onSurface,
@@ -469,7 +475,7 @@ class _PaymentsList extends StatelessWidget {
             Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: const Color(0xFF26A69A).withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)), child: const Icon(Icons.receipt_long, color: Color(0xFF26A69A), size: 20)),
             const SizedBox(width: 12),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('\$${p.amount.toStringAsFixed(2)}', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+              Text(_formatCurrency(p.amount), style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
               const SizedBox(height: 2),
               Text('${p.method} • ${p.reference}', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
             ])),

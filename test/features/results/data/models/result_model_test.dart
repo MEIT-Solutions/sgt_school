@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sgt_school/src/features/results/data/models/result_model.dart';
-import 'package:sgt_school/src/features/results/domain/entities/result_entity.dart';
 
 void main() {
   group('ResultModel parsing', () {
