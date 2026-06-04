@@ -1,0 +1,188 @@
+{
+  "shared": {
+    "get_started": "စတင်မည်"
+  },
+  "home": {
+    "home_title": "ပင်မ",
+    "welcome_home": "ကြိုဆိုပါသည်!",
+    "home_subtitle": "SGT School သို့ ဝင်ရောက်ပြီးပါပြီ။",
+    "good_morning": "မင်္ဂလာနံနက်ခင်းပါ၊",
+    "good_afternoon": "မင်္ဂလာနေ့လည်ခင်းပါ၊",
+    "good_evening": "မင်္ဂလာညနေခင်းပါ၊",
+    "roll_no": "ခုံနံပါတ်",
+    "role_parent": "မိဘ",
+    "profile": "ပရိုဖိုင်",
+    "attendance": "တက်ရောက်မှု",
+    "exams": "စာမေးပွဲ",
+    "timetable": "အချိန်ဇယား",
+    "fees": "ကျောင်းလခ",
+    "subjects": "ဘာသာရပ်",
+    "activities": "လှုပ်ရှားမှု",
+    "notices": "အကြောင်းကြားချက်",
+    "results": "ရလဒ်များ",
+    "upcoming_events": "လာမည့်ပွဲများ",
+    "see_all": "အားလုံးကြည့်မည်"
+  },
+  "auth": {
+    "log_in": "ဝင်ရောက်မည်",
+    "login_title": "ပြန်လည်ကြိုဆိုပါသည်",
+    "login_subtitle": "ဆက်လက်ဝင်ရောက်ရန် အကောင့်ဝင်ပါ",
+    "phone_label": "ဖုန်းနံပါတ်",
+    "phone_hint": "ဖုန်းနံပါတ်ထည့်ပါ",
+    "phone_required": "ဖုန်းနံပါတ် လိုအပ်ပါသည်",
+    "phone_invalid": "မှန်ကန်သောဖုန်းနံပါတ်ထည့်ပါ",
+    "password_label": "စကားဝှက်",
+    "password_hint": "စကားဝှက်ထည့်ပါ",
+    "password_required": "စကားဝှက် လိုအပ်ပါသည်",
+    "password_min_length": "စကားဝှက်သည် အနည်းဆုံး ၆ လုံး ရှိရမည်",
+    "logout": "ထွက်မည်"
+  },
+  "attendance": {
+    "title": "တက်ရောက်မှု",
+    "present": "တက်ရောက်",
+    "absent": "ပျက်ကွက်",
+    "late": "နောက်ကျ",
+    "excused": "ခွင့်ယူ",
+    "total": "စုစုပေါင်း",
+    "status": "အခြေအနေ",
+    "time_in": "ဝင်ချိန်",
+    "time_out": "ထွက်ချိန်",
+    "daily_detail": "နေ့စဉ်အသေးစိတ်",
+    "today": "ယနေ့",
+    "check_in": "ဝင်ရောက်ရန်",
+    "check_out": "ထွက်ရန်",
+    "completed_today": "ယနေ့အတွက် ပြီးစီးပါပြီ",
+    "checked_in_success": "အောင်မြင်စွာ ဝင်ရောက်ပြီးပါပြီ။",
+    "checked_out_success": "အောင်မြင်စွာ ထွက်ခွာပြီးပါပြီ။",
+    "confirm_check_in_title": "ဝင်ရောက်ရန်",
+    "confirm_check_in_message": "{time} တွင် ဝင်ရောက်မည်လား?",
+    "confirm_check_out_title": "ထွက်ရန်",
+    "confirm_check_out_message": "{time} တွင် ထွက်ခွာမည်လား?",
+    "confirm": "အတည်ပြုမည်",
+    "cancel": "မလုပ်တော့ပါ",
+    "check_in_failed": "ဝင်ရောက်မှု မအောင်မြင်ပါ။ ထပ်စမ်းကြည့်ပါ။",
+    "check_out_failed": "ထွက်ခွာမှု မအောင်မြင်ပါ။ ထပ်စမ်းကြည့်ပါ။",
+    "no_record": "ဤနေ့အတွက် တက်ရောက်မှု မှတ်တမ်းမရှိပါ",
+    "loading_record": "တက်ရောက်မှု မှတ်တမ်းကို ခေါ်နေပါသည်..."
+  },
+  "timetable": {
+    "title": "အချိန်ဇယား"
+  },
+  "exams": {
+    "title": "စာမေးပွဲ",
+    "upcoming": "လာမည့်",
+    "completed": "ပြီးဆုံးပြီး",
+    "no_exams": "စာမေးပွဲမရှိပါ",
+    "view_result": "ရလဒ်ကြည့်မည် →",
+    "exam_result": "စာမေးပွဲရလဒ်",
+    "percentage": "ရာခိုင်နှုန်း",
+    "grade": "အဆင့်",
+    "subject_wise_marks": "ဘာသာရပ်အလိုက် အမှတ်များ"
+  },
+  "fees": {
+    "title": "ကျောင်းလခ",
+    "total_fees": "စုစုပေါင်း",
+    "due_amount": "ပေးရန်ကျန်",
+    "fee_details": "အသေးစိတ်",
+    "payment_history": "ငွေပေးချေမှတ်တမ်း",
+    "paid": "ပေးပြီး",
+    "due": "ပေးရန်",
+    "total_paid": "ပေးချေပြီး",
+    "payment_date": "ပေးချေသည့်ရက်စွဲ",
+    "payment_mode": "ပေးချေမှုပုံစံ",
+    "paid_by": "ပေးချေသူ",
+    "partial": "တစ်စိတ်တစ်ပိုင်း"
+  },
+  "subjects": {
+    "title": "ဘာသာရပ်များ"
+  },
+  "activities": {
+    "title": "လှုပ်ရှားမှုများ",
+    "all": "အားလုံး",
+    "upcoming": "လာမည့်",
+    "completed": "ပြီးဆုံးပြီး",
+    "no_activities": "လှုပ်ရှားမှုမရှိပါ"
+  },
+  "notices": {
+    "title": "အကြောင်းကြားချက်များ"
+  },
+  "profile": {
+    "title": "ပရိုဖိုင်",
+    "roll_no": "ခုံနံပါတ်",
+    "active": "လက်ရှိတက်ရောက်နေ",
+    "personal_info": "ကိုယ်ရေးအချက်အလက်",
+    "parent_info": "မိဘအချက်အလက်",
+    "emergency": "အရေးပေါ်",
+    "admission_no": "ဝင်ခွင့်နံပါတ်",
+    "date_of_birth": "မွေးသက္ကရာဇ်",
+    "gender": "ကျား/မ",
+    "phone": "ဖုန်း",
+    "email": "အီးမေးလ်",
+    "address": "လိပ်စာ",
+    "class_info": "အတန်းအချက်အလက်",
+    "class_teacher": "အတန်းပိုင်ဆရာ",
+    "section": "အပိုင်း",
+    "academic_year": "ပညာသင်နှစ်",
+    "parent_name": "မိဘအမည်",
+    "parent_phone": "မိဘဖုန်း",
+    "relation": "တော်စပ်ပုံ",
+    "emergency_name": "အရေးပေါ်ဆက်သွယ်ရန်အမည်",
+    "emergency_contact": "အရေးပေါ်ဖုန်း",
+    "subject": "ဘာသာရပ်",
+    "department": "ဌာန"
+  },
+  "parent": {
+    "my_children": "ကျွန်ုပ်၏ကလေးများ",
+    "quick_stats": "အကျဉ်းချုပ်",
+    "fees_due": "ပေးရန်ကျန်",
+    "upcoming_exams": "လာမည့်စာမေးပွဲ"
+  },
+  "children": {
+    "title": "ကလေးများ",
+    "child_detail": "ကလေးအသေးစိတ်"
+  },
+  "teacher": {
+    "my_classes": "ကျွန်ုပ်၏အတန်းများ",
+    "total_students": "ကျောင်းသားများ",
+    "active_tasks": "လက်ရှိအလုပ်",
+    "students": "ကျောင်းသား",
+    "mark_attendance": "တက်ရောက်မှုမှတ်တမ်း",
+    "save_attendance": "သိမ်းဆည်းမည်",
+    "attendance_saved": "တက်ရောက်မှု သိမ်းဆည်းပြီးပါပြီ!"
+  },
+  "classes": {
+    "title": "အတန်းများ"
+  },
+  "assignments": {
+    "title": "တာဝန်ချမှတ်ချက်များ",
+    "active": "လက်ရှိ",
+    "completed": "ပြီးဆုံးပြီး",
+    "no_assignments": "တာဝန်ချမှတ်ချက်မရှိပါ",
+    "due": "သတ်မှတ်ရက်",
+    "submitted": "တင်သွင်းပြီး",
+    "detail": "အသေးစိတ်",
+    "description": "ဖော်ပြချက်",
+    "submissions": "တင်သွင်းမှုများ"
+  },
+  "settings": {
+    "title": "ဆက်တင်",
+    "appearance": "အသွင်အပြင်",
+    "theme_mode": "အပြင်အဆင်",
+    "system": "စနစ်",
+    "light": "အလင်း",
+    "dark": "အမှောင်",
+    "language": "ဘာသာစကား",
+    "logout_confirm": "ထွက်ရန် သေချာပါသလား?",
+    "cancel": "မလုပ်တော့ပါ"
+  },
+  "results": {
+    "title": "စာမေးပွဲရလဒ်များ",
+    "no_results": "ရလဒ်များ မရှိသေးပါ",
+    "average_score": "ပျှမ်းမျှရမှတ်",
+    "exams_taken": "ဖြေဆိုပြီးသောစာမေးပွဲများ",
+    "marks_obtained": "ရရှိသောရမှတ်",
+    "status": "အခြေအနေ",
+    "pass": "အောင်",
+    "fail": "ရှုံး"
+  }
+}
