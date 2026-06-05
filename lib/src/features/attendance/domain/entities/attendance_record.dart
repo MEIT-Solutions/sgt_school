@@ -78,3 +78,18 @@ class AttendanceSummary extends Equatable {
   @override
   List<Object?> get props => [totalDays, present, absent, late, excused, percentage];
 }
+
+/// Combined attendance summary and daily records list for a student.
+class StudentAttendanceData extends Equatable {
+  final AttendanceSummary summary;
+  final List<AttendanceRecord> records;
+
+  const StudentAttendanceData({
+    required this.summary,
+    required this.records,
+  });
+
+  @override
+  List<Object?> get props => [summary, records];
+}
+

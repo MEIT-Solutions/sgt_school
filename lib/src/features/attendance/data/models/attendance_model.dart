@@ -19,12 +19,27 @@ class AttendanceModel {
   });
 
   factory AttendanceModel.fromJson(Map<String, dynamic> json) {
+    final date = json['date'] as String;
+    final checkInVal = (json['check_in'] ?? json['time_in']) as String?;
+    final checkOutVal = (json['check_out'] ?? json['time_out']) as String?;
+
+    String? parseDateTime(String? timeStr) {
+      if (timeStr == null || timeStr.isEmpty) return null;
+      if (timeStr.contains('T') || timeStr.contains('-')) {
+        return timeStr;
+      }
+      return '${date}T$timeStr';
+    }
+
+    final parsedTimeIn = parseDateTime(checkInVal);
+    final parsedTimeOut = parseDateTime(checkOutVal);
+
     return AttendanceModel(
-      id: json['id'] as String? ?? '',
-      studentId: json['student_id'] as String? ?? '',
-      date: json['date'] as String,
-      timeIn: json['time_in'] as String?,
-      timeOut: json['time_out'] as String?,
+      id: json['id']?.toString() ?? date,
+      studentId: json['student_id']?.toString() ?? '',
+      date: date,
+      timeIn: parsedTimeIn,
+      timeOut: parsedTimeOut,
       status: json['status'] as String? ?? 'absent',
     );
   }
@@ -67,13 +82,22 @@ class AttendanceSummaryModel {
   });
 
   factory AttendanceSummaryModel.fromJson(Map<String, dynamic> json) {
+    final present = json['present'] as int? ?? 0;
+    final absent = json['absent'] as int? ?? 0;
+    final late = json['late'] as int? ?? 0;
+    final excused = json['excused'] as int? ?? 0;
+
+    final totalDays = json['total_days'] as int? ?? (present + absent + late + excused);
+    final percentage = (json['percentage'] as num?)?.toDouble() ??
+        (totalDays > 0 ? (present / totalDays) * 100.0 : 0.0);
+
     return AttendanceSummaryModel(
-      totalDays: json['total_days'] as int? ?? 0,
-      present: json['present'] as int? ?? 0,
-      absent: json['absent'] as int? ?? 0,
-      late: json['late'] as int? ?? 0,
-      excused: json['excused'] as int? ?? 0,
-      percentage: (json['percentage'] as num?)?.toDouble() ?? 0.0,
+      totalDays: totalDays,
+      present: present,
+      absent: absent,
+      late: late,
+      excused: excused,
+      percentage: percentage,
     );
   }
 

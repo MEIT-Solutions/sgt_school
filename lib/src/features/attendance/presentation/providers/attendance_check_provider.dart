@@ -6,12 +6,10 @@ import '../../data/repositories/attendance_repository_impl.dart';
 /// Provider for student attendance state.
 ///
 /// Manages:
-/// - Today's check-in/out record (restored from API on app open)
+/// - Today's check-in/out record (derived or updated from API)
 /// - Monthly records for the calendar grid
-/// - Selected date record for day detail view
-///
-/// Separate loading states ensure the button only disables during
-/// its own API call, not during unrelated loads.
+/// - Monthly summary statistics
+/// - Selected date record for day detail view (filtered locally)
 class AttendanceCheckProvider extends ChangeNotifier {
   final AttendanceRepository _repository;
 
@@ -22,6 +20,7 @@ class AttendanceCheckProvider extends ChangeNotifier {
 
   AttendanceRecord? _todayRecord;
   List<AttendanceRecord> _monthlyRecords = [];
+  AttendanceSummary? _summary;
   AttendanceRecord? _selectedDateRecord;
 
   bool _isLoadingToday = false;
@@ -29,7 +28,6 @@ class AttendanceCheckProvider extends ChangeNotifier {
   bool _isCheckingIn = false;
   bool _isCheckingOut = false;
   bool _isLoadingMonthly = false;
-  bool _isLoadingDate = false;
 
   String? _checkInError;
   String? _checkOutError;
@@ -39,6 +37,7 @@ class AttendanceCheckProvider extends ChangeNotifier {
 
   AttendanceRecord? get todayRecord => _todayRecord;
   List<AttendanceRecord> get monthlyRecords => _monthlyRecords;
+  AttendanceSummary? get summary => _summary;
   AttendanceRecord? get selectedDateRecord => _selectedDateRecord;
 
   bool get isLoadingToday => _isLoadingToday;
@@ -46,7 +45,6 @@ class AttendanceCheckProvider extends ChangeNotifier {
   bool get isCheckingIn => _isCheckingIn;
   bool get isCheckingOut => _isCheckingOut;
   bool get isLoadingMonthly => _isLoadingMonthly;
-  bool get isLoadingDate => _isLoadingDate;
 
   String? get checkInError => _checkInError;
   String? get checkOutError => _checkOutError;
@@ -56,31 +54,46 @@ class AttendanceCheckProvider extends ChangeNotifier {
   bool get hasCheckedOut => _todayRecord?.hasCheckedOut ?? false;
   bool get isComplete => _todayRecord?.isComplete ?? false;
 
-  // ── Load today's record (for state restoration on app open) ──
+  // ── Load Attendance (Combined Summary & Monthly records) ──
 
-  Future<void> loadTodayRecord(String studentId) async {
-    _isLoadingToday = true;
+  Future<void> loadAttendance(String studentId, {String? month}) async {
+    final todayStr = _todayDateString();
+    final isCurrentMonth = month == null || month == todayStr.substring(0, 7);
+
+    if (isCurrentMonth) {
+      _isLoadingToday = true;
+    }
+    _isLoadingMonthly = true;
     _loadError = null;
     notifyListeners();
 
-    final result = await _repository.getTodayRecord(studentId);
+    final result = await _repository.getAttendance(studentId, month: month);
     result.fold(
       (failure) {
         _loadError = failure.message;
-        AppLogger.error('Failed to load today record: ${failure.message}');
+        AppLogger.error('Failed to load attendance data: ${failure.message}');
       },
-      (record) => _todayRecord = record,
+      (data) {
+        _monthlyRecords = data.records;
+        _summary = data.summary;
+        _loadError = null;
+
+        if (isCurrentMonth) {
+          _todayRecord = _monthlyRecords
+              .where((r) => r.date == todayStr)
+              .firstOrNull;
+          _hasTodayLoaded = true;
+        }
+      },
     );
 
     _isLoadingToday = false;
-    _hasTodayLoaded = true;
+    _isLoadingMonthly = false;
     notifyListeners();
   }
 
   // ── Check In ──
 
-  /// Returns `true` if check-in was successful, `false` if failed.
-  /// On failure, [checkInError] is set and the button stays enabled for retry.
   Future<bool> checkIn(String studentId) async {
     _isCheckingIn = true;
     _checkInError = null;
@@ -103,13 +116,17 @@ class AttendanceCheckProvider extends ChangeNotifier {
 
     _isCheckingIn = false;
     notifyListeners();
+
+    if (success) {
+      // Reload current month's attendance to refresh calendar & summary
+      await loadAttendance(studentId);
+    }
+
     return success;
   }
 
   // ── Check Out ──
 
-  /// Returns `true` if check-out was successful, `false` if failed.
-  /// On failure, [checkOutError] is set and the button stays enabled for retry.
   Future<bool> checkOut(String studentId) async {
     _isCheckingOut = true;
     _checkOutError = null;
@@ -132,53 +149,33 @@ class AttendanceCheckProvider extends ChangeNotifier {
 
     _isCheckingOut = false;
     notifyListeners();
+
+    if (success) {
+      // Reload current month's attendance to refresh calendar & summary
+      await loadAttendance(studentId);
+    }
+
     return success;
   }
 
-  // ── Monthly Records (for calendar grid) ──
+  // ── Local filtering for calendar day tap ──
 
-  Future<void> loadMonthlyRecords(String studentId, {String? month}) async {
-    _isLoadingMonthly = true;
-    _loadError = null;
-    notifyListeners();
-
-    final result =
-        await _repository.getMonthlyRecords(studentId, month: month);
-    result.fold(
-      (failure) {
-        _loadError = failure.message;
-        AppLogger.error('Failed to load monthly records: ${failure.message}');
-      },
-      (records) => _monthlyRecords = records,
-    );
-
-    _isLoadingMonthly = false;
+  void selectDate(String dateStr) {
+    _selectedDateRecord = _monthlyRecords
+        .where((r) => r.date == dateStr)
+        .firstOrNull;
     notifyListeners();
   }
 
-  // ── Record by Date (for calendar day tap) ──
-
-  Future<void> loadRecordByDate(String studentId, String date) async {
-    _isLoadingDate = true;
-    _selectedDateRecord = null;
-    notifyListeners();
-
-    final result = await _repository.getRecordByDate(studentId, date);
-    result.fold(
-      (failure) {
-        _selectedDateRecord = null;
-        AppLogger.warning('No record for date $date: ${failure.message}');
-      },
-      (record) => _selectedDateRecord = record,
-    );
-
-    _isLoadingDate = false;
-    notifyListeners();
-  }
-
-  /// Clear selected date (when user changes month, etc.)
   void clearSelectedDate() {
     _selectedDateRecord = null;
     notifyListeners();
+  }
+
+  // ── Helper ──
+
+  String _todayDateString() {
+    final now = DateTime.now();
+    return '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
   }
 }

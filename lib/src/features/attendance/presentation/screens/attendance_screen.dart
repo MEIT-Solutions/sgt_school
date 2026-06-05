@@ -41,8 +41,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       final studentId = session.user?.id ?? '';
       if (studentId.isNotEmpty) {
         final provider = context.read<AttendanceCheckProvider>();
-        provider.loadTodayRecord(studentId);
-        provider.loadMonthlyRecords(studentId);
+        provider.loadAttendance(studentId);
       }
     });
   }
@@ -60,16 +59,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     final session = context.read<SessionProvider>();
     final studentId = session.user?.id ?? '';
     final month = '${newMonth.year}-${newMonth.month.toString().padLeft(2, '0')}';
-    context.read<AttendanceCheckProvider>().loadMonthlyRecords(studentId, month: month);
+    context.read<AttendanceCheckProvider>().loadAttendance(studentId, month: month);
     context.read<AttendanceCheckProvider>().clearSelectedDate();
   }
 
   void _onDateTapped(String dateStr) {
     setState(() => _selectedDate = dateStr);
-
-    final session = context.read<SessionProvider>();
-    final studentId = session.user?.id ?? '';
-    context.read<AttendanceCheckProvider>().loadRecordByDate(studentId, dateStr);
+    context.read<AttendanceCheckProvider>().selectDate(dateStr);
   }
 
   @override
@@ -88,9 +84,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     }
 
     // Stats
-    final present = records.where((r) => r.status == AttendanceStatus.present).length;
-    final absent = records.where((r) => r.status == AttendanceStatus.absent).length;
-    final late = records.where((r) => r.status == AttendanceStatus.late).length;
+    final summary = provider.summary;
+    final present = summary?.present ?? records.where((r) => r.status == AttendanceStatus.present).length;
+    final absent = summary?.absent ?? records.where((r) => r.status == AttendanceStatus.absent).length;
+    final late = summary?.late ?? records.where((r) => r.status == AttendanceStatus.late).length;
 
     return Scaffold(
       backgroundColor: cs.surface,
@@ -100,7 +97,19 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         automaticallyImplyLeading: false,
       ),
       floatingActionButton: _buildFab(provider, session.user?.id ?? ''),
-      body: SingleChildScrollView(
+      body: provider.loadError != null
+          ? AppErrorWidget(
+              message: provider.loadError,
+              onRetry: () {
+                final session = context.read<SessionProvider>();
+                final studentId = session.user?.id ?? '';
+                if (studentId.isNotEmpty) {
+                  final monthStr = '${_selectedMonth.year}-${_selectedMonth.month.toString().padLeft(2, '0')}';
+                  context.read<AttendanceCheckProvider>().loadAttendance(studentId, month: monthStr);
+                }
+              },
+            )
+          : SingleChildScrollView(
         padding: EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -676,32 +685,7 @@ class _SelectedDayDetail extends StatelessWidget {
           style: tt.titleSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         SizedBox(height: AppSpacing.md),
-        if (provider.isLoadingDate)
-          Container(
-            padding: EdgeInsets.all(AppSpacing.lg),
-            decoration: BoxDecoration(
-              color: cs.surfaceContainerLow,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.5)),
-            ),
-            child: Center(
-              child: Column(
-                children: [
-                  const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                  SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'attendance.loading_record'.tr(),
-                    style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
-                  ),
-                ],
-              ),
-            ),
-          )
-        else if (provider.selectedDateRecord != null)
+        if (provider.selectedDateRecord != null)
           _DayDetailCard(record: provider.selectedDateRecord!)
         else
           Container(

@@ -43,10 +43,13 @@ class AuthService {
         }
 
         final success = data['success'] as bool? ?? false;
-        final message = data['message'] as String? ?? 'Authentication failed';
 
         if (!success) {
-          return left(ServerFailure(message));
+          final errorObj = data['error'] as Map<String, dynamic>?;
+          final errorMessage = errorObj?['message'] as String? ??
+              data['message'] as String? ??
+              'Authentication failed';
+          return left(ServerFailure(errorMessage));
         }
 
         final responseData = data['data'] as Map<String, dynamic>?;

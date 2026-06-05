@@ -60,7 +60,8 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
       // ── Shell with bottom nav ──
       ShellRoute(
         builder: (context, state, child) {
-          final role = context.read<SessionProvider>().user?.role ?? UserRole.student;
+          final role =
+              context.read<SessionProvider>().user?.role ?? UserRole.student;
           final index = _indexFromLocation(state.uri.path, role);
           return AppShell(
             currentIndex: index,
@@ -81,12 +82,12 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
             name: 'attendance',
             builder: (context, state) => const AttendanceScreen(),
           ),
-          // Student/Teacher: Classes tab
-          GoRoute(
-            path: AppRoutes.classes,
-            name: 'classes',
-            builder: (context, state) => const ClassesScreen(),
-          ),
+          // Student/Teacher: Classes tab (Temporarily commented out)
+          // GoRoute(
+          //   path: AppRoutes.classes,
+          //   name: 'classes',
+          //   builder: (context, state) => const ClassesScreen(),
+          // ),
           // Profile tab
           GoRoute(
             path: AppRoutes.profile,
@@ -149,12 +150,14 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
       GoRoute(
         path: '/children/:id',
         name: 'child-detail',
-        builder: (context, state) => ChildDetailScreen(childId: state.pathParameters['id']!),
+        builder: (context, state) =>
+            ChildDetailScreen(childId: state.pathParameters['id']!),
       ),
       GoRoute(
         path: '/classes/:id',
         name: 'class-detail',
-        builder: (context, state) => ClassDetailScreen(classId: state.pathParameters['id']!),
+        builder: (context, state) =>
+            ClassDetailScreen(classId: state.pathParameters['id']!),
       ),
       GoRoute(
         path: '/assignments/:id',
@@ -178,16 +181,16 @@ int _indexFromLocation(String path, UserRole role) {
   switch (role) {
     case UserRole.student:
       if (path.startsWith('/attendance')) return 1;
-      if (path.startsWith('/classes')) return 2;
-      if (path.startsWith('/profile')) return 3;
+      // if (path.startsWith('/classes')) return 2;
+      if (path.startsWith('/profile')) return 2; // Shifted due to commented classes
       return 0;
     case UserRole.parent:
       if (path.startsWith('/children')) return 1;
       if (path.startsWith('/profile')) return 2;
       return 0;
     case UserRole.teacher:
-      if (path.startsWith('/classes')) return 1;
-      if (path.startsWith('/profile')) return 2;
+      // if (path.startsWith('/classes')) return 1;
+      if (path.startsWith('/profile')) return 1; // Shifted due to commented classes
       return 0;
   }
 }
@@ -196,13 +199,22 @@ int _indexFromLocation(String path, UserRole role) {
 void _onTabChanged(BuildContext context, int index, UserRole role) {
   switch (role) {
     case UserRole.student:
-      const paths = [AppRoutes.home, AppRoutes.attendance, AppRoutes.classes, AppRoutes.profile];
+      const paths = [
+        AppRoutes.home,
+        AppRoutes.attendance,
+        // AppRoutes.classes,
+        AppRoutes.profile
+      ];
       context.go(paths[index]);
     case UserRole.parent:
       const paths = [AppRoutes.home, AppRoutes.children, AppRoutes.profile];
       context.go(paths[index]);
     case UserRole.teacher:
-      const paths = [AppRoutes.home, AppRoutes.classes, AppRoutes.profile];
+      const paths = [
+        AppRoutes.home,
+        // AppRoutes.classes,
+        AppRoutes.profile
+      ];
       context.go(paths[index]);
   }
 }

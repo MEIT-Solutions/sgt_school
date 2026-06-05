@@ -32,10 +32,10 @@ class _ChildDetailScreenState extends State<ChildDetailScreen> {
     final examRepo = ExamRepositoryImpl();
     final feeRepo = FeeRepositoryImpl();
 
-    final attendanceResult = await attendanceRepo.getMonthlyRecords(widget.childId);
-    attendanceResult.fold((_) {}, (records) {
-      _present = records.where((r) => r.status == AttendanceStatus.present).length;
-      _total = records.length;
+    final attendanceResult = await attendanceRepo.getAttendance(widget.childId);
+    attendanceResult.fold((_) {}, (attendanceData) {
+      _present = attendanceData.records.where((r) => r.status == AttendanceStatus.present).length;
+      _total = attendanceData.records.length;
     });
 
     final examResult = await examRepo.getExams(widget.childId);

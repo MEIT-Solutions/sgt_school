@@ -7,6 +7,13 @@ class AppErrorHandler {
     if (error is DioException) {
       final responseData = error.response?.data;
       if (responseData is Map<String, dynamic>) {
+        if (responseData['error'] is Map<String, dynamic>) {
+          final errorMap = responseData['error'] as Map<String, dynamic>;
+          final message = errorMap['message'] as String?;
+          if (message != null && message.isNotEmpty) {
+            return message;
+          }
+        }
         final message = responseData['message'] as String?;
         if (message != null && message.isNotEmpty) {
           return message;
