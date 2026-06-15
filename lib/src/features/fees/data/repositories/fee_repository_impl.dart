@@ -13,26 +13,24 @@ import '../models/payment_model.dart';
 /// Tries API first, falls back to [DemoDataService].
 class FeeRepositoryImpl implements FeeRepository {
   final Dio _dio;
-  final DemoDataService _demo;
 
   FeeRepositoryImpl({Dio? dio, DemoDataService? demo})
-      : _dio = dio ?? AppConfig.dio,
-        _demo = demo ?? DemoDataService.instance;
+      : _dio = dio ?? AppConfig.dio;
 
   @override
   FutureEither<StudentFeeData> getFees(String studentId) async {
     return runTask(() async {
       final response = await _dio.get('/students/$studentId/fees');
       final data = response.data;
-      
+
       final feesList = (data['data'] as List)
           .map((j) => FeeModel.fromJson(j as Map<String, dynamic>).toEntity())
           .toList();
-          
+
       final summary = FeeSummaryModel.fromJson(
         data['summary'] as Map<String, dynamic>,
       ).toEntity();
-      
+
       return StudentFeeData(fees: feesList, summary: summary);
     }, requiresNetwork: true);
   }
@@ -42,7 +40,8 @@ class FeeRepositoryImpl implements FeeRepository {
     return runTask(() async {
       final response = await _dio.get('/students/$studentId/payments');
       return (response.data['data'] as List)
-          .map((j) => PaymentModel.fromJson(j as Map<String, dynamic>).toEntity())
+          .map((j) =>
+              PaymentModel.fromJson(j as Map<String, dynamic>).toEntity())
           .toList();
     }, requiresNetwork: true);
   }

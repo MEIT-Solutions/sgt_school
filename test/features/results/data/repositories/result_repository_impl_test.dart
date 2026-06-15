@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dio/dio.dart';
 import 'package:sgt_school/src/features/results/data/repositories/result_repository_impl.dart';
-import 'package:sgt_school/src/features/results/domain/entities/result_entity.dart';
 
 class MockAdapter implements HttpClientAdapter {
   ResponseBody Function(RequestOptions options)? handler;

@@ -16,8 +16,38 @@ class NotificationRepositoryImpl implements NotificationRepository {
   FutureEither<List<NotificationEntity>> getNotifications(String role) async {
     return runTask(() async {
       final response = await _dio.get('/notifications');
-      return (response.data['data'] as List)
-          .map((j) => NotificationModel.fromJson(j as Map<String, dynamic>).toEntity())
+      final responseData = response.data;
+
+      // Safely extract the raw list — handles both flat and nested shapes:
+      //   Shape A: { "data": [ ... ] }
+      //   Shape B: { "data": { "notifications": [ ... ] } }
+      List<dynamic> rawList;
+      final data = responseData['data'];
+
+      if (data is List) {
+        rawList = data;
+      } else if (data is Map<String, dynamic>) {
+        // Try common nested list keys
+        final nested =
+            data['notifications'] ?? data['results'] ?? data['items'];
+        if (nested is List) {
+          rawList = nested;
+        } else {
+          AppLogger.warning(
+            '[Notifications] Unexpected nested data shape: ${data.runtimeType} — $data',
+          );
+          rawList = [];
+        }
+      } else {
+        AppLogger.warning(
+          '[Notifications] Unexpected response shape: ${responseData.runtimeType} — $responseData',
+        );
+        rawList = [];
+      }
+
+      return rawList
+          .map((j) =>
+              NotificationModel.fromJson(j as Map<String, dynamic>).toEntity())
           .toList();
     });
   }

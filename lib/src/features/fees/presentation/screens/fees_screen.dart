@@ -1,10 +1,8 @@
 import 'package:sgt_school/src/imports/core_imports.dart';
 import 'package:sgt_school/src/imports/packages_imports.dart';
 import 'package:sgt_school/src/features/auth/presentation/providers/session_provider.dart';
-import 'package:intl/intl.dart';
 import '../providers/fee_provider.dart';
 import '../../domain/entities/fee_entity.dart';
-import '../../domain/entities/payment_entity.dart';
 
 String _formatCurrency(double amount) {
   final format = NumberFormat('#,###', 'en_US');
@@ -48,7 +46,8 @@ class _FeesScreenState extends State<FeesScreen> {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.canPop() ? context.pop() : context.go(AppRoutes.home),
+          onPressed: () =>
+              context.canPop() ? context.pop() : context.go(AppRoutes.home),
         ),
       ),
       body: provider.isLoading
@@ -58,109 +57,116 @@ class _FeesScreenState extends State<FeesScreen> {
                   message: provider.error,
                   onRetry: () {
                     final session = context.read<SessionProvider>();
-                    context.read<FeeProvider>().loadFees(session.user?.id ?? '');
+                    context
+                        .read<FeeProvider>()
+                        .loadFees(session.user?.id ?? '');
                   },
                 )
               : Column(
-              children: [
-                // Premium Summary Banner
-                Container(
-                  margin: const EdgeInsets.all(16),
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [cs.primary, cs.primaryContainer],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: cs.primary.withValues(alpha: 0.25),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      )
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Premium Summary Banner
+                    Container(
+                      margin: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [cs.primary, cs.primaryContainer],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: cs.primary.withValues(alpha: 0.25),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          )
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Icon(Icons.account_balance_wallet_outlined, color: cs.onPrimary, size: 20),
-                              const SizedBox(width: 8),
-                              Text(
-                                'fees.fee_details'.tr(),
-                                style: tt.titleSmall?.copyWith(
-                                  color: cs.onPrimary,
-                                  fontWeight: FontWeight.w600,
+                              Row(
+                                children: [
+                                  Icon(Icons.account_balance_wallet_outlined,
+                                      color: cs.onPrimary, size: 20),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'fees.fee_details'.tr(),
+                                    style: tt.titleSmall?.copyWith(
+                                      color: cs.onPrimary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: cs.onPrimary.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  '${(progress * 100).toStringAsFixed(0)}% ${'fees.paid'.tr()}',
+                                  style: tt.labelSmall?.copyWith(
+                                    color: cs.onPrimary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: cs.onPrimary.withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              '${(progress * 100).toStringAsFixed(0)}% ${'fees.paid'.tr()}',
-                              style: tt.labelSmall?.copyWith(
-                                color: cs.onPrimary,
-                                fontWeight: FontWeight.bold,
+                          const SizedBox(height: 16),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: LinearProgressIndicator(
+                              value: progress,
+                              backgroundColor:
+                                  cs.onPrimary.withValues(alpha: 0.2),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                progress >= 1.0
+                                    ? const Color(0xFF4DB6AC)
+                                    : const Color(0xFFFFD54F),
                               ),
+                              minHeight: 6,
                             ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: LinearProgressIndicator(
-                          value: progress,
-                          backgroundColor: cs.onPrimary.withValues(alpha: 0.2),
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            progress >= 1.0 ? const Color(0xFF4DB6AC) : const Color(0xFFFFD54F),
-                          ),
-                          minHeight: 6,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _SummaryColumn(
-                            label: 'fees.total_fees'.tr(),
-                            amount: total,
-                            textColor: cs.onPrimary,
-                            tt: tt,
-                          ),
-                          _SummaryColumn(
-                            label: 'fees.total_paid'.tr(),
-                            amount: paid,
-                            textColor: const Color(0xFFB2DFDB), // soft teal
-                            tt: tt,
-                          ),
-                          _SummaryColumn(
-                            label: 'fees.due_amount'.tr(),
-                            amount: due,
-                            textColor: const Color(0xFFFFCDD2), // soft red
-                            tt: tt,
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _SummaryColumn(
+                                label: 'fees.total_fees'.tr(),
+                                amount: total,
+                                textColor: cs.onPrimary,
+                                tt: tt,
+                              ),
+                              _SummaryColumn(
+                                label: 'fees.total_paid'.tr(),
+                                amount: paid,
+                                textColor: const Color(0xFFB2DFDB), // soft teal
+                                tt: tt,
+                              ),
+                              _SummaryColumn(
+                                label: 'fees.due_amount'.tr(),
+                                amount: due,
+                                textColor: const Color(0xFFFFCDD2), // soft red
+                                tt: tt,
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                    Expanded(
+                      child: _FeeDetailsList(fees: provider.fees),
+                    ),
+                  ],
                 ),
-                Expanded(
-                  child: _FeeDetailsList(fees: provider.fees),
-                ),
-              ],
-            ),
     );
   }
 }
@@ -217,7 +223,8 @@ class _FeeDetailsList extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.receipt_long_outlined, size: 64, color: cs.outlineVariant),
+            Icon(Icons.receipt_long_outlined,
+                size: 64, color: cs.outlineVariant),
             const SizedBox(height: 16),
             Text(
               'No fee records found',
@@ -234,7 +241,7 @@ class _FeeDetailsList extends StatelessWidget {
       separatorBuilder: (_, __) => const SizedBox(height: 12),
       itemBuilder: (context, i) {
         final f = fees[i];
-        
+
         Color statusColor;
         String statusText;
         IconData statusIcon;
@@ -252,7 +259,6 @@ class _FeeDetailsList extends StatelessWidget {
             break;
           case FeeStatus.due:
           case FeeStatus.overdue:
-          default:
             statusColor = const Color(0xFFEF5350);
             statusText = 'fees.due'.tr();
             statusIcon = Icons.error_outline;
@@ -284,7 +290,8 @@ class _FeeDetailsList extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: statusColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(20),
@@ -331,7 +338,8 @@ class _FeeDetailsList extends StatelessWidget {
                       amount: f.dueAmount,
                       tt: tt,
                       cs: cs,
-                      valueColor: f.dueAmount > 0 ? const Color(0xFFEF5350) : null,
+                      valueColor:
+                          f.dueAmount > 0 ? const Color(0xFFEF5350) : null,
                     ),
                   ],
                 ),
@@ -365,7 +373,8 @@ class _FeeDetailsList extends StatelessWidget {
                       if (f.paymentMode != null && f.paymentMode!.isNotEmpty)
                         _MetaChip(
                           icon: Icons.payment_outlined,
-                          label: '${'fees.payment_mode'.tr()}: ${f.paymentMode}',
+                          label:
+                              '${'fees.payment_mode'.tr()}: ${f.paymentMode}',
                           tt: tt,
                           cs: cs,
                         ),
@@ -457,32 +466,32 @@ class _MetaChip extends StatelessWidget {
   }
 }
 
-class _PaymentsList extends StatelessWidget {
-  final List<PaymentEntity> payments;
-  const _PaymentsList({required this.payments});
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    return ListView.separated(
-      padding: const EdgeInsets.all(16), itemCount: payments.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 8),
-      itemBuilder: (context, i) {
-        final p = payments[i];
-        return Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(color: theme.colorScheme.surfaceContainerLow, borderRadius: BorderRadius.circular(12), border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5))),
-          child: Row(children: [
-            Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: const Color(0xFF26A69A).withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)), child: const Icon(Icons.receipt_long, color: Color(0xFF26A69A), size: 20)),
-            const SizedBox(width: 12),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(_formatCurrency(p.amount), style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 2),
-              Text('${p.method} • ${p.reference}', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-            ])),
-            Text(p.date, style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-          ]),
-        );
-      },
-    );
-  }
-}
+// class _PaymentsList extends StatelessWidget {
+//   final List<PaymentEntity> payments;
+//   const _PaymentsList({required this.payments});
+//   @override
+//   Widget build(BuildContext context) {
+//     final theme = context.theme;
+//     return ListView.separated(
+//       padding: const EdgeInsets.all(16), itemCount: payments.length,
+//       separatorBuilder: (_, __) => const SizedBox(height: 8),
+//       itemBuilder: (context, i) {
+//         final p = payments[i];
+//         return Container(
+//           padding: const EdgeInsets.all(16),
+//           decoration: BoxDecoration(color: theme.colorScheme.surfaceContainerLow, borderRadius: BorderRadius.circular(12), border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5))),
+//           child: Row(children: [
+//             Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: const Color(0xFF26A69A).withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)), child: const Icon(Icons.receipt_long, color: Color(0xFF26A69A), size: 20)),
+//             const SizedBox(width: 12),
+//             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+//               Text(_formatCurrency(p.amount), style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+//               const SizedBox(height: 2),
+//               Text('${p.method} • ${p.reference}', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+//             ])),
+//             Text(p.date, style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+//           ]),
+//         );
+//       },
+//     );
+//   }
+// }

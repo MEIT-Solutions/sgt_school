@@ -1,7 +1,7 @@
 import '../imports/core_imports.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../features/auth/data/datasources/auth_local_datasource.dart';
+import '../flavors.dart';
 
 
 class AppConfig {
@@ -53,6 +53,6 @@ class AppConfig {
   }
 
   static String _getBaseUrl() {
-    return dotenv.get('API_BASE_URL', fallback: 'https://api.example.com');
+    return FlavorConfig.currentBaseUrl;
   }
 }

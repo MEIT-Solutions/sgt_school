@@ -9,7 +9,6 @@ import 'package:sgt_school/src/features/auth/domain/entities/user.dart';
 import 'package:sgt_school/src/features/auth/presentation/providers/session_provider.dart';
 import 'package:sgt_school/src/features/auth/presentation/screens/login_screen.dart';
 import 'package:sgt_school/src/features/home/presentation/screens/role_home_page.dart';
-import 'package:sgt_school/src/features/attendance/presentation/screens/attendance_screen.dart';
 import 'package:sgt_school/src/features/subjects/presentation/screens/subjects_screen.dart';
 import 'package:sgt_school/src/features/timetable/presentation/screens/timetable_screen.dart';
 import 'package:sgt_school/src/features/exams/presentation/screens/exams_screen.dart';
@@ -19,9 +18,8 @@ import 'package:sgt_school/src/features/activities/presentation/screens/activiti
 import 'package:sgt_school/src/features/results/presentation/screens/results_screen.dart';
 import 'package:sgt_school/src/features/notices/presentation/screens/notices_screen.dart';
 import 'package:sgt_school/src/features/profile/presentation/screens/profile_screen.dart';
-import 'package:sgt_school/src/features/children/presentation/screens/children_screen.dart';
+
 import 'package:sgt_school/src/features/children/presentation/screens/child_detail_screen.dart';
-import 'package:sgt_school/src/features/classes/presentation/screens/classes_screen.dart';
 import 'package:sgt_school/src/features/classes/presentation/screens/class_detail_screen.dart';
 import 'package:sgt_school/src/features/assignments/presentation/screens/assignment_detail_screen.dart';
 import 'package:sgt_school/src/features/assignments/domain/entities/assignment_entity.dart';
@@ -77,11 +75,11 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
             builder: (context, state) => const RoleHomePage(),
           ),
           // Student: Attendance tab
-          GoRoute(
-            path: AppRoutes.attendance,
-            name: 'attendance',
-            builder: (context, state) => const AttendanceScreen(),
-          ),
+          // GoRoute(
+          //   path: AppRoutes.attendance,
+          //   name: 'attendance',
+          //   builder: (context, state) => const AttendanceScreen(),
+          // ),
           // Student/Teacher: Classes tab (Temporarily commented out)
           // GoRoute(
           //   path: AppRoutes.classes,
@@ -94,12 +92,12 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
             name: 'profile',
             builder: (context, state) => const ProfileScreen(),
           ),
-          // Parent: Children tab
-          GoRoute(
-            path: AppRoutes.children,
-            name: 'children',
-            builder: (context, state) => const ChildrenScreen(),
-          ),
+          // Parent: Children tab (temporarily disabled)
+          // GoRoute(
+          //   path: AppRoutes.children,
+          //   name: 'children',
+          //   builder: (context, state) => const ChildrenScreen(),
+          // ),
         ],
       ),
 
@@ -180,17 +178,22 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
 int _indexFromLocation(String path, UserRole role) {
   switch (role) {
     case UserRole.student:
-      if (path.startsWith('/attendance')) return 1;
-      // if (path.startsWith('/classes')) return 2;
-      if (path.startsWith('/profile')) return 2; // Shifted due to commented classes
+      // Attendance & Classes tabs are temporarily disabled.
+      // Nav: Home=0, Profile=1
+      if (path.startsWith('/profile')) return 1;
       return 0;
+    // case UserRole.parent: (temporarily disabled — falls back to student nav)
     case UserRole.parent:
-      if (path.startsWith('/children')) return 1;
-      if (path.startsWith('/profile')) return 2;
+      if (path.startsWith('/profile')) return 1;
       return 0;
+      // Disabled parent nav:
+      // if (path.startsWith('/children')) return 1;
+      // if (path.startsWith('/profile')) return 2;
     case UserRole.teacher:
       // if (path.startsWith('/classes')) return 1;
-      if (path.startsWith('/profile')) return 1; // Shifted due to commented classes
+      if (path.startsWith('/profile')) {
+        return 1; // Shifted due to commented classes
+      }
       return 0;
   }
 }
@@ -199,16 +202,16 @@ int _indexFromLocation(String path, UserRole role) {
 void _onTabChanged(BuildContext context, int index, UserRole role) {
   switch (role) {
     case UserRole.student:
-      const paths = [
-        AppRoutes.home,
-        AppRoutes.attendance,
-        // AppRoutes.classes,
-        AppRoutes.profile
-      ];
+      // Attendance & Classes tabs are temporarily disabled.
+      // Nav: Home=0, Profile=1
+      const paths = [AppRoutes.home, AppRoutes.profile];
       context.go(paths[index]);
+    // case UserRole.parent: (temporarily disabled — falls back to student nav)
     case UserRole.parent:
-      const paths = [AppRoutes.home, AppRoutes.children, AppRoutes.profile];
+      const paths = [AppRoutes.home, AppRoutes.profile];
       context.go(paths[index]);
+      // Disabled parent nav:
+      // const paths = [AppRoutes.home, AppRoutes.children, AppRoutes.profile];
     case UserRole.teacher:
       const paths = [
         AppRoutes.home,

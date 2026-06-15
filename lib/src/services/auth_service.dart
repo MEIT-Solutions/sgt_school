@@ -1,4 +1,3 @@
-import 'dart:async';
 import '../imports/packages_imports.dart';
 import '../utils/utils.dart';
 import 'dio_service.dart';
@@ -35,7 +34,8 @@ class AuthService {
       try {
         final data = response.data;
         if (data == null) {
-          return left(const ServerFailure('No response data received from server'));
+          return left(
+              const ServerFailure('No response data received from server'));
         }
 
         if (data is! Map<String, dynamic>) {
@@ -54,7 +54,8 @@ class AuthService {
 
         final responseData = data['data'] as Map<String, dynamic>?;
         if (responseData == null) {
-          return left(const ServerFailure('Response data is missing from server response'));
+          return left(const ServerFailure(
+              'Response data is missing from server response'));
         }
 
         return right(responseData);
@@ -64,4 +65,3 @@ class AuthService {
     });
   }
 }
-

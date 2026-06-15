@@ -11,11 +11,9 @@ import '../models/result_model.dart';
 /// Tries API first, falls back to [DemoDataService].
 class ResultRepositoryImpl implements ResultRepository {
   final Dio _dio;
-  final DemoDataService _demo;
 
   ResultRepositoryImpl({Dio? dio, DemoDataService? demo})
-      : _dio = dio ?? AppConfig.dio,
-        _demo = demo ?? DemoDataService.instance;
+      : _dio = dio ?? AppConfig.dio;
 
   @override
   FutureEither<ResultSummary> getResults(String studentId) async {
@@ -23,12 +21,14 @@ class ResultRepositoryImpl implements ResultRepository {
       final response = await _dio.get('/students/$studentId/results');
       final data = response.data;
       final resultsList = (data['data'] as List)
-          .map((j) => ResultModel.fromJson(j as Map<String, dynamic>).toEntity())
+          .map(
+              (j) => ResultModel.fromJson(j as Map<String, dynamic>).toEntity())
           .toList();
 
       final totalMarks = resultsList.fold<int>(0, (sum, r) => sum + r.marks);
       final totalPossible = resultsList.fold<int>(0, (sum, r) => sum + r.total);
-      final percentage = totalPossible > 0 ? (totalMarks / totalPossible) * 100 : 0.0;
+      final percentage =
+          totalPossible > 0 ? (totalMarks / totalPossible) * 100 : 0.0;
 
       return ResultSummary(
         examId: 'EXM-ALL',
