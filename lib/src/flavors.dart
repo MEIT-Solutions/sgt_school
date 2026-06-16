@@ -19,17 +19,17 @@ class FlavorConfig {
       Flavor.dev => FlavorConfig._(
           flavor: Flavor.dev,
           baseUrl: 'http://150.95.85.135:8070/api/v1',
-          appName: 'SGT School (Dev)',
+          appName: 'SGT International School (Dev)',
         ),
       Flavor.staging => FlavorConfig._(
           flavor: Flavor.staging,
           baseUrl: 'http://150.95.85.135:8070/api/v1',
-          appName: 'SGT School (Staging)',
+          appName: 'SGT International School (Staging)',
         ),
       Flavor.prod => FlavorConfig._(
           flavor: Flavor.prod,
           baseUrl: 'http://150.95.30.124:8070/api/v1',
-          appName: 'SGT School',
+          appName: 'SGT International School',
         ),
     };
   }
