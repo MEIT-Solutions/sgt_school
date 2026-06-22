@@ -42,7 +42,9 @@ lib/src/features/{feature_name}/
 
 ```
 lib/
-├── main.dart                    # Entry point
+├── main.dart                    # Default entry point (no flavor)
+├── main_dev.dart                # Development flavor entry point
+├── main_prod.dart               # Production flavor entry point
 └── src/
     ├── app.dart                 # MaterialApp.router setup
     ├── config/                  # Dio + environment config
@@ -89,8 +91,66 @@ flutter pub get
 # API_BASE_URL=https://your-api-url.com
 # APP_ENV=development
 
-# Run the app
-flutter run
+# Run the app in development flavor
+flutter run -t lib/main_dev.dart
+```
+
+## Running & Building
+
+This project uses **flavors** to separate environments. Always use the
+corresponding entry point (`-t` flag) when running or building.
+
+### Entry Points
+
+| Flavor | Entry Point | Base URL |
+|---|---|---|
+| `dev` | `lib/main_dev.dart` | `http://150.95.85.135:8070/api/v1` |
+| `prod` | `lib/main_prod.dart` | `http://150.95.30.124:8070/api/v1` |
+
+### Running on a Device / Emulator
+
+```bash
+# Development
+flutter run -t lib/main_dev.dart
+
+# Production (for testing prod config locally)
+flutter run --release -t lib/main_prod.dart
+```
+
+### Building APK (Android)
+
+```bash
+# Production — single fat APK
+flutter build apk --release -t lib/main_prod.dart
+
+# Production — split APKs by ABI (recommended, smaller size)
+flutter build apk --release -t lib/main_prod.dart --split-per-abi
+
+# Development
+flutter build apk --debug -t lib/main_dev.dart
+```
+
+> Output: `build/app/outputs/flutter-apk/app-release.apk`
+>
+> With `--split-per-abi`, three APKs are produced:
+> `app-arm64-v8a-release.apk`, `app-armeabi-v7a-release.apk`, `app-x86_64-release.apk`
+
+### Building App Bundle (Android — Play Store)
+
+```bash
+flutter build appbundle --release -t lib/main_prod.dart
+```
+
+> Output: `build/app/outputs/bundle/release/app-release.aab`
+
+### Building for iOS
+
+```bash
+# Production — IPA for distribution
+flutter build ipa --release -t lib/main_prod.dart
+
+# Development — run on iOS device
+flutter run -t lib/main_dev.dart
 ```
 
 ### Running Tests
