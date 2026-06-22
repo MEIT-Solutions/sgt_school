@@ -1,6 +1,7 @@
 import 'package:sgt_school/src/imports/core_imports.dart';
 import 'package:sgt_school/src/imports/packages_imports.dart';
 import 'package:sgt_school/src/features/auth/presentation/providers/session_provider.dart';
+import 'package:sgt_school/src/features/activities/presentation/providers/activity_provider.dart';
 
 /// Custom clipper for the curved header
 class _HeaderClipper extends CustomClipper<Path> {
@@ -24,8 +25,21 @@ class _HeaderClipper extends CustomClipper<Path> {
 
 /// Student home dashboard with curved greeting header, quick-access grid,
 /// upcoming activities, and notification bell icon.
-class StudentHomePage extends StatelessWidget {
+class StudentHomePage extends StatefulWidget {
   const StudentHomePage({super.key});
+
+  @override
+  State<StudentHomePage> createState() => _StudentHomePageState();
+}
+
+class _StudentHomePageState extends State<StudentHomePage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ActivityProvider>().loadActivities();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +48,8 @@ class StudentHomePage extends StatelessWidget {
     final textTheme = theme.textTheme;
     final session = context.watch<SessionProvider>();
     final user = session.user;
+    final activityProvider = context.watch<ActivityProvider>();
+    final previewActivities = activityProvider.activities.take(3).toList();
 
     // Determine time-based greeting
     final hour = DateTime.now().hour;
@@ -234,23 +250,52 @@ class StudentHomePage extends StatelessWidget {
 
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                _EventCard(
-                  icon: Icons.science,
-                  title: 'Science Exhibition',
-                  date: '18 June, 2026',
-                  color: GridIconColors.notices,
-                ),
-                const SizedBox(height: 8),
-                _EventCard(
-                  icon: Icons.emoji_events,
-                  title: 'Annual Sports Day',
-                  date: '25 June, 2026',
-                  color: GridIconColors.activities,
-                ),
-              ]),
-            ),
+            sliver: activityProvider.isLoading
+                ? SliverToBoxAdapter(
+                    child: SkeletonWrapper(
+                      isLoading: true,
+                      child: Column(
+                        children: List.generate(3, (_) => Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: _EventCard(
+                            title: BoneMock.name,
+                            className: BoneMock.name,
+                            activityDate: BoneMock.date,
+                          ),
+                        )),
+                      ),
+                    ),
+                  )
+                : previewActivities.isEmpty
+                    ? SliverToBoxAdapter(
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: Text(
+                              'activities.no_activities'.tr(),
+                              style: textTheme.bodySmall?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    : SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            if (index.isOdd) {
+                              return const SizedBox(height: 8);
+                            }
+                            final a = previewActivities[index ~/ 2];
+                            return _EventCard(
+                              title: a.title,
+                              className: a.className,
+                              activityDate: a.activityDate,
+                            );
+                          },
+                          childCount: previewActivities.length * 2 - 1,
+                        ),
+                      ),
           ),
         ],
       ),
@@ -306,17 +351,17 @@ class _GridItem extends StatelessWidget {
 }
 
 class _EventCard extends StatelessWidget {
-  final IconData icon;
   final String title;
-  final String date;
-  final Color color;
+  final String className;
+  final String activityDate;
 
   const _EventCard({
-    required this.icon,
     required this.title,
-    required this.date,
-    required this.color,
+    required this.className,
+    required this.activityDate,
   });
+
+  static const _color = Color(0xFF5C6BC0);
 
   @override
   Widget build(BuildContext context) {
@@ -326,7 +371,6 @@ class _EventCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        // A subtle shadow to separate from the background
         boxShadow: [
           BoxShadow(
             color: theme.colorScheme.shadow.withValues(alpha: 0.05),
@@ -340,10 +384,10 @@ class _EventCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
+              color: _color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: color, size: 24),
+            child: const Icon(Icons.campaign, color: _color, size: 24),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -355,13 +399,30 @@ class _EventCard extends StatelessWidget {
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  date,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
+                Row(
+                  children: [
+                    Icon(Icons.class_, size: 12, color: theme.colorScheme.onSurfaceVariant),
+                    const SizedBox(width: 4),
+                    Text(
+                      className,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Icon(Icons.calendar_today, size: 12, color: theme.colorScheme.onSurfaceVariant),
+                    const SizedBox(width: 4),
+                    Text(
+                      activityDate,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

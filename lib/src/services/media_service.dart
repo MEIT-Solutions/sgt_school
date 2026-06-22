@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../utils/utils.dart';
 
@@ -99,32 +98,32 @@ class MediaService {
   }
 
   /// Pick one or more files from the device.
-  FutureEither<List<File>> pickFiles({
-    FileType type = FileType.any,
-    List<String>? allowedExtensions,
-    bool allowMultiple = false,
-  }) async {
-    return runTask(() async {
-      if (Platform.isAndroid) {
-        final status = await Permission.storage.request();
-        if (!status.isGranted) {
-          // Note: On Android 13+, storage permission might be handled differently (media-specific)
-          // but permission_handler usually handles the abstraction.
-        }
-      }
-
-      final FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: type,
-        allowedExtensions: allowedExtensions,
-        allowMultiple: allowMultiple,
-      );
-
-      if (result == null || result.files.isEmpty) return [];
-
-      return result.paths
-          .where((path) => path != null)
-          .map((path) => File(path!))
-          .toList();
-    });
-  }
+  // FutureEither<List<File>> pickFiles({
+  //   FileType type = FileType.any,
+  //   List<String>? allowedExtensions,
+  //   bool allowMultiple = false,
+  // }) async {
+  //   return runTask(() async {
+  //     if (Platform.isAndroid) {
+  //       final status = await Permission.storage.request();
+  //       if (!status.isGranted) {
+  //         // Note: On Android 13+, storage permission might be handled differently (media-specific)
+  //         // but permission_handler usually handles the abstraction.
+  //       }
+  //     }
+  //
+  //     final FilePickerResult? result = await FilePicker.platform.pickFiles(
+  //       type: type,
+  //       allowedExtensions: allowedExtensions,
+  //       allowMultiple: allowMultiple,
+  //     );
+  //
+  //     if (result == null || result.files.isEmpty) return [];
+  //
+  //     return result.paths
+  //         .where((path) => path != null)
+  //         .map((path) => File(path!))
+  //         .toList();
+  //   });
+  // }
 }

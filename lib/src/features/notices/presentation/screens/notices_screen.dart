@@ -57,25 +57,68 @@ class _NoticesScreenState extends State<NoticesScreen> {
                 final n = provider.notifications[i];
                 final icon = _categoryIcons[n.category.name] ?? Icons.info;
                 final color = _categoryColors[n.category.name] ?? const Color(0xFF42A5F5);
-                return Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(color: theme.colorScheme.surfaceContainerLow, borderRadius: BorderRadius.circular(12), border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5))),
-                  child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
-                      child: Icon(icon, color: color, size: 20),
+                final isUnread = !n.isRead;
+                return GestureDetector(
+                  onTap: isUnread
+                      ? () => context.read<NotificationProvider>().markAsRead(n.id)
+                      : null,
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: isUnread
+                          ? theme.colorScheme.primaryContainer.withValues(alpha: 0.15)
+                          : theme.colorScheme.surfaceContainerLow,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isUnread
+                            ? theme.colorScheme.primary.withValues(alpha: 0.3)
+                            : theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+                      ),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Row(children: [
-                        Expanded(child: Text(n.title, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold))),
-                        Text(n.createdAt, style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-                      ]),
-                      const SizedBox(height: 4),
-                      Text(n.body, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant), maxLines: 2, overflow: TextOverflow.ellipsis),
-                    ])),
-                  ]),
+                    child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: color.withValues(alpha: isUnread ? 0.15 : 0.08),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(icon, color: color.withValues(alpha: isUnread ? 1.0 : 0.6), size: 20),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Row(children: [
+                          Expanded(child: Text(
+                            n.title,
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: isUnread ? FontWeight.bold : FontWeight.w500,
+                              color: isUnread ? null : theme.colorScheme.onSurfaceVariant,
+                            ),
+                          )),
+                          if (isUnread)
+                            Container(
+                              width: 8,
+                              height: 8,
+                              margin: const EdgeInsets.only(left: 8),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.primary,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                        ]),
+                        const SizedBox(height: 4),
+                        Text(
+                          n.body,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: isUnread
+                                ? theme.colorScheme.onSurface.withValues(alpha: 0.8)
+                                : theme.colorScheme.onSurfaceVariant,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ])),
+                    ]),
+                  ),
                 );
               },
             ),

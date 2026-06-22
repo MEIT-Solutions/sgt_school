@@ -4,46 +4,51 @@ import '../../domain/entities/activity_entity.dart';
 class ActivityModel {
   final String id;
   final String title;
-  final String date;
-  final String location;
-  final String? description;
-  final String status;
+  final String className;
+  final String activityDate;
+  final String state;
+  final String dailyActivity;
+  final bool mobileVisible;
 
   const ActivityModel({
     required this.id,
     required this.title,
-    required this.date,
-    required this.location,
-    this.description,
-    required this.status,
+    required this.className,
+    required this.activityDate,
+    required this.state,
+    required this.dailyActivity,
+    required this.mobileVisible,
   });
 
   factory ActivityModel.fromJson(Map<String, dynamic> json) {
     return ActivityModel(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      date: json['date'] as String,
-      location: json['location'] as String,
-      description: json['description'] as String?,
-      status: json['status'] as String,
+      id: (json['id'] ?? '').toString(),
+      title: json['title'] as String? ?? '',
+      className: json['class'] as String? ?? '',
+      activityDate: json['activity_date'] as String? ?? '',
+      state: json['state'] as String? ?? '',
+      dailyActivity: json['daily_activity'] as String? ?? '',
+      mobileVisible: json['mobile_visible'] as bool? ?? false,
     );
   }
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'title': title,
-        'date': date,
-        'location': location,
-        'description': description,
-        'status': status,
+        'class': className,
+        'activity_date': activityDate,
+        'state': state,
+        'daily_activity': dailyActivity,
+        'mobile_visible': mobileVisible,
       };
 
   ActivityEntity toEntity() => ActivityEntity(
         id: id,
         title: title,
-        date: date,
-        location: location,
-        description: description,
-        status: ActivityStatus.fromString(status),
+        className: className,
+        activityDate: activityDate,
+        state: state,
+        dailyActivity: dailyActivity,
+        mobileVisible: mobileVisible,
       );
 }

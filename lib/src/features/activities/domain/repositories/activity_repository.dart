@@ -3,8 +3,6 @@ import '../entities/activity_entity.dart';
 
 /// Abstract contract for school activity/event operations.
 abstract class ActivityRepository {
-  /// Gets all school activities, optionally filtered by status.
-  FutureEither<List<ActivityEntity>> getActivities({
-    ActivityStatus? status,
-  });
+  /// Gets all school activities.
+  FutureEither<List<ActivityEntity>> getActivities();
 }

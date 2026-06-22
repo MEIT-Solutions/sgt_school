@@ -9,8 +9,7 @@ import '../models/notification_model.dart';
 class NotificationRepositoryImpl implements NotificationRepository {
   final Dio _dio;
 
-  NotificationRepositoryImpl({Dio? dio})
-      : _dio = dio ?? AppConfig.dio;
+  NotificationRepositoryImpl({Dio? dio}) : _dio = dio ?? AppConfig.dio;
 
   @override
   FutureEither<List<NotificationEntity>> getNotifications(String role) async {
@@ -55,7 +54,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   @override
   FutureEither<void> markAsRead(String notificationId) async {
     return runTask(() async {
-      await _dio.patch('/notifications/$notificationId/read');
+      await _dio.post('/notifications/$notificationId/read');
     });
   }
 }

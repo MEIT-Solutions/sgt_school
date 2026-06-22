@@ -15,10 +15,6 @@ class ActivityProvider extends ChangeNotifier {
   String? _error;
 
   List<ActivityEntity> get activities => _activities;
-  List<ActivityEntity> get upcoming =>
-      _activities.where((a) => a.isUpcoming).toList();
-  List<ActivityEntity> get completed =>
-      _activities.where((a) => !a.isUpcoming).toList();
   bool get isLoading => _isLoading;
   String? get error => _error;
 

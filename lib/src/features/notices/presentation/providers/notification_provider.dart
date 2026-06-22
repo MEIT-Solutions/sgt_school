@@ -38,6 +38,29 @@ class NotificationProvider extends ChangeNotifier {
   }
 
   Future<void> markAsRead(String notificationId) async {
-    await _repository.markAsRead(notificationId);
+    final result = await _repository.markAsRead(notificationId);
+    result.fold(
+      (failure) {
+        AppLogger.error(
+            'Failed to mark notification as read: ${failure.message}');
+      },
+      (_) {
+        // Update the local list to reflect the read state immediately.
+        _notifications = _notifications.map((n) {
+          if (n.id == notificationId) {
+            return NotificationEntity(
+              id: n.id,
+              title: n.title,
+              body: n.body,
+              category: n.category,
+              isRead: true,
+              createdAt: n.createdAt,
+            );
+          }
+          return n;
+        }).toList();
+        notifyListeners();
+      },
+    );
   }
 }

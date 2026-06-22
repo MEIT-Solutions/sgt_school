@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -48,7 +48,7 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
       return null;
     },
     routes: <RouteBase>[
-      // Login (no shell)
+      // Login (no shell — default platform transition)
       GoRoute(
         path: AppRoutes.login,
         name: 'login',
@@ -58,8 +58,7 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
       // ── Shell with bottom nav ──
       ShellRoute(
         builder: (context, state, child) {
-          final role =
-              context.read<SessionProvider>().user?.role ?? UserRole.student;
+          final role = context.read<SessionProvider>().user?.role ?? UserRole.student;
           final index = _indexFromLocation(state.uri.path, role);
           return AppShell(
             currentIndex: index,
@@ -72,31 +71,34 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
           GoRoute(
             path: AppRoutes.home,
             name: 'home',
-            builder: (context, state) => const RoleHomePage(),
+            pageBuilder: (context, state) => _fadeTransitionPage(state, const RoleHomePage()),
           ),
           // Student: Attendance tab
           // GoRoute(
           //   path: AppRoutes.attendance,
           //   name: 'attendance',
-          //   builder: (context, state) => const AttendanceScreen(),
+          //   pageBuilder: (context, state) =>
+          //       _fadeTransitionPage(state, const AttendanceScreen()),
           // ),
           // Student/Teacher: Classes tab (Temporarily commented out)
           // GoRoute(
           //   path: AppRoutes.classes,
           //   name: 'classes',
-          //   builder: (context, state) => const ClassesScreen(),
+          //   pageBuilder: (context, state) =>
+          //       _fadeTransitionPage(state, const ClassesScreen()),
           // ),
           // Profile tab
           GoRoute(
             path: AppRoutes.profile,
             name: 'profile',
-            builder: (context, state) => const ProfileScreen(),
+            pageBuilder: (context, state) => _fadeTransitionPage(state, const ProfileScreen()),
           ),
           // Parent: Children tab (temporarily disabled)
           // GoRoute(
           //   path: AppRoutes.children,
           //   name: 'children',
-          //   builder: (context, state) => const ChildrenScreen(),
+          //   pageBuilder: (context, state) =>
+          //       _fadeTransitionPage(state, const ChildrenScreen()),
           // ),
         ],
       ),
@@ -105,72 +107,116 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
       GoRoute(
         path: AppRoutes.timetable,
         name: 'timetable',
-        builder: (context, state) => const TimetableScreen(),
+        pageBuilder: (context, state) => _pageTransitionAnimation(state, const TimetableScreen()),
       ),
       GoRoute(
         path: AppRoutes.exams,
         name: 'exams',
-        builder: (context, state) => const ExamsScreen(),
+        pageBuilder: (context, state) => _pageTransitionAnimation(state, const ExamsScreen()),
       ),
       GoRoute(
         path: '/exams/:id',
         name: 'exam-detail',
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final exam = state.extra as Map<String, dynamic>? ?? {};
-          return ExamDetailScreen(exam: exam);
+          return _pageTransitionAnimation(state, ExamDetailScreen(exam: exam));
         },
       ),
       GoRoute(
         path: AppRoutes.fees,
         name: 'fees',
-        builder: (context, state) => const FeesScreen(),
+        pageBuilder: (context, state) => _pageTransitionAnimation(state, const FeesScreen()),
       ),
       GoRoute(
         path: AppRoutes.subjects,
         name: 'subjects',
-        builder: (context, state) => const SubjectsScreen(),
+        pageBuilder: (context, state) => _pageTransitionAnimation(state, const SubjectsScreen()),
       ),
       GoRoute(
         path: AppRoutes.activities,
         name: 'activities',
-        builder: (context, state) => const ActivitiesScreen(),
+        pageBuilder: (context, state) => _pageTransitionAnimation(state, const ActivitiesScreen()),
       ),
       GoRoute(
         path: AppRoutes.results,
         name: 'results',
-        builder: (context, state) => const ResultsScreen(),
+        pageBuilder: (context, state) => _pageTransitionAnimation(state, const ResultsScreen()),
       ),
       GoRoute(
         path: AppRoutes.notices,
         name: 'notices',
-        builder: (context, state) => const NoticesScreen(),
+        pageBuilder: (context, state) => _pageTransitionAnimation(state, const NoticesScreen()),
       ),
       GoRoute(
         path: '/children/:id',
         name: 'child-detail',
-        builder: (context, state) =>
-            ChildDetailScreen(childId: state.pathParameters['id']!),
+        pageBuilder: (context, state) => _pageTransitionAnimation(
+          state,
+          ChildDetailScreen(childId: state.pathParameters['id']!),
+        ),
       ),
       GoRoute(
         path: '/classes/:id',
         name: 'class-detail',
-        builder: (context, state) =>
-            ClassDetailScreen(classId: state.pathParameters['id']!),
+        pageBuilder: (context, state) => _pageTransitionAnimation(
+          state,
+          ClassDetailScreen(classId: state.pathParameters['id']!),
+        ),
       ),
       GoRoute(
         path: '/assignments/:id',
         name: 'assignment-detail',
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final assignment = state.extra as AssignmentEntity;
-          return AssignmentDetailScreen(assignment: assignment);
+          return _pageTransitionAnimation(
+            state,
+            AssignmentDetailScreen(assignment: assignment),
+          );
         },
       ),
       GoRoute(
         path: AppRoutes.settings,
         name: 'settings',
-        builder: (context, state) => const SettingsScreen(),
+        pageBuilder: (context, state) => _pageTransitionAnimation(state, const SettingsScreen()),
       ),
     ],
+  );
+}
+
+// ─── Transition Helpers ───────────────────────────────────────────────────
+
+/// No animation for bottom navigation tab switches (iOS-style instant swap).
+CustomTransitionPage<void> _fadeTransitionPage(
+  GoRouterState state,
+  Widget child,
+) {
+  return CustomTransitionPage<void>(
+    key: state.pageKey,
+    child: child,
+    transitionDuration: Duration.zero,
+    reverseTransitionDuration: Duration.zero,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) => child,
+  );
+}
+
+/// iOS-style slide-from-right for sub-routes pushed on top of the shell.
+CustomTransitionPage<void> _pageTransitionAnimation(
+  GoRouterState state,
+  Widget child,
+) {
+  return CustomTransitionPage<void>(
+    key: state.pageKey,
+    child: child,
+    transitionDuration: const Duration(milliseconds: 350),
+    reverseTransitionDuration: const Duration(milliseconds: 350),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return CupertinoPageTransition(
+        primaryRouteAnimation: animation,
+        secondaryRouteAnimation: secondaryAnimation,
+        linearTransition: false,
+        child: child,
+      );
+    },
   );
 }
 
@@ -186,9 +232,9 @@ int _indexFromLocation(String path, UserRole role) {
     case UserRole.parent:
       if (path.startsWith('/profile')) return 1;
       return 0;
-      // Disabled parent nav:
-      // if (path.startsWith('/children')) return 1;
-      // if (path.startsWith('/profile')) return 2;
+    // Disabled parent nav:
+    // if (path.startsWith('/children')) return 1;
+    // if (path.startsWith('/profile')) return 2;
     case UserRole.teacher:
       // if (path.startsWith('/classes')) return 1;
       if (path.startsWith('/profile')) {
@@ -210,8 +256,8 @@ void _onTabChanged(BuildContext context, int index, UserRole role) {
     case UserRole.parent:
       const paths = [AppRoutes.home, AppRoutes.profile];
       context.go(paths[index]);
-      // Disabled parent nav:
-      // const paths = [AppRoutes.home, AppRoutes.children, AppRoutes.profile];
+    // Disabled parent nav:
+    // const paths = [AppRoutes.home, AppRoutes.children, AppRoutes.profile];
     case UserRole.teacher:
       const paths = [
         AppRoutes.home,
