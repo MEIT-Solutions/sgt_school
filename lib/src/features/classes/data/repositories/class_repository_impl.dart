@@ -18,7 +18,10 @@ class ClassRepositoryImpl implements ClassRepository {
         '/teachers/$teacherId/classes',
         queryParameters: {'page': 1, 'per_page': 100},
       );
-      final data = response.data['data'] as List;
+      AppLogger.info('Raw classes response: ${response.data}');
+      final responseData = response.data;
+      final data = (responseData is Map ? responseData['data'] : responseData) as List? ?? [];
+      AppLogger.info('Parsed ${data.length} students');
       return data
           .map((j) => ClassStudentModel.fromJson(j as Map<String, dynamic>).toEntity())
           .toList();

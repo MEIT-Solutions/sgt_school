@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../utils/utils.dart';
@@ -11,24 +11,29 @@ class MediaService {
   final ImagePicker _imagePicker = ImagePicker();
 
   /// Pick an image from gallery or camera.
-  FutureEither<File?> pickImage({
+  /// Returns the [XFile] path wrapped for platform safety.
+  FutureEither<XFile?> pickImage({
     required ImageSource source,
     double? maxWidth,
     double? maxHeight,
     int? imageQuality,
   }) async {
     return runTask(() async {
-      // Check permissions
-      if (source == ImageSource.camera) {
-        final status = await Permission.camera.request();
-        if (!status.isGranted) {
-          throw Exception('Camera permission denied');
-        }
-      } else {
-        if (Platform.isAndroid || Platform.isIOS) {
-          final status = await Permission.photos.request();
-          if (!status.isGranted && !status.isLimited) {
-            throw Exception('Photos permission denied');
+      // Check permissions (not applicable on web)
+      if (!kIsWeb) {
+        if (source == ImageSource.camera) {
+          final status = await Permission.camera.request();
+          if (!status.isGranted) {
+            throw Exception('Camera permission denied');
+          }
+        } else {
+          final isMobile = defaultTargetPlatform == TargetPlatform.android ||
+              defaultTargetPlatform == TargetPlatform.iOS;
+          if (isMobile) {
+            final status = await Permission.photos.request();
+            if (!status.isGranted && !status.isLimited) {
+              throw Exception('Photos permission denied');
+            }
           }
         }
       }
@@ -40,21 +45,25 @@ class MediaService {
         imageQuality: imageQuality,
       );
 
-      return file != null ? File(file.path) : null;
+      return file;
     });
   }
 
   /// Pick multiple images from gallery.
-  FutureEither<List<File>> pickMultiImage({
+  FutureEither<List<XFile>> pickMultiImage({
     double? maxWidth,
     double? maxHeight,
     int? imageQuality,
   }) async {
     return runTask(() async {
-      if (Platform.isAndroid || Platform.isIOS) {
-        final status = await Permission.photos.request();
-        if (!status.isGranted && !status.isLimited) {
-          throw Exception('Photos permission denied');
+      if (!kIsWeb) {
+        final isMobile = defaultTargetPlatform == TargetPlatform.android ||
+            defaultTargetPlatform == TargetPlatform.iOS;
+        if (isMobile) {
+          final status = await Permission.photos.request();
+          if (!status.isGranted && !status.isLimited) {
+            throw Exception('Photos permission denied');
+          }
         }
       }
 
@@ -64,26 +73,30 @@ class MediaService {
         imageQuality: imageQuality,
       );
 
-      return files.map((file) => File(file.path)).toList();
+      return files;
     });
   }
 
   /// Pick a video from gallery or camera.
-  FutureEither<File?> pickVideo({
+  FutureEither<XFile?> pickVideo({
     required ImageSource source,
     Duration? maxDuration,
   }) async {
     return runTask(() async {
-      if (source == ImageSource.camera) {
-        final status = await Permission.camera.request();
-        if (!status.isGranted) {
-          throw Exception('Camera permission denied');
-        }
-      } else {
-        if (Platform.isAndroid || Platform.isIOS) {
-          final status = await Permission.photos.request();
-          if (!status.isGranted && !status.isLimited) {
-            throw Exception('Photos permission denied');
+      if (!kIsWeb) {
+        if (source == ImageSource.camera) {
+          final status = await Permission.camera.request();
+          if (!status.isGranted) {
+            throw Exception('Camera permission denied');
+          }
+        } else {
+          final isMobile = defaultTargetPlatform == TargetPlatform.android ||
+              defaultTargetPlatform == TargetPlatform.iOS;
+          if (isMobile) {
+            final status = await Permission.photos.request();
+            if (!status.isGranted && !status.isLimited) {
+              throw Exception('Photos permission denied');
+            }
           }
         }
       }
@@ -93,37 +106,7 @@ class MediaService {
         maxDuration: maxDuration,
       );
 
-      return file != null ? File(file.path) : null;
+      return file;
     });
   }
-
-  /// Pick one or more files from the device.
-  // FutureEither<List<File>> pickFiles({
-  //   FileType type = FileType.any,
-  //   List<String>? allowedExtensions,
-  //   bool allowMultiple = false,
-  // }) async {
-  //   return runTask(() async {
-  //     if (Platform.isAndroid) {
-  //       final status = await Permission.storage.request();
-  //       if (!status.isGranted) {
-  //         // Note: On Android 13+, storage permission might be handled differently (media-specific)
-  //         // but permission_handler usually handles the abstraction.
-  //       }
-  //     }
-  //
-  //     final FilePickerResult? result = await FilePicker.platform.pickFiles(
-  //       type: type,
-  //       allowedExtensions: allowedExtensions,
-  //       allowMultiple: allowMultiple,
-  //     );
-  //
-  //     if (result == null || result.files.isEmpty) return [];
-  //
-  //     return result.paths
-  //         .where((path) => path != null)
-  //         .map((path) => File(path!))
-  //         .toList();
-  //   });
-  // }
 }

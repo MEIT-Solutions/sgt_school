@@ -1,4 +1,3 @@
-import 'dart:io';
 import '../imports/imports.dart';
 
 /// A service to handle URL launching operations.
@@ -28,9 +27,12 @@ class UrlLauncherService {
       return 'https://$url';
     }
     if (url.isValidPhoneNumber) {
-      return Platform.isAndroid
-          ? 'whatsapp://send?phone=$url'
-          : 'https://wa.me/$url';
+      // On web, defaultTargetPlatform is unreliable for this check.
+      // Use the universal wa.me link that works everywhere.
+      if (kIsWeb || defaultTargetPlatform == TargetPlatform.iOS) {
+        return 'https://wa.me/$url';
+      }
+      return 'whatsapp://send?phone=$url';
     }
     return url;
   }

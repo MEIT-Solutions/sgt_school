@@ -1,6 +1,6 @@
 {
     "name": "SGT International School",
-    "short_name": "SGT School",
+    "short_name": "SGT International School",
     "start_url": ".",
     "scope": ".",
     "display": "standalone",
@@ -9,7 +9,9 @@
     "description": "SGT International School Management System",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
-    "categories": ["education"],
+    "categories": [
+        "education"
+    ],
     "icons": [
         {
             "src": "icons/Icon-192.png",
