@@ -1,9 +1,9 @@
-import 'dart:io';
-
 import 'src/imports/core_imports.dart';
 import 'src/imports/packages_imports.dart';
 import 'src/flavors.dart';
 import 'src/app.dart';
+import 'src/utils/http_overrides_io.dart'
+    if (dart.library.html) 'src/utils/http_overrides_web.dart' as platform;
 
 /// Development entry point.
 /// Run with: flutter run -t lib/main_dev.dart
@@ -16,8 +16,9 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
   await dotenv.load(fileName: '.env');
 
+  // Apply debug HTTP overrides (only on non-web platforms)
   if (kDebugMode) {
-    HttpOverrides.global = MyHttpOverrides();
+    platform.applyHttpOverrides();
   }
 
   await AppConfig.init();
@@ -29,13 +30,4 @@ Future<void> main() async {
       ),
     ),
   );
-}
-
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-  }
 }

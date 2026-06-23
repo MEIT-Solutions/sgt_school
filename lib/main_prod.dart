@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'src/imports/core_imports.dart';
 import 'src/imports/packages_imports.dart';
 import 'src/flavors.dart';
@@ -7,7 +5,7 @@ import 'src/app.dart';
 
 /// Production entry point.
 /// Run with: flutter run -t lib/main_prod.dart
-/// Build with: flutter build apk -t lib/main_prod.dart
+/// Build web: flutter build web --release -t lib/main_prod.dart --base-href /sgt_school/
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -26,13 +24,4 @@ Future<void> main() async {
       ),
     ),
   );
-}
-
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-  }
 }
