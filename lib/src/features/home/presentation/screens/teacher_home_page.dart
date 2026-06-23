@@ -2,7 +2,6 @@ import 'package:sgt_school/src/imports/core_imports.dart';
 import 'package:sgt_school/src/imports/packages_imports.dart';
 import 'package:sgt_school/src/features/auth/presentation/providers/session_provider.dart';
 import 'package:sgt_school/src/features/classes/presentation/providers/class_provider.dart';
-import 'package:sgt_school/src/features/assignments/presentation/providers/assignment_provider.dart';
 
 /// Custom clipper shared with the student home page curved header.
 class _TeacherHeaderClipper extends CustomClipper<Path> {
@@ -39,7 +38,6 @@ class _TeacherHomePageState extends State<TeacherHomePage> {
       final teacherId = session.user?.id ?? '';
       if (teacherId.isNotEmpty) {
         context.read<ClassProvider>().loadClasses(teacherId);
-        context.read<AssignmentProvider>().loadAssignments(teacherId);
       }
     });
   }
@@ -52,7 +50,7 @@ class _TeacherHomePageState extends State<TeacherHomePage> {
     final session = context.watch<SessionProvider>();
     final user = session.user;
     final classProvider = context.watch<ClassProvider>();
-    final classes = classProvider.classes;
+    final students = classProvider.students;
 
     final hour = DateTime.now().hour;
     final greeting = hour < 12
@@ -162,109 +160,130 @@ class _TeacherHomePageState extends State<TeacherHomePage> {
             ),
           ),
 
-          // ── Quick Stats Row ──
+          // ── Quick Stats ──
           SliverPadding(
             padding: const EdgeInsets.all(16),
             sliver: SliverToBoxAdapter(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _QuickStat(
-                      icon: Icons.class_,
-                      value: '${classes.length}',
-                      label: 'teacher.my_classes'.tr(),
-                      color: GridIconColors.profile,
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.people, color: colorScheme.primary, size: 22),
+                    const SizedBox(width: 8),
+                    Text(
+                      '${students.length} ${'teacher.students'.tr()}',
+                      style: textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.primary,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _QuickStat(
-                      icon: Icons.people,
-                      value: '${classes.fold<int>(0, (sum, c) => sum + c.studentCount)}',
-                      label: 'teacher.total_students'.tr(),
-                      color: GridIconColors.attendance,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _QuickStat(
-                      icon: Icons.assignment,
-                      value: '${context.watch<AssignmentProvider>().active.length}',
-                      label: 'teacher.active_tasks'.tr(),
-                      color: GridIconColors.tasks,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
 
-          // ── My Classes ──
+          // ── My Students Header ──
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverToBoxAdapter(
               child: Text(
-                'teacher.my_classes'.tr(),
+                'teacher.my_students'.tr(),
                 style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ),
           ),
 
+          // ── Student List ──
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final cls = classes[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: InkWell(
-                      onTap: () => context.push('/classes/${cls.id}'),
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: colorScheme.surfaceContainerLow,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: colorScheme.outlineVariant.withValues(alpha: 0.5)),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: colorScheme.primaryContainer,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Icon(Icons.class_, color: colorScheme.onPrimaryContainer),
+            sliver: classProvider.isLoading
+                ? SliverToBoxAdapter(
+                    child: SkeletonWrapper(
+                      isLoading: true,
+                      child: Column(
+                        children: List.generate(5, (_) => Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: colorScheme.surfaceContainerLow,
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Row(
+                              children: [
+                                CircleAvatar(radius: 18, child: Text(BoneMock.name)),
+                                const SizedBox(width: 12),
+                                Expanded(child: Text(BoneMock.fullName)),
+                              ],
+                            ),
+                          ),
+                        )),
+                      ),
+                    ),
+                  )
+                : students.isEmpty
+                    ? SliverToBoxAdapter(
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: Text(
+                              'teacher.no_students'.tr(),
+                              style: textTheme.bodySmall?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    : SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            if (index.isOdd) return const SizedBox(height: 8);
+                            final s = students[index ~/ 2];
+                            return Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: colorScheme.surfaceContainerLow,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                                ),
+                              ),
+                              child: Row(
                                 children: [
-                                  Text(
-                                    cls.displayName,
-                                    style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                                  CircleAvatar(
+                                    radius: 18,
+                                    backgroundColor: colorScheme.primaryContainer,
+                                    child: Text(
+                                      s.rollNo,
+                                      style: textTheme.labelSmall?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: colorScheme.onPrimaryContainer,
+                                      ),
+                                    ),
                                   ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    '${cls.subject} • ${cls.studentCount} ${'teacher.students'.tr()}',
-                                    style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Text(
+                                      s.name,
+                                      style: textTheme.bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
-                            Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant),
-                          ],
+                            );
+                          },
+                          childCount: students.length * 2 - 1,
                         ),
                       ),
-                    ),
-                  );
-                },
-                childCount: classes.length,
-              ),
-            ),
           ),
         ],
       ),

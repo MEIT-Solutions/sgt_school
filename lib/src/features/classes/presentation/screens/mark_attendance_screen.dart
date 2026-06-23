@@ -1,5 +1,6 @@
 import 'package:sgt_school/src/imports/core_imports.dart';
 import 'package:sgt_school/src/imports/packages_imports.dart';
+import 'package:sgt_school/src/features/auth/presentation/providers/session_provider.dart';
 import '../../domain/entities/class_student_entity.dart';
 import '../providers/class_provider.dart';
 
@@ -20,7 +21,11 @@ class _MarkAttendanceScreenState extends State<MarkAttendanceScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ClassProvider>().loadStudents(widget.classId);
+      final session = context.read<SessionProvider>();
+      final teacherId = session.user?.id ?? '';
+      if (teacherId.isNotEmpty) {
+        context.read<ClassProvider>().loadClasses(teacherId);
+      }
     });
   }
 

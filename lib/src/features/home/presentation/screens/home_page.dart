@@ -37,7 +37,10 @@ class _StudentHomePageState extends State<StudentHomePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ActivityProvider>().loadActivities();
+      final session = context.read<SessionProvider>();
+      if (session.isAuthenticated) {
+        context.read<ActivityProvider>().loadActivities();
+      }
     });
   }
 

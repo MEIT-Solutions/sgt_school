@@ -1,3 +1,6 @@
+import 'src/utils/http_overrides_io.dart'
+    if (dart.library.html) 'src/utils/http_overrides_web.dart' as platform;
+
 import 'src/imports/core_imports.dart';
 import 'src/imports/packages_imports.dart';
 import 'src/flavors.dart';
@@ -11,6 +14,9 @@ Future<void> main() async {
 
   // ① Set flavor BEFORE anything else reads the base URL
   FlavorConfig.load(Flavor.prod);
+
+  // Apply debug HTTP overrides (only on non-web platforms)
+  platform.applyHttpOverrides();
 
   await EasyLocalization.ensureInitialized();
   await dotenv.load(fileName: '.env');

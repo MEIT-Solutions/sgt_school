@@ -143,9 +143,11 @@
   },
   "teacher": {
     "my_classes": "My Classes",
+    "my_students": "My Students",
     "total_students": "Students",
     "active_tasks": "Active Tasks",
     "students": "students",
+    "no_students": "No students found",
     "mark_attendance": "Mark Attendance",
     "save_attendance": "Save Attendance",
     "attendance_saved": "Attendance saved successfully!"

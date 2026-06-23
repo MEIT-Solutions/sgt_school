@@ -3,7 +3,7 @@ import 'package:sgt_school/src/imports/packages_imports.dart';
 import 'package:sgt_school/src/features/auth/presentation/providers/session_provider.dart';
 import '../providers/class_provider.dart';
 
-/// Teacher's class list (tab).
+/// Teacher's student list screen.
 class ClassesScreen extends StatefulWidget {
   const ClassesScreen({super.key});
 
@@ -25,37 +25,51 @@ class _ClassesScreenState extends State<ClassesScreen> {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final provider = context.watch<ClassProvider>();
+    final students = provider.students;
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
-      appBar: AppBar(title: Text('classes.title'.tr()), centerTitle: true, automaticallyImplyLeading: false),
+      appBar: AppTopBar(title: 'teacher.my_students'.tr()),
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView.separated(
-              padding: const EdgeInsets.all(16), itemCount: provider.classes.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              padding: const EdgeInsets.all(16),
+              itemCount: students.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 6),
               itemBuilder: (context, i) {
-                final c = provider.classes[i];
-                return InkWell(
-                  onTap: () => context.push('/classes/${c.id}'),
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(color: theme.colorScheme.surfaceContainerLow, borderRadius: BorderRadius.circular(12), border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5))),
-                    child: Row(children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: BorderRadius.circular(10)),
-                        child: Icon(Icons.class_, color: theme.colorScheme.onPrimaryContainer),
+                final s = students[i];
+                return Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 18,
+                        backgroundColor: theme.colorScheme.primaryContainer,
+                        child: Text(
+                          s.rollNo,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.onPrimaryContainer,
+                          ),
+                        ),
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(c.displayName, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 4),
-                        Text('${c.subject} • ${c.studentCount} ${'teacher.students'.tr()}', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-                      ])),
-                      Icon(Icons.chevron_right, color: theme.colorScheme.onSurfaceVariant),
-                    ]),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          s.name,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },

@@ -143,9 +143,11 @@
   },
   "teacher": {
     "my_classes": "ကျွန်ုပ်၏အတန်းများ",
+    "my_students": "ကျွန်ုပ်၏ကျောင်းသားများ",
     "total_students": "ကျောင်းသားများ",
     "active_tasks": "လက်ရှိအလုပ်",
     "students": "ကျောင်းသား",
+    "no_students": "ကျောင်းသားမတွေ့ပါ",
     "mark_attendance": "တက်ရောက်မှုမှတ်တမ်း",
     "save_attendance": "သိမ်းဆည်းမည်",
     "attendance_saved": "တက်ရောက်မှု သိမ်းဆည်းပြီးပါပြီ!"
