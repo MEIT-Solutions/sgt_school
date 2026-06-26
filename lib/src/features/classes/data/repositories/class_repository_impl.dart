@@ -2,8 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:sgt_school/src/config/app_config.dart';
 import 'package:sgt_school/src/utils/utils.dart';
 import '../../domain/entities/class_student_entity.dart';
+import '../../domain/entities/teacher_class_entity.dart';
 import '../../domain/repositories/class_repository.dart';
 import '../models/class_model.dart';
+import '../models/teacher_class_model.dart';
 
 /// Implementation of [ClassRepository].
 class ClassRepositoryImpl implements ClassRepository {
@@ -22,6 +24,40 @@ class ClassRepositoryImpl implements ClassRepository {
       final responseData = response.data;
       final data = (responseData is Map ? responseData['data'] : responseData) as List? ?? [];
       AppLogger.info('Parsed ${data.length} students');
+      return data
+          .map((j) => ClassStudentModel.fromJson(j as Map<String, dynamic>).toEntity())
+          .toList();
+    });
+  }
+
+  @override
+  FutureEither<List<TeacherClassEntity>> getTeacherClassList(String teacherId) async {
+    return runTask(() async {
+      final response = await _dio.get(
+        '/teachers/$teacherId/classes',
+        queryParameters: {'page': 1, 'per_page': 100},
+      );
+      AppLogger.info('Raw teacher class list response: ${response.data}');
+      final responseData = response.data;
+      final data = (responseData is Map ? responseData['data'] : responseData) as List? ?? [];
+      AppLogger.info('Parsed ${data.length} teacher classes');
+      return data
+          .map((j) => TeacherClassModel.fromJson(j as Map<String, dynamic>).toEntity())
+          .toList();
+    });
+  }
+
+  @override
+  FutureEither<List<ClassStudentEntity>> getTeacherStudents(String teacherId) async {
+    return runTask(() async {
+      final response = await _dio.get(
+        '/teachers/$teacherId/students',
+        queryParameters: {'page': 1, 'per_page': 100},
+      );
+      AppLogger.info('Raw teacher students response: ${response.data}');
+      final responseData = response.data;
+      final data = (responseData is Map ? responseData['data'] : responseData) as List? ?? [];
+      AppLogger.info('Parsed ${data.length} teacher students');
       return data
           .map((j) => ClassStudentModel.fromJson(j as Map<String, dynamic>).toEntity())
           .toList();

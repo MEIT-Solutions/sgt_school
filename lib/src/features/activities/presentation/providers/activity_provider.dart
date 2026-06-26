@@ -35,4 +35,22 @@ class ActivityProvider extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
+
+  Future<void> loadTeacherActivities(String teacherId) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    final result = await _repository.getTeacherActivities(teacherId);
+    result.fold(
+      (failure) {
+        _error = failure.message;
+        AppLogger.error('Failed to load teacher activities: ${failure.message}');
+      },
+      (data) => _activities = data,
+    );
+
+    _isLoading = false;
+    notifyListeners();
+  }
 }

@@ -9,7 +9,6 @@ export 'package:flutter_svg/flutter_svg.dart';
 export 'package:skeletonizer/skeletonizer.dart';
 export 'package:flutter_animate/flutter_animate.dart' hide ShimmerEffect;
 export 'package:smooth_page_indicator/smooth_page_indicator.dart' hide ScaleEffect, SlideEffect, SwapEffect;
-export 'package:flutter_dotenv/flutter_dotenv.dart';
 export 'package:shared_preferences/shared_preferences.dart';
 export 'package:flutter_secure_storage/flutter_secure_storage.dart';
 export 'package:logger/logger.dart';

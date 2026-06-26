@@ -8,7 +8,7 @@
     // When GitHub Pages returns a 404, this script redirects to index.html
     // while preserving the original path as a query parameter.
     // index.html then restores the correct route via history.replaceState.
-    var pathSegmentsToKeep = 1; // /sgt_school/ = 1 path segment to keep
+    var pathSegmentsToKeep = 0; // Custom domain = root path, no segments to keep
     var l = window.location;
     l.replace(
       l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +

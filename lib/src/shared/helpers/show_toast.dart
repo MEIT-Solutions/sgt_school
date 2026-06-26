@@ -40,13 +40,19 @@ void showToast(
     ),
   };
 
+  final titleStyle = context.theme.textTheme.labelSmall!.copyWith(
+    fontWeight: FontWeight.w600,
+    fontSize: 11.0,
+    color: foregroundColor,
+  );
+
   return ToastBar(
     position: ToastPosition.top,
     autoDismiss: autoDismiss ?? true,
     toastDuration: duration ?? const Duration(seconds: 2),
     animationDuration: const Duration(milliseconds: 150),
     animationCurve: Curves.easeIn,
-    builder: (context) => ToastCard(
+    builder: (_) => ToastCard(
       color: backgroundColor,
       shadowColor: colorScheme.shadow.withValues(alpha: 0.05),
       leading: Icon(
@@ -61,11 +67,7 @@ void showToast(
       ),
       title: Text(
         message,
-        style: context.theme.textTheme.labelSmall!.copyWith(
-          fontWeight: FontWeight.w600,
-          fontSize: 11.0,
-          color: foregroundColor,
-        ),
+        style: titleStyle,
       ),
     ),
   ).show(context);

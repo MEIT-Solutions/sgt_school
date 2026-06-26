@@ -4,10 +4,12 @@ import 'package:provider/provider.dart';
 
 import 'package:sgt_school/src/routing/global_navigator.dart';
 import 'package:sgt_school/src/routing/app_routes.dart';
+import 'package:sgt_school/src/config/app_config.dart';
 import 'package:sgt_school/src/routing/app_shell.dart';
 import 'package:sgt_school/src/features/auth/domain/entities/user.dart';
 import 'package:sgt_school/src/features/auth/presentation/providers/session_provider.dart';
 import 'package:sgt_school/src/features/auth/presentation/screens/login_screen.dart';
+import 'package:sgt_school/src/features/auth/presentation/screens/cloud_settings_screen.dart';
 import 'package:sgt_school/src/features/home/presentation/screens/role_home_page.dart';
 import 'package:sgt_school/src/features/subjects/presentation/screens/subjects_screen.dart';
 import 'package:sgt_school/src/features/timetable/presentation/screens/timetable_screen.dart';
@@ -24,18 +26,33 @@ import 'package:sgt_school/src/features/classes/presentation/screens/class_detai
 import 'package:sgt_school/src/features/assignments/presentation/screens/assignment_detail_screen.dart';
 import 'package:sgt_school/src/features/assignments/domain/entities/assignment_entity.dart';
 import 'package:sgt_school/src/features/settings/presentation/screens/settings_screen.dart';
+import 'package:sgt_school/src/features/subjects/presentation/screens/teacher_subjects_screen.dart';
+import 'package:sgt_school/src/features/classes/presentation/screens/teacher_classes_screen.dart';
+import 'package:sgt_school/src/features/activities/presentation/screens/teacher_activities_screen.dart';
+import 'package:sgt_school/src/features/exams/presentation/screens/teacher_exams_screen.dart';
+import 'package:sgt_school/src/features/classes/presentation/screens/teacher_students_screen.dart';
+import 'package:sgt_school/src/features/exams/presentation/screens/teacher_exam_results_screen.dart';
 
 GoRouter buildAppRouter(SessionProvider sessionProvider) {
   return GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: AppRoutes.home,
+    initialLocation: AppConfig.hasExistingSession
+        ? AppRoutes.home
+        : AppRoutes.login,
     refreshListenable: sessionProvider,
     redirect: (context, state) {
       final status = sessionProvider.status;
       final isOnLogin = state.uri.path == AppRoutes.login;
+      final isOnCloud = state.uri.path == AppRoutes.cloudSettings;
+      final isOnSettings = state.uri.path == AppRoutes.settings;
 
-      // Still loading session — stay on current page (no redirect)
-      if (status == SessionStatus.unknown) return null;
+      // Cloud & settings are always accessible (no auth required)
+      if (isOnCloud || isOnSettings) return null;
+
+      // Still loading session — keep on login to avoid home flicker
+      if (status == SessionStatus.unknown) {
+        return isOnLogin ? null : AppRoutes.login;
+      }
 
       // Not authenticated — force login
       if (status == SessionStatus.unauthenticated) {
@@ -53,6 +70,13 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
         path: AppRoutes.login,
         name: 'login',
         builder: (context, state) => const LoginScreen(),
+      ),
+
+      // Cloud settings (no auth required)
+      GoRoute(
+        path: AppRoutes.cloudSettings,
+        name: 'cloud-settings',
+        pageBuilder: (context, state) => _pageTransitionAnimation(state, const CloudSettingsScreen()),
       ),
 
       // ── Shell with bottom nav ──
@@ -178,6 +202,38 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
         path: AppRoutes.settings,
         name: 'settings',
         pageBuilder: (context, state) => _pageTransitionAnimation(state, const SettingsScreen()),
+      ),
+
+      // ── Teacher sub-routes ──
+      GoRoute(
+        path: AppRoutes.teacherSubjects,
+        name: 'teacher-subjects',
+        pageBuilder: (context, state) => _pageTransitionAnimation(state, const TeacherSubjectsScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.teacherClasses,
+        name: 'teacher-classes',
+        pageBuilder: (context, state) => _pageTransitionAnimation(state, const TeacherClassesScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.teacherActivities,
+        name: 'teacher-activities',
+        pageBuilder: (context, state) => _pageTransitionAnimation(state, const TeacherActivitiesScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.teacherExams,
+        name: 'teacher-exams',
+        pageBuilder: (context, state) => _pageTransitionAnimation(state, const TeacherExamsScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.teacherStudents,
+        name: 'teacher-students',
+        pageBuilder: (context, state) => _pageTransitionAnimation(state, const TeacherStudentsScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.teacherExamResults,
+        name: 'teacher-exam-results',
+        pageBuilder: (context, state) => _pageTransitionAnimation(state, const TeacherExamResultsScreen()),
       ),
     ],
   );

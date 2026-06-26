@@ -7,6 +7,7 @@ abstract final class AppRoutes {
 
   // Auth
   static const login = '/login';
+  static const cloudSettings = '/cloud-settings';
 
   // Shell tabs
   static const home = '/home';
@@ -29,4 +30,12 @@ abstract final class AppRoutes {
   static const childDetail = '/children/:id';
   static const assignmentDetail = '/assignments/:id';
   static const settings = '/settings';
+
+  // Teacher-specific sub-routes
+  static const teacherSubjects = '/teacher/subjects';
+  static const teacherClasses = '/teacher/classes';
+  static const teacherActivities = '/teacher/activities';
+  static const teacherExams = '/teacher/exams';
+  static const teacherStudents = '/teacher/students';
+  static const teacherExamResults = '/teacher/exam-results';
 }

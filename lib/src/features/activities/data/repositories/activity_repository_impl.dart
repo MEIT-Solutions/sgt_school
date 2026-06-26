@@ -38,4 +38,18 @@ class ActivityRepositoryImpl implements ActivityRepository {
           .toList();
     });
   }
+
+  @override
+  FutureEither<List<ActivityEntity>> getTeacherActivities(String teacherId) async {
+    return runTask(() async {
+      final response = await _dio.get('/teachers/$teacherId/activities');
+      AppLogger.info('Raw teacher activities response: ${response.data}');
+      final responseData = response.data;
+      final data = (responseData is Map ? responseData['data'] : responseData) as List? ?? [];
+      AppLogger.info('Parsed ${data.length} teacher activities');
+      return data
+          .map((j) => ActivityModel.fromJson(j as Map<String, dynamic>).toEntity())
+          .toList();
+    });
+  }
 }

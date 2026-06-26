@@ -1,7 +1,7 @@
 name: sgt_school
 description: Shan Golden Triangle School
 publish_to: "none"
-version: 1.0.1+1
+version: 1.0.2+2
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
@@ -42,8 +42,6 @@ dependencies:
   flutter_animate: ^4.5.2
   smooth_page_indicator: ^2.0.1
 
-  # Environment
-  flutter_dotenv: ^6.0.0
 
   # Logging
   logger: ^2.6.2
@@ -85,7 +83,7 @@ flutter:
     - assets/
     - assets/icons/
     - assets/translations/
-    - .env
+
 
 flutter_launcher_icons:
   android: true

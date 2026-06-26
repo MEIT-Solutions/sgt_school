@@ -95,13 +95,11 @@ class SettingsScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.palette_outlined,
-                        size: 20, color: cs.onSurfaceVariant),
+                    Icon(Icons.palette_outlined, size: 20, color: cs.onSurfaceVariant),
                     const SizedBox(width: 12),
                     Text(
                       'settings.theme_mode'.tr(),
-                      style: tt.bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.w500),
+                      style: tt.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
@@ -113,25 +111,21 @@ class SettingsScreen extends StatelessWidget {
                       ButtonSegment(
                         value: ThemeMode.system,
                         icon: const Icon(Icons.settings_suggest, size: 18),
-                        label: Text('settings.system'.tr(),
-                            style: const TextStyle(fontSize: 12)),
+                        label: Text('settings.system'.tr(), style: const TextStyle(fontSize: 12)),
                       ),
                       ButtonSegment(
                         value: ThemeMode.light,
                         icon: const Icon(Icons.light_mode, size: 18),
-                        label: Text('settings.light'.tr(),
-                            style: const TextStyle(fontSize: 12)),
+                        label: Text('settings.light'.tr(), style: const TextStyle(fontSize: 12)),
                       ),
                       ButtonSegment(
                         value: ThemeMode.dark,
                         icon: const Icon(Icons.dark_mode, size: 18),
-                        label: Text('settings.dark'.tr(),
-                            style: const TextStyle(fontSize: 12)),
+                        label: Text('settings.dark'.tr(), style: const TextStyle(fontSize: 12)),
                       ),
                     ],
                     selected: {settings.themeMode},
-                    onSelectionChanged: (s) =>
-                        settings.setThemeMode(s.first),
+                    onSelectionChanged: (s) => settings.setThemeMode(s.first),
                     showSelectedIcon: false,
                     style: const ButtonStyle(
                       visualDensity: VisualDensity.compact,
@@ -159,13 +153,11 @@ class SettingsScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.language,
-                        size: 20, color: cs.onSurfaceVariant),
+                    Icon(Icons.language, size: 20, color: cs.onSurfaceVariant),
                     const SizedBox(width: 12),
                     Text(
                       'settings.language'.tr(),
-                      style: tt.bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.w500),
+                      style: tt.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
@@ -176,13 +168,11 @@ class SettingsScreen extends StatelessWidget {
                     segments: [
                       ButtonSegment(
                         value: 'en',
-                        label: Text('English',
-                            style: const TextStyle(fontSize: 12)),
+                        label: Text('English', style: const TextStyle(fontSize: 12)),
                       ),
                       ButtonSegment(
                         value: 'my',
-                        label: Text('မြန်မာ',
-                            style: const TextStyle(fontSize: 12)),
+                        label: Text('မြန်မာ', style: const TextStyle(fontSize: 12)),
                       ),
                     ],
                     selected: {context.locale.languageCode},

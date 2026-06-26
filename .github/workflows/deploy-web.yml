@@ -46,8 +46,12 @@ jobs:
           flutter build web \
             --release \
             --target lib/main_prod.dart \
-            --base-href /sgt_school/ \
+            --base-href / \
             --dart-define=API_BASE_URL=${{ secrets.API_BASE_URL_PROD }}
+
+      # CNAME file tells GitHub Pages to use the custom domain
+      - name: Add CNAME for custom domain
+        run: echo "${{ vars.CUSTOM_DOMAIN }}" > build/web/CNAME
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

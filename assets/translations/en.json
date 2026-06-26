@@ -150,7 +150,23 @@
     "no_students": "No students found",
     "mark_attendance": "Mark Attendance",
     "save_attendance": "Save Attendance",
-    "attendance_saved": "Attendance saved successfully!"
+    "attendance_saved": "Attendance saved successfully!",
+    "subjects": "Subjects",
+    "classes": "Classes",
+    "activities": "Activities",
+    "exams": "Exams",
+    "no_subjects": "No subjects found",
+    "no_classes": "No classes found",
+    "no_activities": "No activities found",
+    "no_exams": "No exams found",
+    "subject_code": "Code",
+    "max_marks": "Max",
+    "passing_marks": "Pass",
+    "students_title": "Students",
+    "exam_results": "Results",
+    "no_exam_results": "No exam results found",
+    "pass": "PASS",
+    "fail": "FAIL"
   },
   "classes": {
     "title": "Classes"
@@ -186,5 +202,19 @@
     "status": "Status",
     "pass": "Pass",
     "fail": "Fail"
+  },
+  "cloud": {
+    "title": "Cloud Settings",
+    "select_mode": "Select Environment",
+    "dev_mode": "Development",
+    "prod_mode": "Production",
+    "custom_mode": "Custom",
+    "custom_desc": "Enter your own server URL",
+    "base_url_label": "Base URL",
+    "base_url_hint": "https://your-server.com/api/v1/",
+    "current_url": "Current URL",
+    "save": "Save",
+    "saved_success": "Base URL updated successfully!",
+    "url_required": "Please enter a URL"
   }
 }

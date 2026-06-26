@@ -1,3 +1,4 @@
+import 'package:sgt_school/src/features/settings/presentation/providers/settings_provider.dart';
 import 'package:sgt_school/src/imports/core_imports.dart';
 import 'package:sgt_school/src/imports/packages_imports.dart';
 import 'package:sgt_school/src/features/auth/presentation/providers/session_provider.dart';
@@ -14,7 +15,7 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    //final settings = context.watch<SettingsProvider>();
+    final settings = context.watch<SettingsProvider>();
     final session = context.watch<SessionProvider>();
 
     // Create router lazily once session provider is available.
@@ -26,7 +27,7 @@ class _AppState extends State<App> {
       debugShowCheckedModeBanner: false,
       theme: buildLightTheme(primaryColorHex: '#645bdc'),
       darkTheme: buildDarkTheme(primaryColorHex: '#645bdc'),
-      themeMode: ThemeMode.light,
+      themeMode: settings.themeMode,
       routerConfig: _router,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,

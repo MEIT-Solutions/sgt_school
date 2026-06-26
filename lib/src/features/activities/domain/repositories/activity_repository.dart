@@ -5,4 +5,7 @@ import '../entities/activity_entity.dart';
 abstract class ActivityRepository {
   /// Gets all school activities.
   FutureEither<List<ActivityEntity>> getActivities();
+
+  /// Gets activities for a specific teacher.
+  FutureEither<List<ActivityEntity>> getTeacherActivities(String teacherId);
 }

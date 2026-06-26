@@ -1,21 +1,38 @@
 import '../imports/core_imports.dart';
 import 'package:dio/dio.dart';
 import '../features/auth/data/datasources/auth_local_datasource.dart';
-import '../flavors.dart';
 
+/// Secure storage key for the persisted base URL.
+const _kBaseUrlKey = 'cloud_base_url';
 
 class AppConfig {
   AppConfig._();
   static late final Dio dio;
 
-  static String get baseUrl => _getBaseUrl();
+  /// Default base URLs for each environment.
+  static const devBaseUrl = 'http://150.95.85.135:8070/api/v1';
+  static const prodBaseUrl = 'http://150.95.30.124:8070/api/v1';
+
+  /// The current base URL (initialised in [init]).
+  static String _currentBaseUrl = devBaseUrl;
+  static String get baseUrl => _currentBaseUrl;
+
+  /// Whether a session token existed at startup (set during [init]).
+  /// Used by the router to choose the correct initial location.
+  static bool hasExistingSession = false;
 
   static Future<void> init() async {
     await StorageService.instance.init();
 
+    // Load persisted URL; fall back to dev if nothing stored.
+    _currentBaseUrl = await getStoredBaseUrl();
+
+    // Check if user has an existing session (fast — no network call).
+    hasExistingSession = await AuthLocalDatasource.instance().hasSession();
+
     dio = Dio(
       BaseOptions(
-        baseUrl: _getBaseUrl(),
+        baseUrl: _currentBaseUrl,
         connectTimeout: const Duration(seconds: 30),
         receiveTimeout: const Duration(seconds: 30),
         headers: {
@@ -28,7 +45,9 @@ class AppConfig {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          AppLogger.info('🌐 [DIO] REQUEST[${options.method}] => PATH: ${options.path}');
+          final fullUrl = '${options.baseUrl}${options.path}';
+          AppLogger.info('🌐 [DIO] REQUEST[${options.method}] => URL: $fullUrl');
+          AppLogger.info('📦 [DIO] REQUEST BODY: ${options.data}');
           try {
             final token = await AuthLocalDatasource.instance().getToken();
             if (token != null && token.isNotEmpty) {
@@ -41,18 +60,34 @@ class AppConfig {
         },
         onResponse: (response, handler) {
           AppLogger.info('✅ [DIO] RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
+          AppLogger.info('📥 [DIO] RESPONSE BODY: ${response.data}');
           return handler.next(response);
         },
         onError: (DioException e, handler) {
-          AppLogger.error('❌ [DIO] ERROR[${e.response?.statusCode}] => PATH: ${e.requestOptions.path}');
+          final fullUrl = '${e.requestOptions.baseUrl}${e.requestOptions.path}';
+          AppLogger.error('❌ [DIO] ERROR[${e.response?.statusCode}] => URL: $fullUrl');
+          AppLogger.error('📦 [DIO] ERROR REQUEST BODY: ${e.requestOptions.data}');
+          AppLogger.error('📥 [DIO] ERROR RESPONSE BODY: ${e.response?.data}');
           return handler.next(e);
         },
       ),
     );
-
   }
 
-  static String _getBaseUrl() {
-    return FlavorConfig.currentBaseUrl;
+  /// Returns the currently stored base URL, falling back to [devBaseUrl].
+  static Future<String> getStoredBaseUrl() async {
+    final result = await SecureStorageService.instance.read(_kBaseUrlKey);
+    return result.fold(
+      (_) => devBaseUrl,
+      (value) => (value != null && value.isNotEmpty) ? value : devBaseUrl,
+    );
+  }
+
+  /// Persists a new base URL and updates the Dio instance in-place.
+  static Future<void> updateBaseUrl(String newUrl) async {
+    await SecureStorageService.instance.write(_kBaseUrlKey, newUrl);
+    _currentBaseUrl = newUrl;
+    dio.options.baseUrl = newUrl;
+    AppLogger.info('☁️ Base URL updated to: $newUrl');
   }
 }

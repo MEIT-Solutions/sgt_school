@@ -150,7 +150,23 @@
     "no_students": "ကျောင်းသားမတွေ့ပါ",
     "mark_attendance": "တက်ရောက်မှုမှတ်တမ်း",
     "save_attendance": "သိမ်းဆည်းမည်",
-    "attendance_saved": "တက်ရောက်မှု သိမ်းဆည်းပြီးပါပြီ!"
+    "attendance_saved": "တက်ရောက်မှု သိမ်းဆည်းပြီးပါပြီ!",
+    "subjects": "ဘာသာရပ်များ",
+    "classes": "အတန်းများ",
+    "activities": "လှုပ်ရှားမှုများ",
+    "exams": "စာမေးပွဲများ",
+    "no_subjects": "ဘာသာရပ်မတွေ့ပါ",
+    "no_classes": "အတန်းမတွေ့ပါ",
+    "no_activities": "လှုပ်ရှားမှုမတွေ့ပါ",
+    "no_exams": "စာမေးပွဲမတွေ့ပါ",
+    "subject_code": "ကုဒ်",
+    "max_marks": "အမြင့်ဆုံး",
+    "passing_marks": "အောင်မှတ်",
+    "students_title": "ကျောင်းသားများ",
+    "exam_results": "ရလဒ်များ",
+    "no_exam_results": "စာမေးပွဲရလဒ်မတွေ့ပါ",
+    "pass": "အောင်",
+    "fail": "ကျ"
   },
   "classes": {
     "title": "အတန်းများ"
@@ -186,5 +202,19 @@
     "status": "အခြေအနေ",
     "pass": "အောင်",
     "fail": "ရှုံး"
+  },
+  "cloud": {
+    "title": "Cloud ဆက်တင်များ",
+    "select_mode": "Environment ရွေးချယ်ပါ",
+    "dev_mode": "Development",
+    "prod_mode": "Production",
+    "custom_mode": "စိတ်ကြိုက်",
+    "custom_desc": "သင့်ဆာဗာ URL ထည့်ပါ",
+    "base_url_label": "Base URL",
+    "base_url_hint": "https://your-server.com/api/v1/",
+    "current_url": "လက်ရှိ URL",
+    "save": "သိမ်းရန်",
+    "saved_success": "Base URL အောင်မြင်စွာ ပြောင်းပြီးပါပြီ!",
+    "url_required": "URL ထည့်ပါ"
   }
 }

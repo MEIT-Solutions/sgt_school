@@ -1,7 +1,6 @@
 import 'package:sgt_school/src/imports/core_imports.dart';
 import 'package:sgt_school/src/imports/packages_imports.dart';
 import 'package:sgt_school/src/features/auth/presentation/providers/session_provider.dart';
-import 'package:sgt_school/src/features/classes/presentation/providers/class_provider.dart';
 
 /// Custom clipper shared with the student home page curved header.
 class _TeacherHeaderClipper extends CustomClipper<Path> {
@@ -30,27 +29,12 @@ class TeacherHomePage extends StatefulWidget {
 
 class _TeacherHomePageState extends State<TeacherHomePage> {
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final session = context.read<SessionProvider>();
-      final teacherId = session.user?.id ?? '';
-      if (teacherId.isNotEmpty) {
-        context.read<ClassProvider>().loadClasses(teacherId);
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     final theme = context.theme;
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
     final session = context.watch<SessionProvider>();
     final user = session.user;
-    final classProvider = context.watch<ClassProvider>();
-    final students = classProvider.students;
 
     final hour = DateTime.now().hour;
     final greeting = hour < 12
@@ -160,130 +144,52 @@ class _TeacherHomePageState extends State<TeacherHomePage> {
             ),
           ),
 
-          // ── Quick Stats ──
+          // ── Quick Access Grid ──
           SliverPadding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             sliver: SliverToBoxAdapter(
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.people, color: colorScheme.primary, size: 22),
-                    const SizedBox(width: 8),
-                    Text(
-                      '${students.length} ${'teacher.students'.tr()}',
-                      style: textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: colorScheme.primary,
-                      ),
-                    ),
-                  ],
-                ),
+              child: GridView.count(
+                crossAxisCount: 3,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 8,
+                childAspectRatio: 0.85,
+                children: [
+                  _GridItem(
+                      icon: Icons.menu_book,
+                      label: 'home.subjects'.tr(),
+                      color: GridIconColors.subjects,
+                      onTap: () => context.push(AppRoutes.teacherSubjects)),
+                  _GridItem(
+                      icon: Icons.class_,
+                      label: 'teacher.classes'.tr(),
+                      color: GridIconColors.timetable,
+                      onTap: () => context.push(AppRoutes.teacherClasses)),
+                  _GridItem(
+                      icon: Icons.directions_run,
+                      label: 'home.activities'.tr(),
+                      color: GridIconColors.activities,
+                      onTap: () => context.push(AppRoutes.teacherActivities)),
+                  _GridItem(
+                      icon: Icons.assignment,
+                      label: 'home.exams'.tr(),
+                      color: GridIconColors.exams,
+                      onTap: () => context.push(AppRoutes.teacherExams)),
+                  _GridItem(
+                      icon: Icons.people,
+                      label: 'teacher.students_title'.tr(),
+                      color: GridIconColors.attendance,
+                      onTap: () => context.push(AppRoutes.teacherStudents)),
+                  _GridItem(
+                      icon: Icons.grading,
+                      label: 'teacher.exam_results'.tr(),
+                      color: GridIconColors.results,
+                      onTap: () => context.push(AppRoutes.teacherExamResults)),
+                ],
               ),
             ),
-          ),
-
-          // ── My Students Header ──
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            sliver: SliverToBoxAdapter(
-              child: Text(
-                'teacher.my_students'.tr(),
-                style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-
-          // ── Student List ──
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-            sliver: classProvider.isLoading
-                ? SliverToBoxAdapter(
-                    child: SkeletonWrapper(
-                      isLoading: true,
-                      child: Column(
-                        children: List.generate(5, (_) => Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: colorScheme.surfaceContainerLow,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              children: [
-                                CircleAvatar(radius: 18, child: Text(BoneMock.name)),
-                                const SizedBox(width: 12),
-                                Expanded(child: Text(BoneMock.fullName)),
-                              ],
-                            ),
-                          ),
-                        )),
-                      ),
-                    ),
-                  )
-                : students.isEmpty
-                    ? SliverToBoxAdapter(
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(24),
-                            child: Text(
-                              'teacher.no_students'.tr(),
-                              style: textTheme.bodySmall?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    : SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            if (index.isOdd) return const SizedBox(height: 8);
-                            final s = students[index ~/ 2];
-                            return Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: colorScheme.surfaceContainerLow,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 18,
-                                    backgroundColor: colorScheme.primaryContainer,
-                                    child: Text(
-                                      s.rollNo,
-                                      style: textTheme.labelSmall?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: colorScheme.onPrimaryContainer,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Text(
-                                      s.name,
-                                      style: textTheme.bodyMedium?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          childCount: students.length * 2 - 1,
-                        ),
-                      ),
           ),
         ],
       ),
@@ -291,36 +197,47 @@ class _TeacherHomePageState extends State<TeacherHomePage> {
   }
 }
 
-class _QuickStat extends StatelessWidget {
+class _GridItem extends StatelessWidget {
   final IconData icon;
-  final String value;
   final String label;
   final Color color;
+  final VoidCallback onTap;
 
-  const _QuickStat({
+  const _GridItem({
     required this.icon,
-    required this.value,
     required this.label,
     required this.color,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5)),
-      ),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: color, size: 22),
-          const SizedBox(height: 6),
-          Text(value, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 2),
-          Text(label, style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant), textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Icon(icon, color: color, size: 28),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: theme.colorScheme.onSurface,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ],
       ),
     );

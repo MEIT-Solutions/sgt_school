@@ -152,15 +152,15 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                 ),
               ),
               // ── Settings (top-left) ──
-              // Positioned(
-              //   top: 0,
-              //   left: AppSpacing.xs,
-              //   child: IconButton(
-              //     icon: const Icon(Icons.settings_outlined),
-              //     color: cs.onPrimary,
-              //     onPressed: () => context.push(AppRoutes.settings),
-              //   ),
-              // ),
+              Positioned(
+                top: 0,
+                left: AppSpacing.xs,
+                child: IconButton(
+                  icon: const Icon(Icons.settings_outlined),
+                  color: cs.onPrimary,
+                  onPressed: () => context.push(AppRoutes.settings),
+                ),
+              ),
               // ── Logout (top-right) ──
               Positioned(
                 top: 0,
