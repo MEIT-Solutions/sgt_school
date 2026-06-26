@@ -34,20 +34,11 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # Generate .env file from GitHub Secrets
-      # flutter_dotenv requires .env to exist as a bundled asset
-      - name: Create .env file
-        run: |
-          echo "API_BASE_URL=${{ secrets.API_BASE_URL_PROD }}" > .env
-          echo "APP_ENV=production" >> .env
-
-      - name: Build Web (Production flavor)
+      - name: Build Web
         run: |
           flutter build web \
             --release \
-            --target lib/main_prod.dart \
-            --base-href / \
-            --dart-define=API_BASE_URL=${{ secrets.API_BASE_URL_PROD }}
+            --base-href /
 
       # CNAME file tells GitHub Pages to use the custom domain
       - name: Add CNAME for custom domain
