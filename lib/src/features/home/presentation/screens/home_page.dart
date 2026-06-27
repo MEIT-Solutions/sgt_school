@@ -10,10 +10,8 @@ class _HeaderClipper extends CustomClipper<Path> {
     final path = Path();
     path.lineTo(0, size.height - 40);
     // Smooth wave: dips down on left, up on right
-    path.quadraticBezierTo(
-        size.width / 4, size.height + 10, size.width / 2, size.height - 15);
-    path.quadraticBezierTo(
-        size.width * 3 / 4, size.height - 40, size.width, size.height - 20);
+    path.quadraticBezierTo(size.width / 4, size.height + 10, size.width / 2, size.height - 15);
+    path.quadraticBezierTo(size.width * 3 / 4, size.height - 40, size.width, size.height - 20);
     path.lineTo(size.width, 0);
     path.close();
     return path;
@@ -84,8 +82,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
                       children: [
                         InkWell(
                           onTap: () => context.push(AppRoutes.profile),
-                          child: user?.photoUrl != null &&
-                                  user!.photoUrl!.isNotEmpty
+                          child: user?.photoUrl != null && user!.photoUrl!.isNotEmpty
                               ? CommonImage(
                                   imageUrl: user.photoUrl!,
                                   width: 80,
@@ -95,8 +92,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
                                     width: 80,
                                     height: 80,
                                     decoration: BoxDecoration(
-                                      color: colorScheme.onPrimary
-                                          .withValues(alpha: 0.2),
+                                      color: colorScheme.onPrimary.withValues(alpha: 0.2),
                                       shape: BoxShape.circle,
                                     ),
                                     child: Center(
@@ -110,20 +106,16 @@ class _StudentHomePageState extends State<StudentHomePage> {
                                     width: 80,
                                     height: 80,
                                     decoration: BoxDecoration(
-                                      color: colorScheme.onPrimary
-                                          .withValues(alpha: 0.2),
+                                      color: colorScheme.onPrimary.withValues(alpha: 0.2),
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Icon(Icons.person,
-                                        size: 40, color: colorScheme.onPrimary),
+                                    child: Icon(Icons.person, size: 40, color: colorScheme.onPrimary),
                                   ),
                                 )
                               : CircleAvatar(
                                   radius: 40,
-                                  backgroundColor: colorScheme.onPrimary
-                                      .withValues(alpha: 0.2),
-                                  child: Icon(Icons.person,
-                                      size: 40, color: colorScheme.onPrimary),
+                                  backgroundColor: colorScheme.onPrimary.withValues(alpha: 0.2),
+                                  child: Icon(Icons.person, size: 40, color: colorScheme.onPrimary),
                                 ),
                         ),
                         const SizedBox(width: 16),
@@ -134,8 +126,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
                               Text(
                                 greeting,
                                 style: textTheme.bodyMedium?.copyWith(
-                                  color: colorScheme.onPrimary
-                                      .withValues(alpha: 0.9),
+                                  color: colorScheme.onPrimary.withValues(alpha: 0.9),
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -150,16 +141,14 @@ class _StudentHomePageState extends State<StudentHomePage> {
                               Text(
                                 'Class ${user?.grade ?? ''} - ${user?.section ?? ''}',
                                 style: textTheme.bodySmall?.copyWith(
-                                  color: colorScheme.onPrimary
-                                      .withValues(alpha: 0.8),
+                                  color: colorScheme.onPrimary.withValues(alpha: 0.8),
                                 ),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 '${'home.roll_no'.tr()} ${user?.rollNo ?? ''}',
                                 style: textTheme.bodySmall?.copyWith(
-                                  color: colorScheme.onPrimary
-                                      .withValues(alpha: 0.8),
+                                  color: colorScheme.onPrimary.withValues(alpha: 0.8),
                                 ),
                               ),
                             ],
@@ -195,36 +184,16 @@ class _StudentHomePageState extends State<StudentHomePage> {
                 crossAxisSpacing: 12,
                 childAspectRatio: 1,
                 children: [
-                  _GridItem(
-                      icon: Icons.assignment,
-                      label: 'home.exams'.tr(),
-                      color: GridIconColors.exams,
-                      onTap: () => context.push(AppRoutes.exams)),
-                  _GridItem(
-                      icon: Icons.calendar_today,
-                      label: 'home.timetable'.tr(),
-                      color: GridIconColors.timetable,
-                      onTap: () => context.push(AppRoutes.timetable)),
-                  _GridItem(
-                      icon: Icons.account_balance_wallet,
-                      label: 'home.fees'.tr(),
-                      color: GridIconColors.fees,
-                      onTap: () => context.push(AppRoutes.fees)),
-                  _GridItem(
-                      icon: Icons.bar_chart,
-                      label: 'home.results'.tr(),
-                      color: GridIconColors.results,
-                      onTap: () => context.push(AppRoutes.results)),
-                  _GridItem(
-                      icon: Icons.menu_book,
-                      label: 'home.subjects'.tr(),
-                      color: GridIconColors.subjects,
-                      onTap: () => context.push(AppRoutes.subjects)),
-                  _GridItem(
-                      icon: Icons.directions_run,
-                      label: 'home.activities'.tr(),
-                      color: GridIconColors.activities,
-                      onTap: () => context.push(AppRoutes.activities)),
+                  // _GridItem(icon: Icons.assignment, label: 'home.exams'.tr(), color: GridIconColors.exams, onTap: () => context.push(AppRoutes.exams)),
+                  // _GridItem(
+                  //     icon: Icons.calendar_today,
+                  //     label: 'home.timetable'.tr(),
+                  //     color: GridIconColors.timetable,
+                  //     onTap: () => context.push(AppRoutes.timetable)),
+                  _GridItem(icon: Icons.account_balance_wallet, label: 'home.fees'.tr(), color: GridIconColors.fees, onTap: () => context.push(AppRoutes.fees)),
+                  _GridItem(icon: Icons.bar_chart, label: 'home.results'.tr(), color: GridIconColors.results, onTap: () => context.push(AppRoutes.results)),
+                  // _GridItem(icon: Icons.menu_book, label: 'home.subjects'.tr(), color: GridIconColors.subjects, onTap: () => context.push(AppRoutes.subjects)),
+                  _GridItem(icon: Icons.directions_run, label: 'home.activities'.tr(), color: GridIconColors.activities, onTap: () => context.push(AppRoutes.activities)),
                 ],
               ),
             ),
@@ -239,8 +208,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
                 children: [
                   Text(
                     'home.upcoming_events'.tr(),
-                    style: textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.bold),
+                    style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   TextButton(
                     onPressed: () => context.push(AppRoutes.activities),
@@ -258,14 +226,16 @@ class _StudentHomePageState extends State<StudentHomePage> {
                     child: SkeletonWrapper(
                       isLoading: true,
                       child: Column(
-                        children: List.generate(3, (_) => Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: _EventCard(
-                            title: BoneMock.name,
-                            className: BoneMock.name,
-                            activityDate: BoneMock.date,
-                          ),
-                        )),
+                        children: List.generate(
+                            3,
+                            (_) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: _EventCard(
+                                    title: BoneMock.name,
+                                    className: BoneMock.name,
+                                    activityDate: BoneMock.date,
+                                  ),
+                                )),
                       ),
                     ),
                   )

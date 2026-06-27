@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:sgt_school/src/config/app_config.dart';
-import 'package:sgt_school/src/services/demo_data_service.dart';
 import 'package:sgt_school/src/utils/utils.dart';
 import '../../domain/entities/result_entity.dart';
 import '../../domain/repositories/result_repository.dart';
@@ -12,7 +11,7 @@ import '../models/result_model.dart';
 class ResultRepositoryImpl implements ResultRepository {
   final Dio _dio;
 
-  ResultRepositoryImpl({Dio? dio, DemoDataService? demo})
+  ResultRepositoryImpl({Dio? dio})
       : _dio = dio ?? AppConfig.dio;
 
   @override

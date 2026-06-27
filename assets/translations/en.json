@@ -215,6 +215,8 @@
     "current_url": "Current URL",
     "save": "Save",
     "saved_success": "Base URL updated successfully!",
-    "url_required": "Please enter a URL"
+    "url_required": "Please enter a URL",
+    "invalid_url": "Please enter a valid URL",
+    "url_must_start_with_http": "URL must start with http:// or https://"
   }
 }

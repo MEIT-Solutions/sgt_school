@@ -63,11 +63,75 @@ class AppConfig {
           AppLogger.info('📥 [DIO] RESPONSE BODY: ${response.data}');
           return handler.next(response);
         },
-        onError: (DioException e, handler) {
+        onError: (DioException e, handler) async {
           final fullUrl = '${e.requestOptions.baseUrl}${e.requestOptions.path}';
           AppLogger.error('❌ [DIO] ERROR[${e.response?.statusCode}] => URL: $fullUrl');
           AppLogger.error('📦 [DIO] ERROR REQUEST BODY: ${e.requestOptions.data}');
           AppLogger.error('📥 [DIO] ERROR RESPONSE BODY: ${e.response?.data}');
+
+          // ── Token Refresh on 401 ───────────────────────────────────
+          if (e.response?.statusCode == 401) {
+            // Don't retry if this was already a refresh request
+            if (e.requestOptions.path.contains('/school/refresh')) {
+              return handler.next(e);
+            }
+
+            try {
+              final datasource = AuthLocalDatasource.instance();
+              final refreshToken = await datasource.getRefreshToken();
+
+              if (refreshToken == null || refreshToken.isEmpty) {
+                AppLogger.warning('🔑 No refresh token — cannot refresh');
+                return handler.next(e);
+              }
+
+              AppLogger.info('🔄 Attempting token refresh...');
+
+              // Use a fresh Dio instance to avoid interceptor loops
+              final refreshDio = Dio(BaseOptions(
+                baseUrl: dio.options.baseUrl,
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json',
+                },
+              ));
+
+              final refreshResponse = await refreshDio.post(
+                '/school/refresh',
+                data: {'refresh_token': refreshToken},
+              );
+
+              final refreshData = refreshResponse.data;
+              if (refreshData != null && refreshData['success'] == true) {
+                final newData = refreshData['data'] as Map<String, dynamic>?;
+                final newToken = newData?['token'] as String?;
+                final newRefreshToken = newData?['refresh_token'] as String?;
+
+                if (newToken != null && newToken.isNotEmpty) {
+                  // Save new tokens
+                  await datasource.updateTokens(
+                    token: newToken,
+                    refreshToken: newRefreshToken,
+                  );
+
+                  AppLogger.success('🔑 Token refreshed successfully');
+
+                  // Retry the original request with the new token
+                  e.requestOptions.headers['Authorization'] = 'Bearer $newToken';
+                  final retryResponse = await dio.fetch(e.requestOptions);
+                  return handler.resolve(retryResponse);
+                }
+              }
+
+              // Refresh failed — clear session
+              AppLogger.error('🔑 Token refresh failed — clearing session');
+              await datasource.clearSession();
+            } catch (refreshError) {
+              AppLogger.error('🔑 Token refresh error: $refreshError');
+              await AuthLocalDatasource.instance().clearSession();
+            }
+          }
+
           return handler.next(e);
         },
       ),
@@ -75,12 +139,27 @@ class AppConfig {
   }
 
   /// Returns the currently stored base URL, falling back to [devBaseUrl].
+  ///
+  /// Also validates the URL — corrupted values are discarded.
   static Future<String> getStoredBaseUrl() async {
     final result = await SecureStorageService.instance.read(_kBaseUrlKey);
-    return result.fold(
-      (_) => devBaseUrl,
-      (value) => (value != null && value.isNotEmpty) ? value : devBaseUrl,
-    );
+    final value = result.fold((_) => null, (v) => v);
+
+    if (value == null || value.isEmpty) return devBaseUrl;
+
+    // Validate stored URL
+    final uri = Uri.tryParse(value);
+    if (uri == null ||
+        !uri.hasScheme ||
+        !uri.hasAuthority ||
+        (!value.startsWith('http://') && !value.startsWith('https://'))) {
+      // Corrupted URL — clean up and fall back
+      AppLogger.warning('⚠️ Invalid stored URL "$value" — resetting to dev');
+      await SecureStorageService.instance.delete(_kBaseUrlKey);
+      return devBaseUrl;
+    }
+
+    return value;
   }
 
   /// Persists a new base URL and updates the Dio instance in-place.

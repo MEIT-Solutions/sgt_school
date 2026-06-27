@@ -277,7 +277,10 @@ class _ResultsList extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 4),
-                          Row(
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 4,
+                            crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
                               Text(
                                 '${'results.marks_obtained'.tr()}: ${r.marks} / ${r.total}',
@@ -285,7 +288,6 @@ class _ResultsList extends StatelessWidget {
                                   color: cs.onSurfaceVariant,
                                 ),
                               ),
-                              const SizedBox(width: 10),
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 8,

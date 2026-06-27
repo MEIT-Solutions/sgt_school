@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:sgt_school/src/config/app_config.dart';
-import 'package:sgt_school/src/services/demo_data_service.dart';
 import 'package:sgt_school/src/utils/utils.dart';
 import '../../domain/entities/fee_entity.dart';
 import '../../domain/entities/payment_entity.dart';
@@ -14,7 +13,7 @@ import '../models/payment_model.dart';
 class FeeRepositoryImpl implements FeeRepository {
   final Dio _dio;
 
-  FeeRepositoryImpl({Dio? dio, DemoDataService? demo})
+  FeeRepositoryImpl({Dio? dio})
       : _dio = dio ?? AppConfig.dio;
 
   @override

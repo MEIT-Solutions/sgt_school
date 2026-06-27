@@ -91,22 +91,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   itemBuilder: (_) => [
                     PopupMenuItem(
-                      value: 'settings',
-                      child: Row(
-                        children: [
-                          Icon(Icons.settings_outlined, size: 20, color: cs.onSurface),
-                          const SizedBox(width: 12),
-                          Text('settings.title'.tr()),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
                       value: 'cloud',
                       child: Row(
                         children: [
                           Icon(Icons.cloud_outlined, size: 20, color: cs.onSurface),
                           const SizedBox(width: 12),
                           Text('cloud.title'.tr()),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'settings',
+                      child: Row(
+                        children: [
+                          Icon(Icons.settings_outlined, size: 20, color: cs.onSurface),
+                          const SizedBox(width: 12),
+                          Text('settings.title'.tr()),
                         ],
                       ),
                     ),

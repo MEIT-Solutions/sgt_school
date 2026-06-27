@@ -215,6 +215,8 @@
     "current_url": "လက်ရှိ URL",
     "save": "သိမ်းရန်",
     "saved_success": "Base URL အောင်မြင်စွာ ပြောင်းပြီးပါပြီ!",
-    "url_required": "URL ထည့်ပါ"
+    "url_required": "URL ထည့်ပါ",
+    "invalid_url": "မှန်ကန်သော URL ထည့်ပါ",
+    "url_must_start_with_http": "URL သည် http:// သို့မဟုတ် https:// ဖြင့် စရမည်"
   }
 }

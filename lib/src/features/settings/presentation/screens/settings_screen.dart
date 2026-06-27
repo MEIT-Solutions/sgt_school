@@ -139,55 +139,55 @@ class SettingsScreen extends StatelessWidget {
           const SizedBox(height: 12),
 
           // Language
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: cs.surfaceContainerLow,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: cs.outlineVariant.withValues(alpha: 0.5),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.language, size: 20, color: cs.onSurfaceVariant),
-                    const SizedBox(width: 12),
-                    Text(
-                      'settings.language'.tr(),
-                      style: tt.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: SegmentedButton<String>(
-                    segments: [
-                      ButtonSegment(
-                        value: 'en',
-                        label: Text('English', style: const TextStyle(fontSize: 12)),
-                      ),
-                      ButtonSegment(
-                        value: 'my',
-                        label: Text('မြန်မာ', style: const TextStyle(fontSize: 12)),
-                      ),
-                    ],
-                    selected: {context.locale.languageCode},
-                    onSelectionChanged: (s) {
-                      context.setLocale(Locale(s.first));
-                    },
-                    showSelectedIcon: false,
-                    style: const ButtonStyle(
-                      visualDensity: VisualDensity.compact,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // Container(
+          //   padding: const EdgeInsets.all(16),
+          //   decoration: BoxDecoration(
+          //     color: cs.surfaceContainerLow,
+          //     borderRadius: BorderRadius.circular(12),
+          //     border: Border.all(
+          //       color: cs.outlineVariant.withValues(alpha: 0.5),
+          //     ),
+          //   ),
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: [
+          //       Row(
+          //         children: [
+          //           Icon(Icons.language, size: 20, color: cs.onSurfaceVariant),
+          //           const SizedBox(width: 12),
+          //           Text(
+          //             'settings.language'.tr(),
+          //             style: tt.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+          //           ),
+          //         ],
+          //       ),
+          //       const SizedBox(height: 12),
+          //       SizedBox(
+          //         width: double.infinity,
+          //         child: SegmentedButton<String>(
+          //           segments: [
+          //             ButtonSegment(
+          //               value: 'en',
+          //               label: Text('English', style: const TextStyle(fontSize: 12)),
+          //             ),
+          //             ButtonSegment(
+          //               value: 'my',
+          //               label: Text('မြန်မာ', style: const TextStyle(fontSize: 12)),
+          //             ),
+          //           ],
+          //           selected: {context.locale.languageCode},
+          //           onSelectionChanged: (s) {
+          //             context.setLocale(Locale(s.first));
+          //           },
+          //           showSelectedIcon: false,
+          //           style: const ButtonStyle(
+          //             visualDensity: VisualDensity.compact,
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );

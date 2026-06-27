@@ -56,16 +56,34 @@ class _CloudSettingsScreenState extends State<CloudSettingsScreen> {
       return;
     }
 
+    // Validate URL format
+    final uri = Uri.tryParse(url);
+    if (uri == null || !uri.hasScheme || !uri.hasAuthority) {
+      showToast(context, message: 'cloud.invalid_url'.tr(), status: 'error');
+      return;
+    }
+
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      showToast(context, message: 'cloud.url_must_start_with_http'.tr(), status: 'error');
+      return;
+    }
+
     setState(() => _isSaving = true);
-    await AppConfig.updateBaseUrl(url);
-    if (!mounted) return;
+    try {
+      await AppConfig.updateBaseUrl(url);
+      if (!mounted) return;
 
-    setState(() {
-      _isSaving = false;
-      _currentUrl = url;
-    });
+      setState(() {
+        _isSaving = false;
+        _currentUrl = url;
+      });
 
-    showToast(context, message: 'cloud.saved_success'.tr());
+      showToast(context, message: 'cloud.saved_success'.tr());
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isSaving = false);
+      showToast(context, message: 'cloud.invalid_url'.tr(), status: 'error');
+    }
   }
 
   @override
@@ -156,9 +174,7 @@ class _CloudSettingsScreenState extends State<CloudSettingsScreen> {
           // ── Custom URL Field ──
           AnimatedCrossFade(
             duration: const Duration(milliseconds: 250),
-            crossFadeState: _mode == _UrlMode.custom
-                ? CrossFadeState.showFirst
-                : CrossFadeState.showSecond,
+            crossFadeState: _mode == _UrlMode.custom ? CrossFadeState.showFirst : CrossFadeState.showSecond,
             firstChild: Padding(
               padding: const EdgeInsets.only(top: 16),
               child: AppTextField(
@@ -206,9 +222,7 @@ class _CloudSettingsScreenState extends State<CloudSettingsScreen> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: isSelected
-              ? color.withValues(alpha: 0.08)
-              : cs.surfaceContainerLow,
+          color: isSelected ? color.withValues(alpha: 0.08) : cs.surfaceContainerLow,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: isSelected ? color : cs.outlineVariant.withValues(alpha: 0.5),

@@ -32,6 +32,7 @@ class AuthRepositoryImpl implements AuthRepository {
     return result.flatMap((data) {
       try {
         final token = data['token'] as String? ?? '';
+        final refreshToken = data['refresh_token'] as String?;
         final role = data['role'] as String? ?? 'student';
         final profileJson = data['profile'] as Map<String, dynamic>?;
 
@@ -44,6 +45,7 @@ class AuthRepositoryImpl implements AuthRepository {
         // Persist session to secure storage (fire and forget)
         _localDatasource.saveSession(
           token: token,
+          refreshToken: refreshToken,
           profileJson: userModel.toStorageJson(),
         );
 
@@ -79,10 +81,16 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   FutureEither<void> logout() async {
     try {
+      // Best-effort: tell the backend to revoke the session.
+      try {
+        await _authService.logout();
+      } catch (_) {
+        // Ignore network failure — we still clear local data.
+      }
+    } finally {
+      // Always clear local session data.
       await _localDatasource.clearSession();
-      return right(null);
-    } catch (e) {
-      return left(ServerFailure('Logout failed: $e'));
     }
+    return right(null);
   }
 }

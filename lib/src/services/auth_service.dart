@@ -64,4 +64,12 @@ class AuthService {
       }
     });
   }
+
+  /// Calls the backend to revoke the refresh token.
+  ///
+  /// This is best-effort — callers should always clear local storage
+  /// regardless of whether this call succeeds.
+  Future<void> logout() async {
+    await DioService.instance.post('/school/logout');
+  }
 }
