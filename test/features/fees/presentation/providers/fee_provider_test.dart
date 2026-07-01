@@ -16,6 +16,7 @@ class FakeFeeRepository implements FeeRepository {
       FeeEntity(
         id: '7',
         name: 'Monthy',
+        currency: 'MMK',
         amount: 2000.0,
         amountPaid: 2000.0,
         dueAmount: 0.0,

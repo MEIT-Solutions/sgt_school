@@ -73,7 +73,7 @@ class ActivityProvider extends ChangeNotifier {
     notifyListeners();
 
     final result =
-        await FileDownloadService.instance.downloadAndShare(fileUrl, fileName);
+        await FileDownloadService.instance.downloadFile(fileUrl, fileName);
 
     result.fold(
       (failure) {
@@ -87,8 +87,25 @@ class ActivityProvider extends ChangeNotifier {
           );
         }
       },
-      (_) {
-        AppLogger.success('Download complete: $fileName');
+      (savePath) {
+        AppLogger.success('Download complete: $savePath');
+        if (context.mounted) {
+          // Extract folder name for user-friendly message.
+          // e.g. '/storage/emulated/0/Download/file.xlsx' → 'Download'
+          // On web, savePath is just the file name.
+          final parts = savePath.split('/');
+          final folder = parts.length >= 2 ? parts[parts.length - 2] : '';
+          final locationMsg = folder.isNotEmpty
+              ? '${'activities.download_success'.tr()} ($folder)'
+              : 'activities.download_success'.tr();
+
+          showToast(
+            context,
+            message: locationMsg,
+            status: 'success',
+            icon: Icons.download_done_rounded,
+          );
+        }
       },
     );
 

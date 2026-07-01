@@ -107,7 +107,7 @@
     "grade_report": "Grade Report",
     "documents": "Documents",
     "downloading": "Downloading...",
-    "download_success": "File downloaded successfully",
+    "download_success": "File saved to",
     "download_failed": "Failed to download file"
   },
   "notices": {
