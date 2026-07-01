@@ -19,6 +19,7 @@ enum FeeStatus {
 class FeeEntity extends Equatable {
   final String id;
   final String name;
+  final String currency;
   final double amount;
   final double amountPaid;
   final double dueAmount;
@@ -30,6 +31,7 @@ class FeeEntity extends Equatable {
   const FeeEntity({
     required this.id,
     required this.name,
+    required this.currency,
     required this.amount,
     required this.amountPaid,
     required this.dueAmount,
@@ -47,6 +49,7 @@ class FeeEntity extends Equatable {
   List<Object?> get props => [
         id,
         name,
+        currency,
         amount,
         amountPaid,
         dueAmount,

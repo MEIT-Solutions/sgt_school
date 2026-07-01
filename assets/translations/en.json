@@ -101,7 +101,14 @@
     "all": "All",
     "upcoming": "Upcoming",
     "completed": "Completed",
-    "no_activities": "No activities found"
+    "no_activities": "No activities found",
+    "attachments": "Attachments",
+    "exam_paper": "Exam Paper",
+    "grade_report": "Grade Report",
+    "documents": "Documents",
+    "downloading": "Downloading...",
+    "download_success": "File downloaded successfully",
+    "download_failed": "Failed to download file"
   },
   "notices": {
     "title": "Notifications"

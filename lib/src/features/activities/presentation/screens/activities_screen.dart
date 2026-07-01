@@ -1,5 +1,6 @@
 import 'package:sgt_school/src/imports/core_imports.dart';
 import 'package:sgt_school/src/imports/packages_imports.dart';
+import '../../domain/entities/activity_entity.dart';
 import '../providers/activity_provider.dart';
 
 /// School activities screen — flat list of all activities.
@@ -162,11 +163,191 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                                   ),
                                 ),
                               ],
+
+                              // Attachments section
+                              if (a.hasAttachments) ...[
+                                const SizedBox(height: 12),
+                                _AttachmentsSection(activity: a),
+                              ],
                             ],
                           ),
                         );
                       },
                     ),
+    );
+  }
+}
+
+/// Collapsible attachments section shown on activity cards.
+class _AttachmentsSection extends StatelessWidget {
+  final ActivityEntity activity;
+  const _AttachmentsSection({required this.activity});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final cs = theme.colorScheme;
+    final tt = theme.textTheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Divider(
+          height: 1,
+          color: cs.outlineVariant.withValues(alpha: 0.5),
+        ),
+        const SizedBox(height: 12),
+        // Header
+        Row(
+          children: [
+            Icon(Icons.attach_file, size: 16, color: cs.primary),
+            const SizedBox(width: 6),
+            Text(
+              '${'activities.attachments'.tr()} (${activity.attachmentCount})',
+              style: tt.labelMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: cs.primary,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+
+        // Exam Paper
+        if (activity.examPaper != null)
+          _AttachmentRow(
+            icon: Icons.description_outlined,
+            categoryLabel: 'activities.exam_paper'.tr(),
+            attachment: activity.examPaper!,
+          ),
+
+        // Grade Report
+        if (activity.gradeReport != null)
+          _AttachmentRow(
+            icon: Icons.assessment_outlined,
+            categoryLabel: 'activities.grade_report'.tr(),
+            attachment: activity.gradeReport!,
+          ),
+
+        // Documents
+        ...activity.documents.map(
+          (doc) => _AttachmentRow(
+            icon: Icons.folder_outlined,
+            categoryLabel: doc.title.isNotEmpty
+                ? doc.title
+                : 'activities.documents'.tr(),
+            attachment: doc,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// A single attachment row with file name and download button.
+class _AttachmentRow extends StatelessWidget {
+  final IconData icon;
+  final String categoryLabel;
+  final ActivityAttachment attachment;
+
+  const _AttachmentRow({
+    required this.icon,
+    required this.categoryLabel,
+    required this.attachment,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final cs = theme.colorScheme;
+    final tt = theme.textTheme;
+    final provider = context.watch<ActivityProvider>();
+    final isDownloading = provider.isDownloading(attachment.fileUrl);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: cs.surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: cs.outlineVariant.withValues(alpha: 0.3),
+          ),
+        ),
+        child: Row(
+          children: [
+            // File type icon
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: cs.primaryContainer.withValues(alpha: 0.5),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Icon(icon, size: 16, color: cs.primary),
+            ),
+            const SizedBox(width: 10),
+            // File info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    categoryLabel,
+                    style: tt.labelSmall?.copyWith(
+                      color: cs.onSurfaceVariant,
+                      fontSize: 10,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    attachment.fileName,
+                    style: tt.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            // Download button / loading indicator
+            if (isDownloading)
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            else
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(20),
+                  onTap: () {
+                    context.read<ActivityProvider>().downloadFile(
+                          context,
+                          attachment.fileUrl,
+                          attachment.fileName,
+                        );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: cs.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Icon(
+                      Icons.download_rounded,
+                      size: 18,
+                      color: cs.primary,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

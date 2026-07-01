@@ -4,6 +4,7 @@ import '../../domain/entities/fee_entity.dart';
 class FeeModel {
   final String id;
   final String name;
+  final String currency;
   final double amount;
   final double amountPaid;
   final double dueAmount;
@@ -15,6 +16,7 @@ class FeeModel {
   const FeeModel({
     required this.id,
     required this.name,
+    required this.currency,
     required this.amount,
     required this.amountPaid,
     required this.dueAmount,
@@ -31,6 +33,7 @@ class FeeModel {
     return FeeModel(
       id: json['id']?.toString() ?? '',
       name: json['fee_type']?.toString() ?? json['name']?.toString() ?? 'School Fee',
+      currency: json['currency']?.toString() ?? 'MMK',
       amount: totalAmount,
       amountPaid: amountPaidVal,
       dueAmount: dueAmountVal,
@@ -44,6 +47,7 @@ class FeeModel {
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,
+        'currency': currency,
         'amount': amount,
         'amount_paid': amountPaid,
         'due': dueAmount,
@@ -56,6 +60,7 @@ class FeeModel {
   FeeEntity toEntity() => FeeEntity(
         id: id,
         name: name,
+        currency: currency,
         amount: amount,
         amountPaid: amountPaid,
         dueAmount: dueAmount,

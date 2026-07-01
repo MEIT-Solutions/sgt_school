@@ -4,9 +4,9 @@ import 'package:sgt_school/src/features/auth/presentation/providers/session_prov
 import '../providers/fee_provider.dart';
 import '../../domain/entities/fee_entity.dart';
 
-String _formatCurrency(double amount) {
+String _formatCurrency(double amount, [String currency = 'MMK']) {
   final format = NumberFormat('#,###', 'en_US');
-  return '${format.format(amount)} MMK';
+  return '${format.format(amount)} $currency';
 }
 
 /// Fee summary with details and payment history tabs.
@@ -38,6 +38,10 @@ class _FeesScreenState extends State<FeesScreen> {
     final paid = provider.summary?.totalPaid ?? 0;
     final due = provider.summary?.totalDue ?? 0;
     final progress = total > 0 ? (paid / total).clamp(0.0, 1.0) : 0.0;
+    // Derive currency from the first fee item; fall back to MMK.
+    final currency = provider.fees.isNotEmpty
+        ? provider.fees.first.currency
+        : 'MMK';
 
     return Scaffold(
       backgroundColor: cs.surface,
@@ -142,18 +146,21 @@ class _FeesScreenState extends State<FeesScreen> {
                               _SummaryColumn(
                                 label: 'fees.total_fees'.tr(),
                                 amount: total,
+                                currency: currency,
                                 textColor: cs.onPrimary,
                                 tt: tt,
                               ),
                               _SummaryColumn(
                                 label: 'fees.total_paid'.tr(),
                                 amount: paid,
+                                currency: currency,
                                 textColor: const Color(0xFFB2DFDB), // soft teal
                                 tt: tt,
                               ),
                               _SummaryColumn(
                                 label: 'fees.due_amount'.tr(),
                                 amount: due,
+                                currency: currency,
                                 textColor: const Color(0xFFFFCDD2), // soft red
                                 tt: tt,
                               ),
@@ -174,12 +181,14 @@ class _FeesScreenState extends State<FeesScreen> {
 class _SummaryColumn extends StatelessWidget {
   final String label;
   final double amount;
+  final String currency;
   final Color textColor;
   final TextTheme tt;
 
   const _SummaryColumn({
     required this.label,
     required this.amount,
+    required this.currency,
     required this.textColor,
     required this.tt,
   });
@@ -197,7 +206,7 @@ class _SummaryColumn extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          _formatCurrency(amount),
+          _formatCurrency(amount, currency),
           style: tt.bodyLarge?.copyWith(
             color: textColor,
             fontWeight: FontWeight.bold,
@@ -323,12 +332,14 @@ class _FeeDetailsList extends StatelessWidget {
                     _AmountItem(
                       label: 'fees.total_fees'.tr(),
                       amount: f.amount,
+                      currency: f.currency,
                       tt: tt,
                       cs: cs,
                     ),
                     _AmountItem(
                       label: 'fees.total_paid'.tr(),
                       amount: f.amountPaid,
+                      currency: f.currency,
                       tt: tt,
                       cs: cs,
                       valueColor: const Color(0xFF26A69A),
@@ -336,6 +347,7 @@ class _FeeDetailsList extends StatelessWidget {
                     _AmountItem(
                       label: 'fees.due_amount'.tr(),
                       amount: f.dueAmount,
+                      currency: f.currency,
                       tt: tt,
                       cs: cs,
                       valueColor:
@@ -400,6 +412,7 @@ class _FeeDetailsList extends StatelessWidget {
 class _AmountItem extends StatelessWidget {
   final String label;
   final double amount;
+  final String currency;
   final TextTheme tt;
   final ColorScheme cs;
   final Color? valueColor;
@@ -407,6 +420,7 @@ class _AmountItem extends StatelessWidget {
   const _AmountItem({
     required this.label,
     required this.amount,
+    required this.currency,
     required this.tt,
     required this.cs,
     this.valueColor,
@@ -423,7 +437,7 @@ class _AmountItem extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          _formatCurrency(amount),
+          _formatCurrency(amount, currency),
           style: tt.bodyMedium?.copyWith(
             fontWeight: FontWeight.bold,
             color: valueColor ?? cs.onSurface,

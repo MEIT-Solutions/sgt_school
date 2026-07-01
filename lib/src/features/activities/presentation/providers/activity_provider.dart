@@ -14,9 +14,15 @@ class ActivityProvider extends ChangeNotifier {
   bool _isLoading = false;
   String? _error;
 
+  /// Tracks which file URLs are currently being downloaded.
+  final Set<String> _downloadingFiles = {};
+
   List<ActivityEntity> get activities => _activities;
   bool get isLoading => _isLoading;
   String? get error => _error;
+
+  /// Whether a specific file is currently being downloaded.
+  bool isDownloading(String fileUrl) => _downloadingFiles.contains(fileUrl);
 
   Future<void> loadActivities() async {
     _isLoading = true;
@@ -51,6 +57,42 @@ class ActivityProvider extends ChangeNotifier {
     );
 
     _isLoading = false;
+    notifyListeners();
+  }
+
+  /// Downloads the file at [fileUrl] with the given [fileName]
+  /// and opens the share sheet.
+  Future<void> downloadFile(
+    BuildContext context,
+    String fileUrl,
+    String fileName,
+  ) async {
+    if (_downloadingFiles.contains(fileUrl)) return; // Already downloading.
+
+    _downloadingFiles.add(fileUrl);
+    notifyListeners();
+
+    final result =
+        await FileDownloadService.instance.downloadAndShare(fileUrl, fileName);
+
+    result.fold(
+      (failure) {
+        AppLogger.error('Download failed: ${failure.message}');
+        if (context.mounted) {
+          showToast(
+            context,
+            message: 'activities.download_failed'.tr(),
+            status: 'error',
+            icon: Icons.error_outline,
+          );
+        }
+      },
+      (_) {
+        AppLogger.success('Download complete: $fileName');
+      },
+    );
+
+    _downloadingFiles.remove(fileUrl);
     notifyListeners();
   }
 }
