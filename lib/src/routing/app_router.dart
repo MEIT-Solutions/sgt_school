@@ -9,7 +9,7 @@ import 'package:sgt_school/src/routing/app_shell.dart';
 import 'package:sgt_school/src/features/auth/domain/entities/user.dart';
 import 'package:sgt_school/src/features/auth/presentation/providers/session_provider.dart';
 import 'package:sgt_school/src/features/auth/presentation/screens/login_screen.dart';
-import 'package:sgt_school/src/features/auth/presentation/screens/cloud_settings_screen.dart';
+// import 'package:sgt_school/src/features/auth/presentation/screens/cloud_settings_screen.dart'; // Commented for App Store release
 import 'package:sgt_school/src/features/home/presentation/screens/role_home_page.dart';
 import 'package:sgt_school/src/features/subjects/presentation/screens/subjects_screen.dart';
 import 'package:sgt_school/src/features/timetable/presentation/screens/timetable_screen.dart';
@@ -43,11 +43,12 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
     redirect: (context, state) {
       final status = sessionProvider.status;
       final isOnLogin = state.uri.path == AppRoutes.login;
-      final isOnCloud = state.uri.path == AppRoutes.cloudSettings;
+      // final isOnCloud = state.uri.path == AppRoutes.cloudSettings;
       final isOnSettings = state.uri.path == AppRoutes.settings;
 
-      // Cloud & settings are always accessible (no auth required)
-      if (isOnCloud || isOnSettings) return null;
+      // Cloud settings commented out for App Store release (keep for future use)
+      // if (isOnCloud || isOnSettings) return null;
+      if (isOnSettings) return null;
 
       // Still loading session — keep on login to avoid home flicker
       if (status == SessionStatus.unknown) {
@@ -72,12 +73,12 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
         builder: (context, state) => const LoginScreen(),
       ),
 
-      // Cloud settings (no auth required)
-      GoRoute(
-        path: AppRoutes.cloudSettings,
-        name: 'cloud-settings',
-        pageBuilder: (context, state) => _pageTransitionAnimation(state, const CloudSettingsScreen()),
-      ),
+      // Cloud settings — commented out for App Store release (keep for future use)
+      // GoRoute(
+      //   path: AppRoutes.cloudSettings,
+      //   name: 'cloud-settings',
+      //   pageBuilder: (context, state) => _pageTransitionAnimation(state, const CloudSettingsScreen()),
+      // ),
 
       // ── Shell with bottom nav ──
       ShellRoute(

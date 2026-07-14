@@ -11,10 +11,10 @@ class AppConfig {
 
   /// Default base URLs for each environment.
   static const devBaseUrl = 'http://150.95.85.135:8070/api/v1';
-  static const prodBaseUrl = 'http://150.95.30.124:8070/api/v1';
+  static const prodBaseUrl = 'https://sgt-odoo.com/api/v1/';
 
   /// The current base URL (initialised in [init]).
-  static String _currentBaseUrl = devBaseUrl;
+  static String _currentBaseUrl = prodBaseUrl;
   static String get baseUrl => _currentBaseUrl;
 
   /// Whether a session token existed at startup (set during [init]).
@@ -145,18 +145,15 @@ class AppConfig {
     final result = await SecureStorageService.instance.read(_kBaseUrlKey);
     final value = result.fold((_) => null, (v) => v);
 
-    if (value == null || value.isEmpty) return devBaseUrl;
+    if (value == null || value.isEmpty) return prodBaseUrl;
 
     // Validate stored URL
     final uri = Uri.tryParse(value);
-    if (uri == null ||
-        !uri.hasScheme ||
-        !uri.hasAuthority ||
-        (!value.startsWith('http://') && !value.startsWith('https://'))) {
+    if (uri == null || !uri.hasScheme || !uri.hasAuthority || (!value.startsWith('http://') && !value.startsWith('https://'))) {
       // Corrupted URL — clean up and fall back
-      AppLogger.warning('⚠️ Invalid stored URL "$value" — resetting to dev');
+      AppLogger.warning('⚠️ Invalid stored URL "$value" — resetting to production');
       await SecureStorageService.instance.delete(_kBaseUrlKey);
-      return devBaseUrl;
+      return prodBaseUrl;
     }
 
     return value;
