@@ -5,6 +5,9 @@ import '../features/auth/data/datasources/auth_local_datasource.dart';
 /// Secure storage key for the persisted base URL.
 const _kBaseUrlKey = 'cloud_base_url';
 
+/// SharedPreferences key to detect fresh installs (iOS Keychain survives uninstall).
+const _kHasLaunchedKey = 'has_launched_before';
+
 class AppConfig {
   AppConfig._();
   static late final Dio dio;
@@ -24,7 +27,17 @@ class AppConfig {
   static Future<void> init() async {
     await StorageService.instance.init();
 
-    // Load persisted URL; fall back to dev if nothing stored.
+    // ── Fresh-install guard (iOS Keychain survives uninstall) ──
+    // SharedPreferences IS deleted on uninstall, so a missing flag means
+    // this is a fresh install → clear any stale Keychain session data.
+    final hasLaunched = StorageService.instance.getBool(_kHasLaunchedKey) ?? false;
+    if (!hasLaunched) {
+      AppLogger.info('🔑 First launch detected — clearing stale Keychain data');
+      await SecureStorageService.instance.deleteAll();
+      await StorageService.instance.setBool(_kHasLaunchedKey, true);
+    }
+
+    // Load persisted URL; fall back to production if nothing stored.
     _currentBaseUrl = await getStoredBaseUrl();
 
     // Check if user has an existing session (fast — no network call).

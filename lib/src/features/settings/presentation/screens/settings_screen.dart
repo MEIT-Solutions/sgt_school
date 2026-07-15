@@ -50,7 +50,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'SGT School',
+                  'SGT International School',
                   style: tt.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),

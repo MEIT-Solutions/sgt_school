@@ -4,12 +4,13 @@ import 'package:provider/provider.dart';
 
 import 'package:sgt_school/src/routing/global_navigator.dart';
 import 'package:sgt_school/src/routing/app_routes.dart';
-import 'package:sgt_school/src/config/app_config.dart';
+// import 'package:sgt_school/src/config/app_config.dart'; // No longer needed — splash handles initial routing
 import 'package:sgt_school/src/routing/app_shell.dart';
 import 'package:sgt_school/src/features/auth/domain/entities/user.dart';
 import 'package:sgt_school/src/features/auth/presentation/providers/session_provider.dart';
 import 'package:sgt_school/src/features/auth/presentation/screens/login_screen.dart';
 // import 'package:sgt_school/src/features/auth/presentation/screens/cloud_settings_screen.dart'; // Commented for App Store release
+import 'package:sgt_school/src/features/auth/presentation/screens/splash_screen.dart';
 import 'package:sgt_school/src/features/home/presentation/screens/role_home_page.dart';
 import 'package:sgt_school/src/features/subjects/presentation/screens/subjects_screen.dart';
 import 'package:sgt_school/src/features/timetable/presentation/screens/timetable_screen.dart';
@@ -36,13 +37,13 @@ import 'package:sgt_school/src/features/exams/presentation/screens/teacher_exam_
 GoRouter buildAppRouter(SessionProvider sessionProvider) {
   return GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: AppConfig.hasExistingSession
-        ? AppRoutes.home
-        : AppRoutes.login,
+    // Always start on splash — redirect handles the rest once session loads.
+    initialLocation: AppRoutes.splash,
     refreshListenable: sessionProvider,
     redirect: (context, state) {
       final status = sessionProvider.status;
       final isOnLogin = state.uri.path == AppRoutes.login;
+      final isOnSplash = state.uri.path == AppRoutes.splash;
       // final isOnCloud = state.uri.path == AppRoutes.cloudSettings;
       final isOnSettings = state.uri.path == AppRoutes.settings;
 
@@ -50,9 +51,9 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
       // if (isOnCloud || isOnSettings) return null;
       if (isOnSettings) return null;
 
-      // Still loading session — keep on login to avoid home flicker
+      // Still loading session — stay on (or go to) splash
       if (status == SessionStatus.unknown) {
-        return isOnLogin ? null : AppRoutes.login;
+        return isOnSplash ? null : AppRoutes.splash;
       }
 
       // Not authenticated — force login
@@ -60,12 +61,19 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
         return isOnLogin ? null : AppRoutes.login;
       }
 
-      // Authenticated — redirect away from login
-      if (isOnLogin) return AppRoutes.home;
+      // Authenticated — redirect away from login/splash to home
+      if (isOnLogin || isOnSplash) return AppRoutes.home;
 
       return null;
     },
     routes: <RouteBase>[
+      // Splash (shown while session is loading)
+      GoRoute(
+        path: AppRoutes.splash,
+        name: 'splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
+
       // Login (no shell — default platform transition)
       GoRoute(
         path: AppRoutes.login,

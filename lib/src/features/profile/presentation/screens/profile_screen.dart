@@ -78,7 +78,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
     return Scaffold(
       backgroundColor: cs.surface,
       appBar: AppBar(
-        toolbarHeight: 160,
+        toolbarHeight: 150,
         backgroundColor: cs.primary,
         automaticallyImplyLeading: false,
         flexibleSpace: SafeArea(
@@ -92,12 +92,12 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                     user.photoUrl != null && user.photoUrl!.isNotEmpty
                         ? CommonImage(
                             imageUrl: user.photoUrl!,
-                            width: 72,
-                            height: 72,
-                            borderRadius: BorderRadius.circular(36),
+                            width: 80,
+                            height: 80,
+                            borderRadius: BorderRadius.circular(40),
                             placeholder: Container(
-                              width: 72,
-                              height: 72,
+                              width: 80,
+                              height: 80,
                               decoration: BoxDecoration(
                                 color: cs.onPrimary.withValues(alpha: 0.2),
                                 shape: BoxShape.circle,
@@ -110,19 +110,19 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                               ),
                             ),
                             errorWidget: Container(
-                              width: 72,
-                              height: 72,
+                              width: 80,
+                              height: 80,
                               decoration: BoxDecoration(
                                 color: cs.onPrimary.withValues(alpha: 0.2),
                                 shape: BoxShape.circle,
                               ),
-                              child: Icon(Icons.person, size: 36, color: cs.onPrimary),
+                              child: Icon(Icons.person, size: 40, color: cs.onPrimary),
                             ),
                           )
                         : CircleAvatar(
-                            radius: 36,
+                            radius: 40,
                             backgroundColor: cs.onPrimary.withValues(alpha: 0.2),
-                            child: Icon(Icons.person, size: 36, color: cs.onPrimary),
+                            child: Icon(Icons.person, size: 40, color: cs.onPrimary),
                           ),
                     SizedBox(height: AppSpacing.sm),
                     Text(
@@ -132,7 +132,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: AppSpacing.xxs),
+                    SizedBox(height: AppSpacing.ms),
                     if (isStudent)
                       Text(
                         '${user.grade} - ${user.section} • ${'profile.roll_no'.tr()} ${user.rollNo}',
@@ -148,6 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                           color: cs.onPrimary.withValues(alpha: 0.8),
                         ),
                       ),
+                    SizedBox(height: AppSpacing.ml),
                   ],
                 ),
               ),

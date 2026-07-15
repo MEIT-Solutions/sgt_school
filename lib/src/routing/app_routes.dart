@@ -6,6 +6,7 @@ abstract final class AppRoutes {
   AppRoutes._();
 
   // Auth
+  static const splash = '/splash';
   static const login = '/login';
   static const cloudSettings = '/cloud-settings';
 
