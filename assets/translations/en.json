@@ -111,7 +111,8 @@
     "download_failed": "Failed to download file"
   },
   "notices": {
-    "title": "Notifications"
+    "title": "Notifications",
+    "no_notifications": "No Notifications"
   },
   "profile": {
     "title": "Profile",

@@ -1,5 +1,16 @@
 import '../../domain/entities/activity_entity.dart';
 
+/// Safely converts a dynamic value to [String?].
+///
+/// Odoo APIs return `false` (boolean) instead of `null` for empty fields.
+/// Using `as String?` on a `bool` throws a type-cast error. This helper
+/// handles that edge case.
+String? _asString(dynamic value) {
+  if (value == null || value is bool) return null;
+  final s = value.toString();
+  return s.isEmpty ? null : s;
+}
+
 /// DTO for [ActivityAttachment].
 class ActivityAttachmentModel {
   final String id;
@@ -26,8 +37,8 @@ class ActivityAttachmentModel {
     return ActivityAttachmentModel(
       id: id,
       title: label,
-      fileName: json['file_name'] as String? ?? '',
-      fileUrl: json['file_url'] as String? ?? '',
+      fileName: _asString(json['file_name']) ?? '',
+      fileUrl: _asString(json['file_url']) ?? '',
     );
   }
 
@@ -35,9 +46,9 @@ class ActivityAttachmentModel {
   factory ActivityAttachmentModel.fromDocumentJson(Map<String, dynamic> json) {
     return ActivityAttachmentModel(
       id: (json['id'] ?? '').toString(),
-      title: json['title'] as String? ?? '',
-      fileName: json['file_name'] as String? ?? '',
-      fileUrl: json['file_url'] as String? ?? '',
+      title: _asString(json['title']) ?? '',
+      fileName: _asString(json['file_name']) ?? '',
+      fileUrl: _asString(json['file_url']) ?? '',
     );
   }
 
@@ -82,7 +93,7 @@ class ActivityModel {
     ActivityAttachmentModel? examPaper;
     final examPaperJson = json['exam_paper'];
     if (examPaperJson is Map<String, dynamic> &&
-        (examPaperJson['file_url'] as String?)?.isNotEmpty == true) {
+        (_asString(examPaperJson['file_url']))?.isNotEmpty == true) {
       examPaper = ActivityAttachmentModel.fromFileJson(
         examPaperJson,
         id: activityId,
@@ -94,7 +105,7 @@ class ActivityModel {
     ActivityAttachmentModel? gradeReport;
     final gradeReportJson = json['grade_report'];
     if (gradeReportJson is Map<String, dynamic> &&
-        (gradeReportJson['file_url'] as String?)?.isNotEmpty == true) {
+        (_asString(gradeReportJson['file_url']))?.isNotEmpty == true) {
       gradeReport = ActivityAttachmentModel.fromFileJson(
         gradeReportJson,
         id: activityId,
@@ -106,17 +117,17 @@ class ActivityModel {
     final docsJson = json['documents'] as List? ?? [];
     final documents = docsJson
         .whereType<Map<String, dynamic>>()
-        .where((d) => (d['file_url'] as String?)?.isNotEmpty == true)
+        .where((d) => (_asString(d['file_url']))?.isNotEmpty == true)
         .map((d) => ActivityAttachmentModel.fromDocumentJson(d))
         .toList();
 
     return ActivityModel(
       id: activityId,
-      title: json['title'] as String? ?? '',
-      className: json['class'] as String? ?? '',
-      activityDate: json['activity_date'] as String? ?? '',
-      state: json['state'] as String? ?? '',
-      dailyActivity: json['daily_activity'] as String? ?? '',
+      title: _asString(json['title']) ?? '',
+      className: _asString(json['class']) ?? '',
+      activityDate: _asString(json['activity_date']) ?? '',
+      state: _asString(json['state']) ?? '',
+      dailyActivity: _asString(json['daily_activity']) ?? '',
       mobileVisible: json['mobile_visible'] as bool? ?? false,
       examPaper: examPaper,
       gradeReport: gradeReport,

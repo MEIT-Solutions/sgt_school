@@ -55,7 +55,98 @@ class _FeesScreenState extends State<FeesScreen> {
         ),
       ),
       body: provider.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? SkeletonWrapper(
+              isLoading: true,
+              child: Column(
+                children: [
+                  // Skeleton summary banner
+                  Container(
+                    margin: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [cs.primary, cs.primaryContainer],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(BoneMock.name, style: tt.titleSmall),
+                            Text(BoneMock.chars(6), style: tt.labelSmall),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: LinearProgressIndicator(
+                            value: 0.5,
+                            backgroundColor: cs.onPrimary.withValues(alpha: 0.2),
+                            minHeight: 6,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(BoneMock.chars(8), style: tt.bodyLarge),
+                            Text(BoneMock.chars(8), style: tt.bodyLarge),
+                            Text(BoneMock.chars(8), style: tt.bodyLarge),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Skeleton fee items
+                  Expanded(
+                    child: ListView.separated(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      itemCount: 6,
+                      separatorBuilder: (_, __) => const SizedBox(height: 12),
+                      itemBuilder: (_, __) => Container(
+                        decoration: BoxDecoration(
+                          color: cs.surfaceContainerLow,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.5)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(child: Text(BoneMock.name, style: tt.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
+                                  Text(BoneMock.chars(4), style: tt.labelSmall),
+                                ],
+                              ),
+                            ),
+                            const Divider(height: 1, indent: 16, endIndent: 16),
+                            Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(BoneMock.chars(8), style: tt.bodyMedium),
+                                  Text(BoneMock.chars(8), style: tt.bodyMedium),
+                                  Text(BoneMock.chars(8), style: tt.bodyMedium),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
           : provider.error != null
               ? AppErrorWidget(
                   message: provider.error,

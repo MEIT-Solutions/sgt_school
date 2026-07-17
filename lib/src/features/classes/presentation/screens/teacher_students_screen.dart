@@ -53,7 +53,57 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
       backgroundColor: theme.colorScheme.surface,
       appBar: AppTopBar(title: 'teacher.students_title'.tr()),
       body: provider.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? SkeletonWrapper(
+              isLoading: true,
+              child: ListView.separated(
+                padding: const EdgeInsets.all(16),
+                itemCount: 10,
+                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                itemBuilder: (_, __) => Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5)),
+                  ),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundColor: theme.colorScheme.primaryContainer,
+                        child: Text(
+                          BoneMock.chars(2),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.onPrimaryContainer,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          BoneMock.name,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF9E9E9E).withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          BoneMock.chars(6),
+                          style: theme.textTheme.labelSmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
           : provider.error != null
               ? AppErrorWidget(
                   message: provider.error!,

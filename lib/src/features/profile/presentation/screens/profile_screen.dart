@@ -78,26 +78,33 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
     return Scaffold(
       backgroundColor: cs.surface,
       appBar: AppBar(
-        toolbarHeight: 150,
+        toolbarHeight: 140,
         backgroundColor: cs.primary,
         automaticallyImplyLeading: false,
         flexibleSpace: SafeArea(
-          child: Stack(
-            children: [
-              // ── Profile Info (centered) ──
-              Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+            child: Column(
+              children: [
+                // ── Row: Settings | Avatar | Logout ──
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    IconButton(
+                      icon: const Icon(Icons.settings_outlined),
+                      color: cs.onPrimary,
+                      onPressed: () => context.push(AppRoutes.settings),
+                    ),
+                    const Spacer(),
                     user.photoUrl != null && user.photoUrl!.isNotEmpty
                         ? CommonImage(
                             imageUrl: user.photoUrl!,
-                            width: 80,
-                            height: 80,
-                            borderRadius: BorderRadius.circular(40),
+                            width: 72,
+                            height: 72,
+                            borderRadius: BorderRadius.circular(36),
                             placeholder: Container(
-                              width: 80,
-                              height: 80,
+                              width: 72,
+                              height: 72,
                               decoration: BoxDecoration(
                                 color: cs.onPrimary.withValues(alpha: 0.2),
                                 shape: BoxShape.circle,
@@ -110,69 +117,57 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                               ),
                             ),
                             errorWidget: Container(
-                              width: 80,
-                              height: 80,
+                              width: 72,
+                              height: 72,
                               decoration: BoxDecoration(
                                 color: cs.onPrimary.withValues(alpha: 0.2),
                                 shape: BoxShape.circle,
                               ),
-                              child: Icon(Icons.person, size: 40, color: cs.onPrimary),
+                              child: Icon(Icons.person, size: 36, color: cs.onPrimary),
                             ),
                           )
                         : CircleAvatar(
-                            radius: 40,
+                            radius: 36,
                             backgroundColor: cs.onPrimary.withValues(alpha: 0.2),
-                            child: Icon(Icons.person, size: 40, color: cs.onPrimary),
+                            child: Icon(Icons.person, size: 36, color: cs.onPrimary),
                           ),
-                    SizedBox(height: AppSpacing.sm),
-                    Text(
-                      user.name,
-                      style: tt.titleLarge?.copyWith(
-                        color: cs.onPrimary,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.logout),
+                      color: cs.onPrimary,
+                      onPressed: () => _showLogoutDialog(context),
                     ),
-                    SizedBox(height: AppSpacing.ms),
-                    if (isStudent)
-                      Text(
-                        '${user.grade} - ${user.section} • ${'profile.roll_no'.tr()} ${user.rollNo}',
-                        style: tt.bodySmall?.copyWith(
-                          color: cs.onPrimary.withValues(alpha: 0.8),
-                        ),
-                      ),
-                    SizedBox(height: AppSpacing.sm),
-                    if (!isStudent)
-                      Text(
-                        user.role.name.toUpperCase(),
-                        style: tt.bodySmall?.copyWith(
-                          color: cs.onPrimary.withValues(alpha: 0.8),
-                        ),
-                      ),
-                    SizedBox(height: AppSpacing.ml),
                   ],
                 ),
-              ),
-              // ── Settings (top-left) ──
-              Positioned(
-                top: 0,
-                left: AppSpacing.xs,
-                child: IconButton(
-                  icon: const Icon(Icons.settings_outlined),
-                  color: cs.onPrimary,
-                  onPressed: () => context.push(AppRoutes.settings),
+                SizedBox(height: AppSpacing.sm),
+                // ── Name ──
+                Text(
+                  user.name,
+                  style: tt.titleLarge?.copyWith(
+                    color: cs.onPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              // ── Logout (top-right) ──
-              Positioned(
-                top: 0,
-                right: AppSpacing.xs,
-                child: IconButton(
-                  icon: const Icon(Icons.logout),
-                  color: cs.onPrimary,
-                  onPressed: () => _showLogoutDialog(context),
-                ),
-              ),
-            ],
+                SizedBox(height: AppSpacing.xs),
+                // ── Role / Class info ──
+                if (isStudent)
+                  Text(
+                    '${user.grade} - ${user.section} • ${'profile.roll_no'.tr()} ${user.rollNo}',
+                    style: tt.bodySmall?.copyWith(
+                      color: cs.onPrimary.withValues(alpha: 0.8),
+                    ),
+                  ),
+                if (!isStudent)
+                  Text(
+                    user.role.name.toUpperCase(),
+                    style: tt.bodySmall?.copyWith(
+                      color: cs.onPrimary.withValues(alpha: 0.8),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
         bottom: isStudent && _tabController != null

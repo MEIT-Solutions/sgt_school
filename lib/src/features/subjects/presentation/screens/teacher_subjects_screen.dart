@@ -39,7 +39,45 @@ class _TeacherSubjectsScreenState extends State<TeacherSubjectsScreen> {
       backgroundColor: theme.colorScheme.surface,
       appBar: AppTopBar(title: 'teacher.subjects'.tr()),
       body: provider.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? SkeletonWrapper(
+              isLoading: true,
+              child: ListView.separated(
+                padding: const EdgeInsets.all(16),
+                itemCount: 8,
+                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                itemBuilder: (_, __) => Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5)),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF5C6BC0).withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(Icons.menu_book, color: Color(0xFF5C6BC0), size: 22),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(BoneMock.name, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 4),
+                            Text(BoneMock.subtitle, style: theme.textTheme.bodySmall),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
           : provider.error != null
               ? AppErrorWidget(
                   message: provider.error!,

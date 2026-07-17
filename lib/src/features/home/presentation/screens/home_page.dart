@@ -227,7 +227,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
                       isLoading: true,
                       child: Column(
                         children: List.generate(
-                            3,
+                            8,
                             (_) => Padding(
                                   padding: const EdgeInsets.only(bottom: 8),
                                   child: _EventCard(

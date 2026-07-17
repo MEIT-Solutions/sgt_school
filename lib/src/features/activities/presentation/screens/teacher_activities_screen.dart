@@ -33,7 +33,45 @@ class _TeacherActivitiesScreenState extends State<TeacherActivitiesScreen> {
       backgroundColor: theme.colorScheme.surface,
       appBar: AppTopBar(title: 'teacher.activities'.tr()),
       body: provider.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? SkeletonWrapper(
+              isLoading: true,
+              child: ListView.separated(
+                padding: const EdgeInsets.all(12),
+                itemCount: 8,
+                separatorBuilder: (_, __) => const SizedBox(height: 6),
+                itemBuilder: (_, __) => Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5)),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: GridIconColors.activities.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(Icons.directions_run, color: GridIconColors.activities, size: 20),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(BoneMock.name, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+                            const SizedBox(height: 4),
+                            Text(BoneMock.subtitle, style: theme.textTheme.bodySmall),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
           : provider.error != null
               ? AppErrorWidget(
                   message: provider.error!,
@@ -55,71 +93,88 @@ class _TeacherActivitiesScreenState extends State<TeacherActivitiesScreen> {
                       ),
                     )
                   : ListView.separated(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(12),
                       itemCount: provider.activities.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 8),
+                      separatorBuilder: (_, __) => const SizedBox(height: 6),
                       itemBuilder: (context, index) {
                         final activity = provider.activities[index];
 
                         return Container(
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             color: theme.colorScheme.surfaceContainerLow,
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(10),
                             border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5)),
                           ),
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                padding: const EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
                                   color: GridIconColors.activities.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: Icon(Icons.directions_run, color: GridIconColors.activities, size: 22),
+                                child: Icon(Icons.directions_run, color: GridIconColors.activities, size: 20),
                               ),
-                              const SizedBox(width: 16),
+                              const SizedBox(width: 12),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      activity.title,
-                                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 4),
+                                    // ── Date badge ──
                                     Row(
                                       children: [
-                                        if (activity.className.isNotEmpty) ...[
-                                          Icon(Icons.class_, size: 12, color: theme.colorScheme.onSurfaceVariant),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            activity.className,
-                                            style: theme.textTheme.bodySmall?.copyWith(
-                                              color: theme.colorScheme.onSurfaceVariant,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 12),
-                                        ],
-                                        Icon(Icons.calendar_today, size: 12, color: theme.colorScheme.onSurfaceVariant),
+                                        Icon(Icons.calendar_today, size: 12, color: theme.colorScheme.primary),
                                         const SizedBox(width: 4),
                                         Text(
                                           activity.activityDate,
-                                          style: theme.textTheme.bodySmall?.copyWith(
-                                            color: theme.colorScheme.onSurfaceVariant,
+                                          style: theme.textTheme.labelSmall?.copyWith(
+                                            color: theme.colorScheme.primary,
+                                            fontWeight: FontWeight.w600,
                                           ),
                                         ),
+                                        if (activity.className.isNotEmpty) ...[
+                                          const SizedBox(width: 8),
+                                          Container(
+                                            width: 3,
+                                            height: 3,
+                                            decoration: BoxDecoration(
+                                              color: theme.colorScheme.onSurfaceVariant,
+                                              shape: BoxShape.circle,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            activity.className,
+                                            style: theme.textTheme.labelSmall?.copyWith(
+                                              color: theme.colorScheme.onSurfaceVariant,
+                                            ),
+                                          ),
+                                        ],
                                       ],
                                     ),
+                                    const SizedBox(height: 4),
+                                    // ── Title ──
+                                    Text(
+                                      activity.title,
+                                      style: theme.textTheme.bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: theme.colorScheme.onSurface,
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    // ── Daily activity description ──
                                     if (activity.dailyActivity.isNotEmpty) ...[
-                                      const SizedBox(height: 4),
+                                      const SizedBox(height: 2),
                                       Text(
                                         activity.dailyActivity,
                                         style: theme.textTheme.bodySmall?.copyWith(
-                                          color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                                          color: theme.colorScheme.onSurfaceVariant,
                                         ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ],
                                   ],

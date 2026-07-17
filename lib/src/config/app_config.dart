@@ -46,8 +46,8 @@ class AppConfig {
     dio = Dio(
       BaseOptions(
         baseUrl: _currentBaseUrl,
-        connectTimeout: const Duration(seconds: 30),
-        receiveTimeout: const Duration(seconds: 30),
+        connectTimeout: const Duration(seconds: 40),
+        receiveTimeout: const Duration(seconds: 40),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
