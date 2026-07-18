@@ -24,6 +24,12 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
     });
   }
 
+  Future<void> _refresh() {
+    final session = context.read<SessionProvider>();
+    final teacherId = session.user?.id ?? '';
+    return context.read<ClassProvider>().loadTeacherClassList(teacherId);
+  }
+
   static const _classColors = [
     Color(0xFF42A5F5), Color(0xFF26A69A), Color(0xFFAB47BC),
     Color(0xFFFF7043), Color(0xFF66BB6A), Color(0xFF5C6BC0),
@@ -38,7 +44,9 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppTopBar(title: 'teacher.classes'.tr()),
-      body: provider.isLoading
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: provider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : provider.error != null
               ? AppErrorWidget(
@@ -143,6 +151,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                         );
                       },
                     ),
+      ),
     );
   }
 }

@@ -21,6 +21,11 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
     });
   }
 
+  Future<void> _refresh() {
+    final session = context.read<SessionProvider>();
+    return context.read<SubjectProvider>().loadSubjects(session.user?.id ?? '');
+  }
+
   static const _subjectColors = [
     Color(0xFF5C6BC0), Color(0xFF26A69A), Color(0xFFEF5350),
     Color(0xFF42A5F5), Color(0xFFFF7043), Color(0xFF66BB6A),
@@ -46,9 +51,11 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppTopBar(title: 'subjects.title'.tr()),
-      body: provider.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.separated(
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: provider.isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : ListView.separated(
               padding: const EdgeInsets.all(16),
               itemCount: provider.subjects.length,
               separatorBuilder: (_, __) => const SizedBox(height: 8),
@@ -91,6 +98,7 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
                 );
               },
             ),
+      ),
     );
   }
 }

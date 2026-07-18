@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import 'package:sgt_school/src/routing/global_navigator.dart';
 import 'package:sgt_school/src/routing/app_routes.dart';
-// import 'package:sgt_school/src/config/app_config.dart'; // No longer needed — splash handles initial routing
 import 'package:sgt_school/src/routing/app_shell.dart';
 import 'package:sgt_school/src/features/auth/domain/entities/user.dart';
 import 'package:sgt_school/src/features/auth/presentation/providers/session_provider.dart';
@@ -21,7 +20,7 @@ import 'package:sgt_school/src/features/activities/presentation/screens/activiti
 import 'package:sgt_school/src/features/results/presentation/screens/results_screen.dart';
 import 'package:sgt_school/src/features/notices/presentation/screens/notification_screen.dart';
 import 'package:sgt_school/src/features/profile/presentation/screens/profile_screen.dart';
-
+import 'package:sgt_school/src/features/children/presentation/screens/children_screen.dart';
 import 'package:sgt_school/src/features/children/presentation/screens/child_detail_screen.dart';
 import 'package:sgt_school/src/features/classes/presentation/screens/class_detail_screen.dart';
 import 'package:sgt_school/src/features/assignments/presentation/screens/assignment_detail_screen.dart';
@@ -37,7 +36,6 @@ import 'package:sgt_school/src/features/exams/presentation/screens/teacher_exam_
 GoRouter buildAppRouter(SessionProvider sessionProvider) {
   return GoRouter(
     navigatorKey: rootNavigatorKey,
-    // Always start on splash — redirect handles the rest once session loads.
     initialLocation: AppRoutes.splash,
     refreshListenable: sessionProvider,
     redirect: (context, state) {
@@ -103,33 +101,18 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
             name: 'home',
             pageBuilder: (context, state) => _fadeTransitionPage(state, const RoleHomePage()),
           ),
-          // Student: Attendance tab
-          // GoRoute(
-          //   path: AppRoutes.attendance,
-          //   name: 'attendance',
-          //   pageBuilder: (context, state) =>
-          //       _fadeTransitionPage(state, const AttendanceScreen()),
-          // ),
-          // Student/Teacher: Classes tab (Temporarily commented out)
-          // GoRoute(
-          //   path: AppRoutes.classes,
-          //   name: 'classes',
-          //   pageBuilder: (context, state) =>
-          //       _fadeTransitionPage(state, const ClassesScreen()),
-          // ),
           // Profile tab
           GoRoute(
             path: AppRoutes.profile,
             name: 'profile',
             pageBuilder: (context, state) => _fadeTransitionPage(state, const ProfileScreen()),
           ),
-          // Parent: Children tab (temporarily disabled)
-          // GoRoute(
-          //   path: AppRoutes.children,
-          //   name: 'children',
-          //   pageBuilder: (context, state) =>
-          //       _fadeTransitionPage(state, const ChildrenScreen()),
-          // ),
+          // Parent: Children tab
+          GoRoute(
+            path: AppRoutes.children,
+            name: 'children',
+            pageBuilder: (context, state) => _fadeTransitionPage(state, const ChildrenScreen()),
+          ),
         ],
       ),
 
@@ -286,22 +269,17 @@ CustomTransitionPage<void> _pageTransitionAnimation(
 int _indexFromLocation(String path, UserRole role) {
   switch (role) {
     case UserRole.student:
-      // Attendance & Classes tabs are temporarily disabled.
       // Nav: Home=0, Profile=1
       if (path.startsWith('/profile')) return 1;
       return 0;
-    // case UserRole.parent: (temporarily disabled — falls back to student nav)
     case UserRole.parent:
-      if (path.startsWith('/profile')) return 1;
+      // Nav: Home=0, Children=1, Profile=2
+      if (path.startsWith('/children')) return 1;
+      if (path.startsWith('/profile')) return 2;
       return 0;
-    // Disabled parent nav:
-    // if (path.startsWith('/children')) return 1;
-    // if (path.startsWith('/profile')) return 2;
     case UserRole.teacher:
-      // if (path.startsWith('/classes')) return 1;
-      if (path.startsWith('/profile')) {
-        return 1; // Shifted due to commented classes
-      }
+      // Nav: Home=0, Profile=1
+      if (path.startsWith('/profile')) return 1;
       return 0;
   }
 }
@@ -310,22 +288,13 @@ int _indexFromLocation(String path, UserRole role) {
 void _onTabChanged(BuildContext context, int index, UserRole role) {
   switch (role) {
     case UserRole.student:
-      // Attendance & Classes tabs are temporarily disabled.
-      // Nav: Home=0, Profile=1
       const paths = [AppRoutes.home, AppRoutes.profile];
       context.go(paths[index]);
-    // case UserRole.parent: (temporarily disabled — falls back to student nav)
     case UserRole.parent:
-      const paths = [AppRoutes.home, AppRoutes.profile];
+      const paths = [AppRoutes.home, AppRoutes.children, AppRoutes.profile];
       context.go(paths[index]);
-    // Disabled parent nav:
-    // const paths = [AppRoutes.home, AppRoutes.children, AppRoutes.profile];
     case UserRole.teacher:
-      const paths = [
-        AppRoutes.home,
-        // AppRoutes.classes,
-        AppRoutes.profile
-      ];
+      const paths = [AppRoutes.home, AppRoutes.profile];
       context.go(paths[index]);
   }
 }

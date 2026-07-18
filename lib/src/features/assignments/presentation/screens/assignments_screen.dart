@@ -32,6 +32,11 @@ class _AssignmentsScreenState extends State<AssignmentsScreen>
     super.dispose();
   }
 
+  Future<void> _refresh() {
+    final session = context.read<SessionProvider>();
+    return context.read<AssignmentProvider>().loadAssignments(session.user?.id ?? '');
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
@@ -54,15 +59,18 @@ class _AssignmentsScreenState extends State<AssignmentsScreen>
           ],
         ),
       ),
-      body: provider.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : TabBarView(
-              controller: _tabController,
-              children: [
-                _AssignmentList(items: provider.active),
-                _AssignmentList(items: provider.completed),
-              ],
-            ),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: provider.isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : TabBarView(
+                controller: _tabController,
+                children: [
+                  _AssignmentList(items: provider.active),
+                  _AssignmentList(items: provider.completed),
+                ],
+              ),
+      ),
     );
   }
 }

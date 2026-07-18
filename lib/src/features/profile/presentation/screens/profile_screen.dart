@@ -184,16 +184,19 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
               )
             : null,
       ),
-      body: isStudent && _tabController != null
-          ? TabBarView(
-              controller: _tabController,
-              children: [
-                _PersonalInfo(user: user),
-                _ParentInfo(user: user),
-                _EmergencyInfo(user: user),
-              ],
-            )
-          : _PersonalInfo(user: user),
+      body: RefreshIndicator(
+        onRefresh: () => Future.delayed(const Duration(milliseconds: 500)),
+        child: isStudent && _tabController != null
+            ? TabBarView(
+                controller: _tabController,
+                children: [
+                  _PersonalInfo(user: user),
+                  _ParentInfo(user: user),
+                  _EmergencyInfo(user: user),
+                ],
+              )
+            : _PersonalInfo(user: user),
+      ),
     );
   }
 }

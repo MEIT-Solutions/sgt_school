@@ -20,6 +20,10 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
     });
   }
 
+  Future<void> _refresh() {
+    return context.read<ActivityProvider>().loadActivities();
+  }
+
   static const _stateColors = {
     'announced': Color(0xFF5C6BC0),
     'completed': Color(0xFF26A69A),
@@ -40,7 +44,9 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppTopBar(title: 'activities.title'.tr()),
-      body: provider.isLoading
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: provider.isLoading
           ? SkeletonWrapper(
               isLoading: true,
               child: ListView.separated(
@@ -227,6 +233,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                         );
                       },
                     ),
+      ),
     );
   }
 }

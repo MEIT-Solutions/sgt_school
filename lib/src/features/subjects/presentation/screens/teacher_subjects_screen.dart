@@ -24,6 +24,12 @@ class _TeacherSubjectsScreenState extends State<TeacherSubjectsScreen> {
     });
   }
 
+  Future<void> _refresh() {
+    final session = context.read<SessionProvider>();
+    final teacherId = session.user?.id ?? '';
+    return context.read<SubjectProvider>().loadTeacherSubjects(teacherId);
+  }
+
   static const _subjectColors = [
     Color(0xFF5C6BC0), Color(0xFF26A69A), Color(0xFFEF5350),
     Color(0xFF42A5F5), Color(0xFFFF7043), Color(0xFF66BB6A),
@@ -38,7 +44,9 @@ class _TeacherSubjectsScreenState extends State<TeacherSubjectsScreen> {
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppTopBar(title: 'teacher.subjects'.tr()),
-      body: provider.isLoading
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: provider.isLoading
           ? SkeletonWrapper(
               isLoading: true,
               child: ListView.separated(
@@ -158,6 +166,7 @@ class _TeacherSubjectsScreenState extends State<TeacherSubjectsScreen> {
                         );
                       },
                     ),
+      ),
     );
   }
 }

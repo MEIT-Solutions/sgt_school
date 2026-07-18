@@ -27,6 +27,11 @@ class _FeesScreenState extends State<FeesScreen> {
     });
   }
 
+  Future<void> _refresh() {
+    final session = context.read<SessionProvider>();
+    return context.read<FeeProvider>().loadFees(session.user?.id ?? '');
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
@@ -54,7 +59,9 @@ class _FeesScreenState extends State<FeesScreen> {
               context.canPop() ? context.pop() : context.go(AppRoutes.home),
         ),
       ),
-      body: provider.isLoading
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: provider.isLoading
           ? SkeletonWrapper(
               isLoading: true,
               child: Column(
@@ -224,8 +231,8 @@ class _FeesScreenState extends State<FeesScreen> {
                                   cs.onPrimary.withValues(alpha: 0.2),
                               valueColor: AlwaysStoppedAnimation<Color>(
                                 progress >= 1.0
-                                    ? const Color(0xFF4DB6AC)
-                                    : const Color(0xFFFFD54F),
+                                    ? GridIconColors.attendance
+                                    : GridIconColors.exams,
                               ),
                               minHeight: 6,
                             ),
@@ -245,14 +252,14 @@ class _FeesScreenState extends State<FeesScreen> {
                                 label: 'fees.total_paid'.tr(),
                                 amount: paid,
                                 currency: currency,
-                                textColor: const Color(0xFFB2DFDB), // soft teal
+                                textColor: GridIconColors.attendance.withValues(alpha: 0.9),
                                 tt: tt,
                               ),
                               _SummaryColumn(
                                 label: 'fees.due_amount'.tr(),
                                 amount: due,
                                 currency: currency,
-                                textColor: const Color(0xFFFFCDD2), // soft red
+                                textColor: GridIconColors.fees.withValues(alpha: 0.9),
                                 tt: tt,
                               ),
                             ],
@@ -265,6 +272,7 @@ class _FeesScreenState extends State<FeesScreen> {
                     ),
                   ],
                 ),
+      ),
     );
   }
 }
@@ -327,7 +335,7 @@ class _FeeDetailsList extends StatelessWidget {
                 size: 64, color: cs.outlineVariant),
             const SizedBox(height: 16),
             Text(
-              'No fee records found',
+              'fees.no_records'.tr(),
               style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
             ),
           ],
@@ -348,18 +356,18 @@ class _FeeDetailsList extends StatelessWidget {
 
         switch (f.status) {
           case FeeStatus.paid:
-            statusColor = const Color(0xFF26A69A);
+            statusColor = GridIconColors.attendance;
             statusText = 'fees.paid'.tr();
             statusIcon = Icons.check_circle_outline;
             break;
           case FeeStatus.partial:
-            statusColor = const Color(0xFFFF9800);
+            statusColor = GridIconColors.exams;
             statusText = 'fees.partial'.tr();
             statusIcon = Icons.star_half_outlined;
             break;
           case FeeStatus.due:
           case FeeStatus.overdue:
-            statusColor = const Color(0xFFEF5350);
+            statusColor = GridIconColors.fees;
             statusText = 'fees.due'.tr();
             statusIcon = Icons.error_outline;
             break;
@@ -433,7 +441,7 @@ class _FeeDetailsList extends StatelessWidget {
                       currency: f.currency,
                       tt: tt,
                       cs: cs,
-                      valueColor: const Color(0xFF26A69A),
+                      valueColor: GridIconColors.attendance,
                     ),
                     _AmountItem(
                       label: 'fees.due_amount'.tr(),
@@ -442,7 +450,7 @@ class _FeeDetailsList extends StatelessWidget {
                       tt: tt,
                       cs: cs,
                       valueColor:
-                          f.dueAmount > 0 ? const Color(0xFFEF5350) : null,
+                          f.dueAmount > 0 ? GridIconColors.fees : null,
                     ),
                   ],
                 ),
@@ -571,32 +579,4 @@ class _MetaChip extends StatelessWidget {
   }
 }
 
-// class _PaymentsList extends StatelessWidget {
-//   final List<PaymentEntity> payments;
-//   const _PaymentsList({required this.payments});
-//   @override
-//   Widget build(BuildContext context) {
-//     final theme = context.theme;
-//     return ListView.separated(
-//       padding: const EdgeInsets.all(16), itemCount: payments.length,
-//       separatorBuilder: (_, __) => const SizedBox(height: 8),
-//       itemBuilder: (context, i) {
-//         final p = payments[i];
-//         return Container(
-//           padding: const EdgeInsets.all(16),
-//           decoration: BoxDecoration(color: theme.colorScheme.surfaceContainerLow, borderRadius: BorderRadius.circular(12), border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5))),
-//           child: Row(children: [
-//             Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: const Color(0xFF26A69A).withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)), child: const Icon(Icons.receipt_long, color: Color(0xFF26A69A), size: 20)),
-//             const SizedBox(width: 12),
-//             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-//               Text(_formatCurrency(p.amount), style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
-//               const SizedBox(height: 2),
-//               Text('${p.method} • ${p.reference}', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-//             ])),
-//             Text(p.date, style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-//           ]),
-//         );
-//       },
-//     );
-//   }
-// }
+

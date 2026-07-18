@@ -1,6 +1,8 @@
 import 'package:sgt_school/src/imports/core_imports.dart';
 import 'package:sgt_school/src/imports/packages_imports.dart';
 import 'package:sgt_school/src/features/auth/presentation/providers/session_provider.dart';
+import 'package:sgt_school/src/features/children/presentation/providers/child_provider.dart';
+import 'package:sgt_school/src/features/children/domain/entities/child_entity.dart';
 
 /// Custom clipper shared with the student home page curved header.
 class _ParentHeaderClipper extends CustomClipper<Path> {
@@ -20,8 +22,24 @@ class _ParentHeaderClipper extends CustomClipper<Path> {
 }
 
 /// Parent home dashboard showing children overview and quick stats.
-class ParentHomePage extends StatelessWidget {
+class ParentHomePage extends StatefulWidget {
   const ParentHomePage({super.key});
+
+  @override
+  State<ParentHomePage> createState() => _ParentHomePageState();
+}
+
+class _ParentHomePageState extends State<ParentHomePage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final session = context.read<SessionProvider>();
+      if (session.isAuthenticated) {
+        context.read<ChildProvider>().loadChildren(session.user?.id ?? '');
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +48,7 @@ class ParentHomePage extends StatelessWidget {
     final textTheme = theme.textTheme;
     final session = context.watch<SessionProvider>();
     final user = session.user;
+    final childProvider = context.watch<ChildProvider>();
 
     final hour = DateTime.now().hour;
     final greeting = hour < 12
@@ -40,7 +59,9 @@ class ParentHomePage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
-      body: CustomScrollView(
+      body: RefreshIndicator(
+        onRefresh: () => context.read<ChildProvider>().loadChildren(session.user?.id ?? ''),
+        child: CustomScrollView(
         slivers: [
           // ── Curved Header ──
           SliverToBoxAdapter(
@@ -150,28 +171,44 @@ class ParentHomePage extends StatelessWidget {
             ),
           ),
 
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                _ChildCard(
-                  name: 'Aung Min Htet',
-                  grade: 'Grade 10 - A',
-                  rollNo: '12',
-                  attendancePercent: 92,
-                  onTap: () => context.push('/children/STU-001'),
+          if (childProvider.isLoading)
+            const SliverToBoxAdapter(
+              child: Center(child: Padding(
+                padding: EdgeInsets.all(32),
+                child: CircularProgressIndicator(),
+              )),
+            )
+          else if (childProvider.children.isEmpty)
+            SliverToBoxAdapter(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Text(
+                    'children.title'.tr(),
+                    style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),
+                  ),
                 ),
-                const SizedBox(height: 12),
-                _ChildCard(
-                  name: 'Aye Myat Mon',
-                  grade: 'Grade 10 - A',
-                  rollNo: '5',
-                  attendancePercent: 96,
-                  onTap: () => context.push('/children/STU-002'),
+              ),
+            )
+          else
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final child = childProvider.children[index];
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: index < childProvider.children.length - 1 ? 12 : 0),
+                      child: _ChildCard(
+                        child: child,
+                        onTap: () => context.push('/children/${child.studentId}'),
+                      ),
+                    );
+                  },
+                  childCount: childProvider.children.length,
                 ),
-              ]),
+              ),
             ),
-          ),
 
           // ── Quick Stats ──
           SliverPadding(
@@ -192,7 +229,7 @@ class ParentHomePage extends StatelessWidget {
                         child: _StatCard(
                           icon: Icons.payment,
                           label: 'parent.fees_due'.tr(),
-                          value: '\$300',
+                          value: '—',
                           color: GridIconColors.fees,
                         ),
                       ),
@@ -201,7 +238,7 @@ class ParentHomePage extends StatelessWidget {
                         child: _StatCard(
                           icon: Icons.quiz,
                           label: 'parent.upcoming_exams'.tr(),
-                          value: '2',
+                          value: '—',
                           color: GridIconColors.timetable,
                         ),
                       ),
@@ -213,22 +250,17 @@ class ParentHomePage extends StatelessWidget {
           ),
         ],
       ),
+      ),
     );
   }
 }
 
 class _ChildCard extends StatelessWidget {
-  final String name;
-  final String grade;
-  final String rollNo;
-  final int attendancePercent;
+  final ChildEntity child;
   final VoidCallback onTap;
 
   const _ChildCard({
-    required this.name,
-    required this.grade,
-    required this.rollNo,
-    required this.attendancePercent,
+    required this.child,
     required this.onTap,
   });
 
@@ -259,16 +291,16 @@ class _ChildCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(name, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                  Text(child.name, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 4),
-                  Text('$grade • Roll No. $rollNo', style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant)),
+                  Text('${child.classDisplay} • ${'home.roll_no'.tr()} ${child.rollNo}', style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant)),
                 ],
               ),
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text('$attendancePercent%', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: GridIconColors.attendance)),
+                Text('${child.attendancePercentage}%', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: GridIconColors.attendance)),
                 Text('home.attendance'.tr(), style: theme.textTheme.labelSmall?.copyWith(color: colorScheme.onSurfaceVariant)),
               ],
             ),

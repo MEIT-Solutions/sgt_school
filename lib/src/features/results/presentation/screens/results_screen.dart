@@ -22,6 +22,11 @@ class _ResultsScreenState extends State<ResultsScreen> {
     });
   }
 
+  Future<void> _refresh() {
+    final session = context.read<SessionProvider>();
+    return context.read<ResultProvider>().loadResults(session.user?.id ?? '');
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
@@ -44,7 +49,9 @@ class _ResultsScreenState extends State<ResultsScreen> {
               context.canPop() ? context.pop() : context.go(AppRoutes.home),
         ),
       ),
-      body: provider.isLoading
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: provider.isLoading
           ? SkeletonWrapper(
               isLoading: true,
               child: Column(
@@ -263,6 +270,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                         ),
                       ],
                     ),
+      ),
     );
   }
 }

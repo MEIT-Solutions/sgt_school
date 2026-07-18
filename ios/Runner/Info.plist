@@ -74,11 +74,6 @@
 	<!-- Required for file_picker -->
 	<key>NSAppleMusicUsageDescription</key>
 	<string>This app requires access to media to upload files.</string>
-	<!-- Required for geolocator -->
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app requires access to location to provide localized content.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app requires access to location in the background.</string>
 	<!-- ATS enforced — HTTPS only (required for App Store) -->
 </dict>
 </plist>

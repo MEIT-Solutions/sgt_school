@@ -91,7 +91,8 @@
     "payment_date": "Payment Date",
     "payment_mode": "Payment Mode",
     "paid_by": "Paid By",
-    "partial": "Partial"
+    "partial": "Partial",
+    "no_records": "No fee records found"
   },
   "subjects": {
     "title": "Subjects"

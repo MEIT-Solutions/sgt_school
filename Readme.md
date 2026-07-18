@@ -6,20 +6,44 @@ providing role-based access to school features.
 
 ## Current Status
 
-### ✅ Milestone 1 — Phone-Based Login + Session Persistence
+### ✅ Implemented Features
 
-- **Login** with phone number and password
-- **Session persistence** using `flutter_secure_storage`
+**Authentication**
+- Login with phone number and password
+- Session persistence using `flutter_secure_storage`
   (Keychain on iOS, Keystore on Android)
-- **Auto session restore** on app launch — no re-login required
-- **Logout** with secure storage cleanup
-- **Role-based user model** (student, parent, teacher)
+- Auto session restore on app launch — no re-login required
+- Logout with secure storage cleanup
+- Role-based user model (student, parent, teacher)
 
-### 🔜 Planned
+**Student Features**
+- Home dashboard with greeting, quick-access grid (6 items), and upcoming activities
+- Exams — upcoming/completed exams with detail view
+- Timetable — weekly class schedule
+- Fees — summary banner, fee details with payment status
+- Results — exam results with scores and grades
+- Subjects — enrolled subjects list
+- Activities — school activities with attachments/downloads
+- Profile — personal, class, and parent/emergency info
+- Notifications — categorized school notices
 
-- Student attendance records (Time In / Time Out)
-- Student dashboard with profile display
-- Parent and Teacher features
+**Parent Features**
+- Parent home dashboard with children overview (loaded from API)
+- Children list with attendance percentage
+- Child detail screen with exam results and fee summary
+- Dedicated bottom nav: Home / Children / Profile
+
+**Teacher Features**
+- Teacher home dashboard with quick-access grid (6 items)
+- Subjects, Classes, Activities, Exams management
+- Student list with attendance status display
+- Mark attendance for classes
+- Exam results overview
+
+**Settings**
+- Theme mode (System / Light / Dark)
+- Language switching (English / Myanmar)
+- Cloud settings (Dev / Prod / Custom base URL)
 
 ## Architecture
 
@@ -51,17 +75,19 @@ lib/
     ├── extensions/              # Dart extensions (context, string, etc.)
     ├── features/
     │   ├── auth/                # Authentication feature
-    │   │   ├── data/
-    │   │   │   ├── datasources/ # AuthLocalDatasource (secure storage)
-    │   │   │   ├── models/      # UserModel (DTO with serialization)
-    │   │   │   └── repositories/# AuthRepositoryImpl
-    │   │   ├── domain/
-    │   │   │   ├── entities/    # AppUser, UserRole
-    │   │   │   └── repositories/# AuthRepository (abstract)
-    │   │   └── presentation/
-    │   │       ├── providers/   # AuthProvider, SessionProvider
-    │   │       └── screens/     # LoginScreen
-    │   └── home/                # Home feature (post-login)
+    │   ├── home/                # Home dashboards (student, parent, teacher)
+    │   ├── exams/               # Exams and exam results
+    │   ├── timetable/           # Weekly timetable
+    │   ├── fees/                # Fee management
+    │   ├── results/             # Exam results
+    │   ├── subjects/            # Subjects list
+    │   ├── activities/          # School activities
+    │   ├── children/            # Parent's children management
+    │   ├── classes/             # Teacher's class management
+    │   ├── assignments/         # Assignments
+    │   ├── notices/             # Notifications
+    │   ├── profile/             # User profile
+    │   └── settings/            # App settings
     ├── imports/                 # Barrel files
     ├── routing/                 # GoRouter + AppRoutes
     ├── services/                # Platform services (auth, storage, etc.)
@@ -86,10 +112,6 @@ cd sgt_school
 
 # Install dependencies
 flutter pub get
-
-# Create .env file (already exists in project)
-# API_BASE_URL=https://your-api-url.com
-# APP_ENV=development
 
 # Run the app in development flavor
 flutter run -t lib/main_dev.dart

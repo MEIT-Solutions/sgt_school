@@ -21,6 +21,11 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
     });
   }
 
+  Future<void> _refresh() {
+    final session = context.read<SessionProvider>();
+    return context.read<ChildProvider>().loadChildren(session.user?.id ?? '');
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
@@ -29,7 +34,9 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(title: Text('children.title'.tr()), centerTitle: true, automaticallyImplyLeading: false),
-      body: provider.isLoading
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: provider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView.separated(
               padding: const EdgeInsets.all(16), itemCount: provider.children.length,
@@ -51,7 +58,7 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
                         Text('${c.classDisplay} • Roll No. ${c.rollNo}', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
                       ])),
                       Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                        Text('${c.attendancePercentage}%', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: const Color(0xFF26A69A))),
+                        Text('${c.attendancePercentage}%', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: GridIconColors.attendance)),
                         Text('home.attendance'.tr(), style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
                       ]),
                     ]),
@@ -59,6 +66,7 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
                 );
               },
             ),
+      ),
     );
   }
 }

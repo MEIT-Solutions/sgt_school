@@ -21,15 +21,20 @@ class _NotificationScreenState extends State<NotificationScreen> {
     });
   }
 
+  Future<void> _refresh() {
+    final role = context.read<SessionProvider>().user?.role.name ?? 'student';
+    return context.read<NotificationProvider>().loadNotifications(role);
+  }
+
   static const _categoryIcons = {
     'exam': Icons.quiz, 'event': Icons.event, 'fee': Icons.payment,
     'notice': Icons.campaign, 'assignment': Icons.assignment,
     'attendance': Icons.calendar_today,
   };
   static const _categoryColors = {
-    'exam': Color(0xFFEF5350), 'event': Color(0xFF5C6BC0), 'fee': Color(0xFFFF7043),
-    'notice': Color(0xFFFFA726), 'assignment': Color(0xFF42A5F5),
-    'attendance': Color(0xFF66BB6A),
+    'exam': GridIconColors.fees, 'event': GridIconColors.profile, 'fee': GridIconColors.tasks,
+    'notice': GridIconColors.activities, 'assignment': GridIconColors.timetable,
+    'attendance': GridIconColors.results,
   };
 
   @override
@@ -40,7 +45,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppTopBar(title: 'notices.title'.tr()),
-      body: provider.isLoading
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: provider.isLoading
           ? SkeletonWrapper(
               isLoading: true,
               child: ListView.separated(
@@ -175,6 +182,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 );
               },
             ),
+      ),
     );
   }
 }

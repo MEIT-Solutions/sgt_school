@@ -24,16 +24,22 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
     });
   }
 
+  Future<void> _refresh() {
+    final session = context.read<SessionProvider>();
+    final teacherId = session.user?.id ?? '';
+    return context.read<ClassProvider>().loadTeacherStudents(teacherId);
+  }
+
   Color _attendanceColor(String? status) {
     switch (status?.toLowerCase()) {
       case 'present':
-        return const Color(0xFF4CAF50);
+        return GridIconColors.results;
       case 'late':
-        return const Color(0xFFFFA726);
+        return GridIconColors.activities;
       case 'excused':
-        return const Color(0xFF42A5F5);
+        return GridIconColors.timetable;
       case 'absent':
-        return const Color(0xFFEF5350);
+        return GridIconColors.fees;
       default:
         return const Color(0xFF9E9E9E);
     }
@@ -52,7 +58,9 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppTopBar(title: 'teacher.students_title'.tr()),
-      body: provider.isLoading
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: provider.isLoading
           ? SkeletonWrapper(
               isLoading: true,
               child: ListView.separated(
@@ -91,7 +99,7 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF9E9E9E).withValues(alpha: 0.1),
+                          color: theme.colorScheme.outlineVariant.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -180,6 +188,7 @@ class _TeacherStudentsScreenState extends State<TeacherStudentsScreen> {
                         );
                       },
                     ),
+      ),
     );
   }
 }

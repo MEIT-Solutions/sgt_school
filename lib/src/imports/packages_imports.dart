@@ -12,11 +12,8 @@ export 'package:smooth_page_indicator/smooth_page_indicator.dart' hide ScaleEffe
 export 'package:shared_preferences/shared_preferences.dart';
 export 'package:flutter_secure_storage/flutter_secure_storage.dart';
 export 'package:logger/logger.dart';
-export 'package:image_picker/image_picker.dart';
 export 'package:path_provider/path_provider.dart';
 export 'package:url_launcher/url_launcher.dart';
 export 'package:share_plus/share_plus.dart';
-export 'package:permission_handler/permission_handler.dart';
-export 'package:geolocator/geolocator.dart' hide ServiceStatus;
 export 'package:device_info_plus/device_info_plus.dart';
 export 'package:app_version_update/app_version_update.dart';

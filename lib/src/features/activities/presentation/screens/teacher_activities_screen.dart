@@ -24,6 +24,12 @@ class _TeacherActivitiesScreenState extends State<TeacherActivitiesScreen> {
     });
   }
 
+  Future<void> _refresh() {
+    final session = context.read<SessionProvider>();
+    final teacherId = session.user?.id ?? '';
+    return context.read<ActivityProvider>().loadTeacherActivities(teacherId);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
@@ -32,7 +38,9 @@ class _TeacherActivitiesScreenState extends State<TeacherActivitiesScreen> {
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppTopBar(title: 'teacher.activities'.tr()),
-      body: provider.isLoading
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: provider.isLoading
           ? SkeletonWrapper(
               isLoading: true,
               child: ListView.separated(
@@ -185,6 +193,7 @@ class _TeacherActivitiesScreenState extends State<TeacherActivitiesScreen> {
                         );
                       },
                     ),
+      ),
     );
   }
 }

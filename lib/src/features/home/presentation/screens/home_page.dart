@@ -62,7 +62,9 @@ class _StudentHomePageState extends State<StudentHomePage> {
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
-      body: CustomScrollView(
+      body: RefreshIndicator(
+        onRefresh: () => context.read<ActivityProvider>().loadActivities(),
+        child: CustomScrollView(
         slivers: [
           // ── Curved Header ──
           SliverToBoxAdapter(
@@ -184,15 +186,11 @@ class _StudentHomePageState extends State<StudentHomePage> {
                 crossAxisSpacing: 12,
                 childAspectRatio: 1,
                 children: [
-                  // _GridItem(icon: Icons.assignment, label: 'home.exams'.tr(), color: GridIconColors.exams, onTap: () => context.push(AppRoutes.exams)),
-                  // _GridItem(
-                  //     icon: Icons.calendar_today,
-                  //     label: 'home.timetable'.tr(),
-                  //     color: GridIconColors.timetable,
-                  //     onTap: () => context.push(AppRoutes.timetable)),
+                  _GridItem(icon: Icons.assignment, label: 'home.exams'.tr(), color: GridIconColors.exams, onTap: () => context.push(AppRoutes.exams)),
+                  _GridItem(icon: Icons.calendar_today, label: 'home.timetable'.tr(), color: GridIconColors.timetable, onTap: () => context.push(AppRoutes.timetable)),
                   _GridItem(icon: Icons.account_balance_wallet, label: 'home.fees'.tr(), color: GridIconColors.fees, onTap: () => context.push(AppRoutes.fees)),
                   _GridItem(icon: Icons.bar_chart, label: 'home.results'.tr(), color: GridIconColors.results, onTap: () => context.push(AppRoutes.results)),
-                  // _GridItem(icon: Icons.menu_book, label: 'home.subjects'.tr(), color: GridIconColors.subjects, onTap: () => context.push(AppRoutes.subjects)),
+                  _GridItem(icon: Icons.menu_book, label: 'home.subjects'.tr(), color: GridIconColors.subjects, onTap: () => context.push(AppRoutes.subjects)),
                   _GridItem(icon: Icons.directions_run, label: 'home.activities'.tr(), color: GridIconColors.activities, onTap: () => context.push(AppRoutes.activities)),
                 ],
               ),
@@ -272,6 +270,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
           ),
         ],
       ),
+      ),
     );
   }
 }
@@ -334,7 +333,7 @@ class _EventCard extends StatelessWidget {
     required this.activityDate,
   });
 
-  static const _color = Color(0xFF5C6BC0);
+  static const _color = GridIconColors.profile;
 
   @override
   Widget build(BuildContext context) {

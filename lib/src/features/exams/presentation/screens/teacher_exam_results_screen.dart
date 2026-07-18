@@ -24,6 +24,12 @@ class _TeacherExamResultsScreenState extends State<TeacherExamResultsScreen> {
     });
   }
 
+  Future<void> _refresh() {
+    final session = context.read<SessionProvider>();
+    final teacherId = session.user?.id ?? '';
+    return context.read<ExamProvider>().loadTeacherExamResults(teacherId);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
@@ -32,7 +38,9 @@ class _TeacherExamResultsScreenState extends State<TeacherExamResultsScreen> {
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppTopBar(title: 'teacher.exam_results'.tr()),
-      body: provider.isLoading
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: provider.isLoading
           ? SkeletonWrapper(
               isLoading: true,
               child: ListView.separated(
@@ -216,6 +224,7 @@ class _TeacherExamResultsScreenState extends State<TeacherExamResultsScreen> {
                         );
                       },
                     ),
+      ),
     );
   }
 }

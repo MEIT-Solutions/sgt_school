@@ -3,7 +3,6 @@ import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/presentation/providers/auth_provider.dart';
 import '../../features/auth/presentation/providers/session_provider.dart';
 import '../../features/settings/presentation/providers/settings_provider.dart';
-import '../../features/attendance/presentation/providers/attendance_check_provider.dart';
 import '../../features/timetable/presentation/providers/timetable_provider.dart';
 import '../../features/subjects/presentation/providers/subject_provider.dart';
 import '../../features/exams/presentation/providers/exam_provider.dart';
@@ -42,9 +41,6 @@ class StateWrapper extends StatelessWidget {
           create: (_) => SettingsProvider(),
         ),
         // Feature providers
-        ChangeNotifierProvider(
-          create: (_) => AttendanceCheckProvider(),
-        ),
         ChangeNotifierProvider(
           create: (_) => TimetableProvider(),
         ),

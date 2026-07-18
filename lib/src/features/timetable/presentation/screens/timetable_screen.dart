@@ -32,6 +32,11 @@ class _TimetableScreenState extends State<TimetableScreen>
     super.dispose();
   }
 
+  Future<void> _refresh() {
+    final session = context.read<SessionProvider>();
+    return context.read<TimetableProvider>().loadTimetable(session.user?.id ?? '');
+  }
+
   int _todayIndex(List<String> days) {
     final wd = DateTime.now().weekday;
     const names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -85,23 +90,28 @@ class _TimetableScreenState extends State<TimetableScreen>
                 tabs: days.map((d) => Tab(text: d.substring(0, 3))).toList(),
               ),
       ),
-      body: _tabController == null
-          ? Center(child: AppEmptyState(icon: Icons.schedule, title: 'timetable.title'.tr()))
-          : TabBarView(
-              controller: _tabController,
-              children: days.map((day) {
-                final periods = provider.timetable[day] ?? [];
-                return ListView.separated(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: periods.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
-                  itemBuilder: (_, i) {
-                    final p = periods[i];
-                    return _PeriodCard(slot: p);
-                  },
-                );
-              }).toList(),
-            ),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: _tabController == null
+            ? ListView(
+                children: [SizedBox(height: MediaQuery.sizeOf(context).height * 0.3), Center(child: AppEmptyState(icon: Icons.schedule, title: 'timetable.title'.tr()))],
+              )
+            : TabBarView(
+                controller: _tabController,
+                children: days.map((day) {
+                  final periods = provider.timetable[day] ?? [];
+                  return ListView.separated(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: periods.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 8),
+                    itemBuilder: (_, i) {
+                      final p = periods[i];
+                      return _PeriodCard(slot: p);
+                    },
+                  );
+                }).toList(),
+              ),
+      ),
     );
   }
 }

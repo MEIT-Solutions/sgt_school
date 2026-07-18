@@ -12,7 +12,7 @@ abstract final class AppRoutes {
 
   // Shell tabs
   static const home = '/home';
-  //static const attendance = '/attendance';
+
   static const classes = '/classes';
   static const profile = '/profile';
   static const children = '/children';

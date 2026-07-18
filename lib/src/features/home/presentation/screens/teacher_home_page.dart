@@ -45,7 +45,9 @@ class _TeacherHomePageState extends State<TeacherHomePage> {
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
-      body: CustomScrollView(
+      body: RefreshIndicator(
+        onRefresh: () => Future.delayed(const Duration(milliseconds: 500)),
+        child: CustomScrollView(
         slivers: [
           // ── Curved Header ──
           SliverToBoxAdapter(
@@ -192,6 +194,7 @@ class _TeacherHomePageState extends State<TeacherHomePage> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

@@ -31,6 +31,11 @@ class _ExamsScreenState extends State<ExamsScreen> with SingleTickerProviderStat
     super.dispose();
   }
 
+  Future<void> _refresh() {
+    final session = context.read<SessionProvider>();
+    return context.read<ExamProvider>().loadExams(session.user?.id ?? '');
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
@@ -56,15 +61,18 @@ class _ExamsScreenState extends State<ExamsScreen> with SingleTickerProviderStat
           ],
         ),
       ),
-      body: provider.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : TabBarView(
-              controller: _tabController,
-              children: [
-                _ExamList(exams: provider.upcoming, showResult: false),
-                _ExamList(exams: provider.completed, showResult: true),
-              ],
-            ),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: provider.isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : TabBarView(
+                controller: _tabController,
+                children: [
+                  _ExamList(exams: provider.upcoming, showResult: false),
+                  _ExamList(exams: provider.completed, showResult: true),
+                ],
+              ),
+      ),
     );
   }
 }
