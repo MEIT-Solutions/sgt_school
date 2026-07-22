@@ -1,26 +1,26 @@
 import '../imports/imports.dart';
 
-/// Checks internet connectivity before network-dependent operations.
+/// Checks internet connectivity using [connectivity_plus].
+///
+/// This package checks the **network interface status** (WiFi, mobile, VPN, etc.)
+/// rather than pinging external servers, so it works reliably with VPNs.
 class InternetConnectionService {
   InternetConnectionService();
 
-  final InternetConnection internetConnection = InternetConnection();
+  final Connectivity _connectivity = Connectivity();
 
   Future<bool> hasConnection() async {
-    // On web, simply rely on the internet connection checker.
-    // Platform.environment (dart:io) is not available on web.
-    if (kIsWeb) {
-      return await internetConnection.hasInternetAccess;
-    }
-
     // On non-web platforms, skip checks during Flutter tests.
-    if (kDebugMode && _isFlutterTest()) return true;
+    if (!kIsWeb && kDebugMode && _isFlutterTest()) return true;
 
-    return await internetConnection.hasInternetAccess;
+    final results = await _connectivity.checkConnectivity();
+
+    // Returns true if connected via any interface (wifi, mobile, vpn, ethernet, etc.)
+    // Only returns false if the sole result is ConnectivityResult.none.
+    return results.any((result) => result != ConnectivityResult.none);
   }
 
   /// Check if running in a Flutter test environment.
-  /// Uses a compile-time constant instead of dart:io Platform.
   bool _isFlutterTest() {
     return const bool.fromEnvironment('FLUTTER_TEST');
   }
