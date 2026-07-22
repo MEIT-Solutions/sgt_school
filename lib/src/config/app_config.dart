@@ -13,7 +13,7 @@ class AppConfig {
   static late final Dio dio;
 
   /// Default base URLs for each environment.
-  static const devBaseUrl = 'http://150.95.85.135:8070/api/v1';
+  static const devBaseUrl = 'https://uat.sgt-odoo.com/api/v1';
   static const prodBaseUrl = 'https://sgt-odoo.com/api/v1';
 
   /// The current base URL (initialised in [init]).

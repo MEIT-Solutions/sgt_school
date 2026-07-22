@@ -35,7 +35,7 @@ void main() {
   late AuthService authService;
 
   setUpAll(() {
-    final dio = Dio(BaseOptions(baseUrl: 'http://150.95.85.135:8070/api/v1'));
+    final dio = Dio(BaseOptions(baseUrl: 'https://uat.sgt-odoo.com/api/v1'));
     mockAdapter = MockAdapter();
     dio.httpClientAdapter = mockAdapter;
     try {
@@ -43,7 +43,7 @@ void main() {
     } catch (_) {
       AppConfig.dio.httpClientAdapter = mockAdapter;
     }
-    
+
     authService = AuthService.instance;
   });
 
@@ -90,11 +90,7 @@ void main() {
     });
 
     test('returns ServerFailure when API success is false', () async {
-      final errorResponse = {
-        'success': false,
-        'message': 'Invalid credentials',
-        'data': null
-      };
+      final errorResponse = {'success': false, 'message': 'Invalid credentials', 'data': null};
 
       mockAdapter.handler = (options) {
         return ResponseBody.fromString(

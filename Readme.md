@@ -126,7 +126,7 @@ corresponding entry point (`-t` flag) when running or building.
 
 | Flavor | Entry Point | Base URL |
 |---|---|---|
-| `dev` | `lib/main_dev.dart` | `http://150.95.85.135:8070/api/v1` |
+| `dev` | `lib/main_dev.dart` | `https://uat.sgt-odoo.com/api/v1` |
 | `prod` | `lib/main_prod.dart` | `http://150.95.30.124:8070/api/v1` |
 
 ### Running on a Device / Emulator
