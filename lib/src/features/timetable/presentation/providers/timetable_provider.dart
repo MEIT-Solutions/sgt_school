@@ -1,5 +1,5 @@
 import 'package:sgt_school/src/imports/core_imports.dart';
-import '../../domain/entities/timetable_slot.dart';
+import '../../domain/entities/timetable_entity.dart';
 import '../../domain/repositories/timetable_repository.dart';
 import '../../data/repositories/timetable_repository_impl.dart';
 
@@ -10,12 +10,11 @@ class TimetableProvider extends ChangeNotifier {
   TimetableProvider({TimetableRepository? repository})
       : _repository = repository ?? TimetableRepositoryImpl();
 
-  Map<String, List<TimetableSlot>> _timetable = {};
+  TimetableEntity? _timetable;
   bool _isLoading = false;
   String? _error;
 
-  Map<String, List<TimetableSlot>> get timetable => _timetable;
-  List<String> get days => _timetable.keys.toList();
+  TimetableEntity? get timetable => _timetable;
   bool get isLoading => _isLoading;
   String? get error => _error;
 

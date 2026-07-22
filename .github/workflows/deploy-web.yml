@@ -38,12 +38,11 @@ jobs:
         run: |
           flutter build web \
             --release \
-            --base-href /sgt_school/
+            --base-href /
 
       # CNAME file tells GitHub Pages to use the custom domain
-      # Uncomment when custom domain is purchased
-      # - name: Add CNAME for custom domain
-      #   run: echo "${{ vars.CUSTOM_DOMAIN }}" > build/web/CNAME
+      - name: Add CNAME for custom domain
+        run: echo "${{ vars.CUSTOM_DOMAIN }}" > build/web/CNAME
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

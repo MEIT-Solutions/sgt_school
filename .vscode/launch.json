@@ -2,23 +2,13 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Dev (Debug)",
+      "name": "UAT (Debug)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
       "flutterMode": "debug",
       "args": [
-        "--dart-define=API_BASE_URL=http://150.95.85.135:8070/api/v1"
-      ]
-    },
-    {
-      "name": "Dev (Profile)",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main.dart",
-      "flutterMode": "profile",
-      "args": [
-        "--dart-define=API_BASE_URL=http://150.95.85.135:8070/api/v1"
+        "--dart-define=API_BASE_URL=https://uat.sgt-odoo.com/api/v1"
       ]
     },
     {
@@ -28,7 +18,7 @@
       "program": "lib/main.dart",
       "flutterMode": "debug",
       "args": [
-        "--dart-define=API_BASE_URL=http://150.95.30.124:8070/api/v1"
+        "--dart-define=API_BASE_URL=https://sgt-odoo.com/api/v1"
       ]
     },
     {
@@ -38,7 +28,7 @@
       "program": "lib/main.dart",
       "flutterMode": "release",
       "args": [
-        "--dart-define=API_BASE_URL=http://150.95.30.124:8070/api/v1"
+        "--dart-define=API_BASE_URL=https://sgt-odoo.com/api/v1"
       ]
     }
   ]
