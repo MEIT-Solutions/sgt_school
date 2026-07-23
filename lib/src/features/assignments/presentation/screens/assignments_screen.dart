@@ -130,7 +130,7 @@ class _AssignmentList extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('${'assignments.due'.tr()}: ${a.dueDate}', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+                    Text('${'assignments.due'.tr()}: ${a.dueDate.toDisplayDate}', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
                     Text('${a.submittedCount}/${a.totalCount} ${'assignments.submitted'.tr()}', style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold)),
                   ],
                 ),

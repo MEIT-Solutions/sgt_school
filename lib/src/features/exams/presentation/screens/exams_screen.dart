@@ -132,7 +132,7 @@ class _ExamCard extends StatelessWidget {
                 children: [
                   Text(exam.name, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 4),
-                  Text(exam.date, style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant)),
+                  Text(exam.date.toDisplayDate, style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant)),
                   if (exam.isCompleted) ...[
                     const SizedBox(height: 4),
                     Text(

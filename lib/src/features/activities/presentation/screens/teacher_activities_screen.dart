@@ -98,7 +98,7 @@ class _TeacherActivitiesScreenState extends State<TeacherActivitiesScreen> {
                                         Icon(Icons.calendar_today, size: 12, color: theme.colorScheme.primary),
                                         const SizedBox(width: 4),
                                         Text(
-                                          activity.activityDate,
+                                          activity.activityDate.toDisplayDate,
                                           style: theme.textTheme.labelSmall?.copyWith(
                                             color: theme.colorScheme.primary,
                                             fontWeight: FontWeight.w600,

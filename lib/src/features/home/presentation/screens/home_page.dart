@@ -389,7 +389,7 @@ class _EventCard extends StatelessWidget {
                     Icon(Icons.calendar_today, size: 12, color: theme.colorScheme.onSurfaceVariant),
                     const SizedBox(width: 4),
                     Text(
-                      activityDate,
+                      activityDate.toDisplayDate,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                       ),

@@ -78,7 +78,7 @@ class _ChildDetailScreenState extends State<ChildDetailScreen> {
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                   Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Text(e['name'] as String, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
-                    Text(e['date'] as String, style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
+                    Text((e['date'] as String).toDisplayDate, style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
                   ]),
                   Text('${e['percentage']}% (${e['grade']})', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: GridIconColors.results)),
                 ]),

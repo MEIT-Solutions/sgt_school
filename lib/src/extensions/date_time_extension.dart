@@ -17,6 +17,15 @@ extension DateTimeExtension on DateTime {
     return '${year.toString().padLeft(4, '0')}-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
   }
 
+  /// Formats as "23 Jul 2026".
+  String get toDisplayDate {
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ];
+    return '$day ${months[month - 1]} $year';
+  }
+
   String timeAgo() {
     final now = DateTime.now();
     final difference = now.difference(this);
@@ -38,3 +47,26 @@ extension DateTimeExtension on DateTime {
     }
   }
 }
+
+/// Extension on [String] for formatting date strings from the API.
+///
+/// Handles ISO date strings like "2026-07-10" or datetime strings like
+/// "2026-07-10T16:36:17+06:30".
+///
+/// ```dart
+/// "2026-07-10".toDisplayDate        // "10 Jul 2026"
+/// "2026-07-10T16:36:17+06:30".toDisplayDate  // "10 Jul 2026"
+/// ```
+extension StringDateExtension on String {
+  /// Parses the ISO date/datetime string and formats as "23 Jul 2026".
+  /// Returns the original string if parsing fails.
+  String get toDisplayDate {
+    try {
+      final dt = DateTime.parse(this);
+      return dt.toDisplayDate;
+    } catch (_) {
+      return this;
+    }
+  }
+}
+

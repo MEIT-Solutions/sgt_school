@@ -59,8 +59,10 @@ class AppConfig {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           final fullUrl = '${options.baseUrl}${options.path}';
-          AppLogger.info('🌐 [DIO] REQUEST[${options.method}] => URL: $fullUrl');
-          AppLogger.info('📦 [DIO] REQUEST BODY: ${options.data}');
+          if (kDebugMode) {
+            AppLogger.info('🌐 [DIO] REQUEST[${options.method}] => URL: $fullUrl');
+            AppLogger.info('📦 [DIO] REQUEST BODY: ${options.data}');
+          }
           try {
             final token = await AuthLocalDatasource.instance().getToken();
             if (token != null && token.isNotEmpty) {
@@ -72,15 +74,19 @@ class AppConfig {
           return handler.next(options);
         },
         onResponse: (response, handler) {
-          AppLogger.info('✅ [DIO] RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
-          AppLogger.info('📥 [DIO] RESPONSE BODY: ${response.data}');
+          if (kDebugMode) {
+            AppLogger.info('✅ [DIO] RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
+            AppLogger.info('📥 [DIO] RESPONSE BODY: ${response.data}');
+          }
           return handler.next(response);
         },
         onError: (DioException e, handler) async {
           final fullUrl = '${e.requestOptions.baseUrl}${e.requestOptions.path}';
-          AppLogger.error('❌ [DIO] ERROR[${e.response?.statusCode}] => URL: $fullUrl');
-          AppLogger.error('📦 [DIO] ERROR REQUEST BODY: ${e.requestOptions.data}');
-          AppLogger.error('📥 [DIO] ERROR RESPONSE BODY: ${e.response?.data}');
+          if (kDebugMode) {
+            AppLogger.error('❌ [DIO] ERROR[${e.response?.statusCode}] => URL: $fullUrl');
+            AppLogger.error('📦 [DIO] ERROR REQUEST BODY: ${e.requestOptions.data}');
+            AppLogger.error('📥 [DIO] ERROR RESPONSE BODY: ${e.response?.data}');
+          }
 
           // ── Token Refresh on 401 ───────────────────────────────────
           if (e.response?.statusCode == 401) {

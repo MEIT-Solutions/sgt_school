@@ -201,7 +201,19 @@
     "dark": "มืด",
     "language": "ภาษา",
     "logout_confirm": "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?",
-    "cancel": "ยกเลิก"
+    "cancel": "ยกเลิก",
+    "legal": "กฎหมาย",
+    "privacy_policy": "นโยบายความเป็นส่วนตัว",
+    "terms_of_service": "ข้อกำหนดการใช้งาน",
+    "support": "การสนับสนุน",
+    "contact_school": "ติดต่อโรงเรียน",
+    "account": "บัญชี",
+    "delete_account": "ลบบัญชี",
+    "delete_account_title": "ลบบัญชี?",
+    "delete_account_warning": "การดำเนินการนี้จะลบบัญชีและข้อมูลที่เกี่ยวข้องทั้งหมดอย่างถาวร ไม่สามารถย้อนกลับได้",
+    "delete_account_confirm": "พิมพ์ DELETE เพื่อยืนยัน",
+    "delete_account_success": "ส่งคำขอลบบัญชีเรียบร้อยแล้ว",
+    "delete": "ลบ"
   },
   "results": {
     "title": "ผลสอบ",

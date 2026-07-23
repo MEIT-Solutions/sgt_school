@@ -90,16 +90,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                   },
                   itemBuilder: (_) => [
-                    PopupMenuItem(
-                      value: 'cloud',
-                      child: Row(
-                        children: [
-                          Icon(Icons.cloud_outlined, size: 20, color: cs.onSurface),
-                          const SizedBox(width: 12),
-                          Text('cloud.title'.tr()),
-                        ],
+                    if (kDebugMode)
+                      PopupMenuItem(
+                        value: 'cloud',
+                        child: Row(
+                          children: [
+                            Icon(Icons.cloud_outlined, size: 20, color: cs.onSurface),
+                            const SizedBox(width: 12),
+                            Text('cloud.title'.tr()),
+                          ],
+                        ),
                       ),
-                    ),
                     PopupMenuItem(
                       value: 'settings',
                       child: Row(
@@ -286,6 +287,48 @@ class _LoginScreenState extends State<LoginScreen> {
                             color: cs.onSurfaceVariant.withValues(alpha: 0.5),
                           ),
                         ),
+
+                      const SizedBox(height: 8),
+
+                      // Legal links
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () => UrlLauncherService.instance.launch(
+                              'https://app.sgt-odoo.com/privacy',
+                            ),
+                            child: Text(
+                              'settings.privacy_policy'.tr(),
+                              style: tt.labelSmall?.copyWith(
+                                color: cs.primary,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              '•',
+                              style: tt.labelSmall?.copyWith(
+                                color: cs.onSurfaceVariant.withValues(alpha: 0.5),
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => UrlLauncherService.instance.launch(
+                              'https://app.sgt-odoo.com/terms',
+                            ),
+                            child: Text(
+                              'settings.terms_of_service'.tr(),
+                              style: tt.labelSmall?.copyWith(
+                                color: cs.primary,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
 
                       const SizedBox(height: 16),
                     ],

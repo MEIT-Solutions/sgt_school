@@ -201,7 +201,19 @@
     "dark": "Dark",
     "language": "Language",
     "logout_confirm": "Are you sure you want to log out?",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "legal": "Legal",
+    "privacy_policy": "Privacy Policy",
+    "terms_of_service": "Terms of Service",
+    "support": "Support",
+    "contact_school": "Contact School",
+    "account": "Account",
+    "delete_account": "Delete Account",
+    "delete_account_title": "Delete Account?",
+    "delete_account_warning": "This will permanently delete your account and all associated data. This action cannot be undone.",
+    "delete_account_confirm": "Type DELETE to confirm",
+    "delete_account_success": "Account deletion request submitted successfully.",
+    "delete": "Delete"
   },
   "results": {
     "title": "Results",

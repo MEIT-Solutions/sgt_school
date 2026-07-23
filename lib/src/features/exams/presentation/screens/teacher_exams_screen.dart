@@ -137,7 +137,7 @@ class _TeacherExamsScreenState extends State<TeacherExamsScreen> {
                                         Icon(Icons.calendar_today, size: 12, color: theme.colorScheme.onSurfaceVariant),
                                         const SizedBox(width: 4),
                                         Text(
-                                          exam.examDatetime,
+                                          exam.examDatetime.toDisplayDate,
                                           style: theme.textTheme.bodySmall?.copyWith(
                                             color: theme.colorScheme.onSurfaceVariant,
                                           ),

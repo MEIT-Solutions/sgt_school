@@ -151,7 +151,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    a.activityDate,
+                                    a.activityDate.toDisplayDate,
                                     style: theme.textTheme.bodySmall?.copyWith(
                                       color: theme.colorScheme.onSurfaceVariant,
                                     ),

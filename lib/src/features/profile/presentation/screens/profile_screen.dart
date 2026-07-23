@@ -212,7 +212,7 @@ class _PersonalInfo extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (user.role == UserRole.student) _InfoRow(icon: Icons.badge, label: 'profile.admission_no'.tr(), value: user.admissionNo ?? '-'),
-          _InfoRow(icon: Icons.cake, label: 'profile.date_of_birth'.tr(), value: user.dateOfBirth ?? '-'),
+          _InfoRow(icon: Icons.cake, label: 'profile.date_of_birth'.tr(), value: user.dateOfBirth?.toDisplayDate ?? '-'),
           _InfoRow(icon: Icons.wc, label: 'profile.gender'.tr(), value: user.gender ?? '-'),
           _InfoRow(icon: Icons.phone, label: 'profile.phone'.tr(), value: user.phone),
           _InfoRow(icon: Icons.email, label: 'profile.email'.tr(), value: user.email ?? '-'),

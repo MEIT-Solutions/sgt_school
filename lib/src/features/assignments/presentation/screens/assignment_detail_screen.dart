@@ -30,7 +30,7 @@ class AssignmentDetailScreen extends StatelessWidget {
           const SizedBox(height: 16),
           _DetailRow(icon: Icons.class_, label: 'classes.title'.tr(), value: assignment.className),
           _DetailRow(icon: Icons.book, label: 'subjects.title'.tr(), value: assignment.subject),
-          _DetailRow(icon: Icons.calendar_today, label: 'assignments.due'.tr(), value: assignment.dueDate),
+          _DetailRow(icon: Icons.calendar_today, label: 'assignments.due'.tr(), value: assignment.dueDate.toDisplayDate),
           const SizedBox(height: 16),
           Text('assignments.description'.tr(), style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),

@@ -476,8 +476,8 @@ class _FeeDetailsList extends StatelessWidget {
                         _MetaChip(
                           icon: Icons.calendar_today_outlined,
                           label: f.isPaid
-                              ? '${'fees.payment_date'.tr()}: ${f.dueDate}'
-                              : '${'fees.due'.tr()}: ${f.dueDate}',
+                              ? '${'fees.payment_date'.tr()}: ${f.dueDate!.toDisplayDate}'
+                              : '${'fees.due'.tr()}: ${f.dueDate!.toDisplayDate}',
                           tt: tt,
                           cs: cs,
                         ),
