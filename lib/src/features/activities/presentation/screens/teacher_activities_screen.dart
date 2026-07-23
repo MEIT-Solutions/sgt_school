@@ -41,45 +41,7 @@ class _TeacherActivitiesScreenState extends State<TeacherActivitiesScreen> {
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: provider.isLoading
-          ? SkeletonWrapper(
-              isLoading: true,
-              child: ListView.separated(
-                padding: const EdgeInsets.all(12),
-                itemCount: 8,
-                separatorBuilder: (_, __) => const SizedBox(height: 6),
-                itemBuilder: (_, __) => Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerLow,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5)),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: GridIconColors.activities.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Icon(Icons.directions_run, color: GridIconColors.activities, size: 20),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(BoneMock.name, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
-                            const SizedBox(height: 4),
-                            Text(BoneMock.subtitle, style: theme.textTheme.bodySmall),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            )
+          ? const AppSkeletonList()
           : provider.error != null
               ? AppErrorWidget(
                   message: provider.error!,

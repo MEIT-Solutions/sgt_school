@@ -41,56 +41,7 @@ class _TeacherExamResultsScreenState extends State<TeacherExamResultsScreen> {
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: provider.isLoading
-          ? SkeletonWrapper(
-              isLoading: true,
-              child: ListView.separated(
-                padding: const EdgeInsets.all(16),
-                itemCount: 8,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
-                itemBuilder: (_, __) => Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerLow,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5)),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF9E9E9E).withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Center(
-                          child: Text(BoneMock.chars(2), style: theme.textTheme.titleMedium),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(BoneMock.name, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 4),
-                            Text(BoneMock.subtitle, style: theme.textTheme.bodySmall),
-                          ],
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(BoneMock.chars(5), style: theme.textTheme.titleSmall),
-                          const SizedBox(height: 2),
-                          Text(BoneMock.chars(4), style: theme.textTheme.labelSmall),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            )
+          ? const AppSkeletonList(spacing: 8)
           : provider.error != null
               ? AppErrorWidget(
                   message: provider.error!,

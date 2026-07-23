@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 /// Per-subject result from an exam.
-class ResultEntity extends Equatable {
+class ExamResultEntity extends Equatable {
   final String id;
   final String subject;
   final int marks;
@@ -10,7 +10,7 @@ class ResultEntity extends Equatable {
   final String status;
   final String? admissionNo;
 
-  const ResultEntity({
+  const ExamResultEntity({
     required this.id,
     required this.subject,
     required this.marks,
@@ -28,16 +28,16 @@ class ResultEntity extends Equatable {
 }
 
 /// Aggregated result wrapper for an exam.
-class ResultSummary extends Equatable {
+class ExamResultSummary extends Equatable {
   final String examId;
   final String examName;
-  final List<ResultEntity> results;
+  final List<ExamResultEntity> results;
   final int totalMarks;
   final int totalPossible;
   final double percentage;
   final String overallGrade;
 
-  const ResultSummary({
+  const ExamResultSummary({
     required this.examId,
     required this.examName,
     required this.results,

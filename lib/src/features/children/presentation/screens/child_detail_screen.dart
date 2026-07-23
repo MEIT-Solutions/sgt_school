@@ -54,7 +54,7 @@ class _ChildDetailScreenState extends State<ChildDetailScreen> {
       return Scaffold(
         backgroundColor: cs.surface,
         appBar: AppTopBar(title: 'children.child_detail'.tr()),
-        body: const Center(child: CircularProgressIndicator()),
+        body: const AppSkeletonList(itemCount: 5),
       );
     }
 

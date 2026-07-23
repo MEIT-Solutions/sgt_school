@@ -1,30 +1,30 @@
 import 'package:sgt_school/src/imports/core_imports.dart';
 import 'package:sgt_school/src/imports/packages_imports.dart';
 import 'package:sgt_school/src/features/auth/presentation/providers/session_provider.dart';
-import '../../domain/entities/result_entity.dart';
-import '../providers/result_provider.dart';
+import '../../domain/entities/exam_result_entity.dart';
+import '../providers/exam_result_provider.dart';
 
 /// Student exam results screen showing grades per subject.
-class ResultsScreen extends StatefulWidget {
-  const ResultsScreen({super.key});
+class ExamResultsScreen extends StatefulWidget {
+  const ExamResultsScreen({super.key});
 
   @override
-  State<ResultsScreen> createState() => _ResultsScreenState();
+  State<ExamResultsScreen> createState() => _ExamResultsScreenState();
 }
 
-class _ResultsScreenState extends State<ResultsScreen> {
+class _ExamResultsScreenState extends State<ExamResultsScreen> {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final session = context.read<SessionProvider>();
-      context.read<ResultProvider>().loadResults(session.user?.id ?? '');
+      context.read<ExamResultProvider>().loadResults(session.user?.id ?? '');
     });
   }
 
   Future<void> _refresh() {
     final session = context.read<SessionProvider>();
-    return context.read<ResultProvider>().loadResults(session.user?.id ?? '');
+    return context.read<ExamResultProvider>().loadResults(session.user?.id ?? '');
   }
 
   @override
@@ -32,7 +32,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
     final theme = context.theme;
     final cs = theme.colorScheme;
     final tt = theme.textTheme;
-    final provider = context.watch<ResultProvider>();
+    final provider = context.watch<ExamResultProvider>();
 
     final totalExams = provider.results.length;
     final average = provider.summary?.percentage ?? 0.0;
@@ -153,7 +153,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                   onRetry: () {
                     final session = context.read<SessionProvider>();
                     context
-                        .read<ResultProvider>()
+                        .read<ExamResultProvider>()
                         .loadResults(session.user?.id ?? '');
                   },
                 )
@@ -266,7 +266,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                           ),
                         ),
                         Expanded(
-                          child: _ResultsList(results: provider.results),
+                          child: _ExamResultsList(results: provider.results),
                         ),
                       ],
                     ),
@@ -312,9 +312,9 @@ class _SummaryCol extends StatelessWidget {
   }
 }
 
-class _ResultsList extends StatelessWidget {
-  final List<ResultEntity> results;
-  const _ResultsList({required this.results});
+class _ExamResultsList extends StatelessWidget {
+  final List<ExamResultEntity> results;
+  const _ExamResultsList({required this.results});
 
   @override
   Widget build(BuildContext context) {

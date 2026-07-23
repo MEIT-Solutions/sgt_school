@@ -47,60 +47,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: provider.isLoading
-          ? SkeletonWrapper(
-              isLoading: true,
-              child: ListView.separated(
-                padding: const EdgeInsets.all(16),
-                itemCount: 8,
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
-                itemBuilder: (_, __) => Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerLow,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF5C6BC0).withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Icon(Icons.campaign, color: Color(0xFF5C6BC0), size: 20),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              BoneMock.name,
-                              style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Icon(Icons.class_, size: 14, color: theme.colorScheme.onSurfaceVariant),
-                          const SizedBox(width: 4),
-                          Text(BoneMock.name, style: theme.textTheme.bodySmall),
-                          const SizedBox(width: 16),
-                          Icon(Icons.calendar_today, size: 14, color: theme.colorScheme.onSurfaceVariant),
-                          const SizedBox(width: 4),
-                          Text(BoneMock.date, style: theme.textTheme.bodySmall),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            )
+          ? const AppSkeletonList()
           : provider.error != null
               ? AppErrorWidget(
                   message: provider.error,

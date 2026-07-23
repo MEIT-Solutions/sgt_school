@@ -17,7 +17,7 @@ import 'package:sgt_school/src/features/exams/presentation/screens/exams_screen.
 import 'package:sgt_school/src/features/exams/presentation/screens/exam_detail_screen.dart';
 import 'package:sgt_school/src/features/fees/presentation/screens/fees_screen.dart';
 import 'package:sgt_school/src/features/activities/presentation/screens/activities_screen.dart';
-import 'package:sgt_school/src/features/results/presentation/screens/results_screen.dart';
+import 'package:sgt_school/src/features/exam_results/presentation/screens/exam_results_screen.dart';
 import 'package:sgt_school/src/features/notices/presentation/screens/notification_screen.dart';
 import 'package:sgt_school/src/features/profile/presentation/screens/profile_screen.dart';
 import 'package:sgt_school/src/features/children/presentation/screens/children_screen.dart';
@@ -101,6 +101,12 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
             name: 'home',
             pageBuilder: (context, state) => _fadeTransitionPage(state, const RoleHomePage()),
           ),
+          // Timetable tab
+          GoRoute(
+            path: AppRoutes.timetable,
+            name: 'timetable',
+            pageBuilder: (context, state) => _fadeTransitionPage(state, const TimetableScreen()),
+          ),
           // Profile tab
           GoRoute(
             path: AppRoutes.profile,
@@ -117,11 +123,6 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
       ),
 
       // ── Sub-routes (pushed on top of shell) ──
-      GoRoute(
-        path: AppRoutes.timetable,
-        name: 'timetable',
-        pageBuilder: (context, state) => _pageTransitionAnimation(state, const TimetableScreen()),
-      ),
       GoRoute(
         path: AppRoutes.exams,
         name: 'exams',
@@ -151,9 +152,9 @@ GoRouter buildAppRouter(SessionProvider sessionProvider) {
         pageBuilder: (context, state) => _pageTransitionAnimation(state, const ActivitiesScreen()),
       ),
       GoRoute(
-        path: AppRoutes.results,
-        name: 'results',
-        pageBuilder: (context, state) => _pageTransitionAnimation(state, const ResultsScreen()),
+        path: AppRoutes.examResults,
+        name: 'examResults',
+        pageBuilder: (context, state) => _pageTransitionAnimation(state, const ExamResultsScreen()),
       ),
       GoRoute(
         path: AppRoutes.notices,
@@ -269,8 +270,9 @@ CustomTransitionPage<void> _pageTransitionAnimation(
 int _indexFromLocation(String path, UserRole role) {
   switch (role) {
     case UserRole.student:
-      // Nav: Home=0, Profile=1
-      if (path.startsWith('/profile')) return 1;
+      // Nav: Home=0, Timetable=1, Profile=2
+      if (path.startsWith('/timetable')) return 1;
+      if (path.startsWith('/profile')) return 2;
       return 0;
     case UserRole.parent:
       // Nav: Home=0, Children=1, Profile=2
@@ -288,7 +290,7 @@ int _indexFromLocation(String path, UserRole role) {
 void _onTabChanged(BuildContext context, int index, UserRole role) {
   switch (role) {
     case UserRole.student:
-      const paths = [AppRoutes.home, AppRoutes.profile];
+      const paths = [AppRoutes.home, AppRoutes.timetable, AppRoutes.profile];
       context.go(paths[index]);
     case UserRole.parent:
       const paths = [AppRoutes.home, AppRoutes.children, AppRoutes.profile];

@@ -6,7 +6,7 @@ import '../../features/settings/presentation/providers/settings_provider.dart';
 import '../../features/timetable/presentation/providers/timetable_provider.dart';
 import '../../features/subjects/presentation/providers/subject_provider.dart';
 import '../../features/exams/presentation/providers/exam_provider.dart';
-import '../../features/results/presentation/providers/result_provider.dart';
+import '../../features/exam_results/presentation/providers/exam_result_provider.dart';
 import '../../features/fees/presentation/providers/fee_provider.dart';
 import '../../features/activities/presentation/providers/activity_provider.dart';
 import '../../features/notices/presentation/providers/notification_provider.dart';
@@ -51,7 +51,7 @@ class StateWrapper extends StatelessWidget {
           create: (_) => ExamProvider(),
         ),
         ChangeNotifierProvider(
-          create: (_) => ResultProvider(),
+          create: (_) => ExamResultProvider(),
         ),
         ChangeNotifierProvider(
           create: (_) => FeeProvider(),

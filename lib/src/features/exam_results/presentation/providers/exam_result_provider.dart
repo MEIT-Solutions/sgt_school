@@ -1,21 +1,21 @@
 import 'package:sgt_school/src/imports/core_imports.dart';
-import '../../domain/entities/result_entity.dart';
-import '../../domain/repositories/result_repository.dart';
-import '../../data/repositories/result_repository_impl.dart';
+import '../../domain/entities/exam_result_entity.dart';
+import '../../domain/repositories/exam_result_repository.dart';
+import '../../data/repositories/exam_result_repository_impl.dart';
 
 /// Provider for student exam results.
-class ResultProvider extends ChangeNotifier {
-  final ResultRepository _repository;
+class ExamResultProvider extends ChangeNotifier {
+  final ExamResultRepository _repository;
 
-  ResultProvider({ResultRepository? repository})
-      : _repository = repository ?? ResultRepositoryImpl();
+  ExamResultProvider({ExamResultRepository? repository})
+      : _repository = repository ?? ExamResultRepositoryImpl();
 
-  ResultSummary? _summary;
+  ExamResultSummary? _summary;
   bool _isLoading = false;
   String? _error;
 
-  ResultSummary? get summary => _summary;
-  List<ResultEntity> get results => _summary?.results ?? [];
+  ExamResultSummary? get summary => _summary;
+  List<ExamResultEntity> get results => _summary?.results ?? [];
   bool get isLoading => _isLoading;
   String? get error => _error;
 

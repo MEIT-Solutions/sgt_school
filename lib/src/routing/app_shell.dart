@@ -41,40 +41,20 @@ class AppShell extends StatelessWidget {
     switch (role) {
       case UserRole.student:
         return [
-          NavigationDestination(
-              icon: const Icon(Icons.home_outlined),
-              selectedIcon: const Icon(Icons.home),
-              label: 'home.home_title'.tr()),
-          NavigationDestination(
-              icon: const Icon(Icons.person_outline),
-              selectedIcon: const Icon(Icons.person),
-              label: 'profile.title'.tr()),
+          NavigationDestination(icon: const Icon(Icons.home_outlined), selectedIcon: const Icon(Icons.home), label: 'home.home_title'.tr()),
+          NavigationDestination(icon: const Icon(Icons.calendar_month_outlined), selectedIcon: const Icon(Icons.calendar_month), label: 'home.timetable'.tr()),
+          NavigationDestination(icon: const Icon(Icons.person_outline), selectedIcon: const Icon(Icons.person), label: 'profile.title'.tr()),
         ];
       case UserRole.parent:
         return [
-          NavigationDestination(
-              icon: const Icon(Icons.home_outlined),
-              selectedIcon: const Icon(Icons.home),
-              label: 'home.home_title'.tr()),
-          NavigationDestination(
-              icon: const Icon(Icons.family_restroom_outlined),
-              selectedIcon: const Icon(Icons.family_restroom),
-              label: 'children.title'.tr()),
-          NavigationDestination(
-              icon: const Icon(Icons.person_outline),
-              selectedIcon: const Icon(Icons.person),
-              label: 'profile.title'.tr()),
+          NavigationDestination(icon: const Icon(Icons.home_outlined), selectedIcon: const Icon(Icons.home), label: 'home.home_title'.tr()),
+          NavigationDestination(icon: const Icon(Icons.family_restroom_outlined), selectedIcon: const Icon(Icons.family_restroom), label: 'children.title'.tr()),
+          NavigationDestination(icon: const Icon(Icons.person_outline), selectedIcon: const Icon(Icons.person), label: 'profile.title'.tr()),
         ];
       case UserRole.teacher:
         return [
-          NavigationDestination(
-              icon: const Icon(Icons.home_outlined),
-              selectedIcon: const Icon(Icons.home),
-              label: 'home.home_title'.tr()),
-          NavigationDestination(
-              icon: const Icon(Icons.person_outline),
-              selectedIcon: const Icon(Icons.person),
-              label: 'profile.title'.tr()),
+          NavigationDestination(icon: const Icon(Icons.home_outlined), selectedIcon: const Icon(Icons.home), label: 'home.home_title'.tr()),
+          NavigationDestination(icon: const Icon(Icons.person_outline), selectedIcon: const Icon(Icons.person), label: 'profile.title'.tr()),
         ];
     }
   }

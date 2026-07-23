@@ -1,27 +1,27 @@
 import 'package:dio/dio.dart';
 import 'package:sgt_school/src/config/app_config.dart';
 import 'package:sgt_school/src/utils/utils.dart';
-import '../../domain/entities/result_entity.dart';
-import '../../domain/repositories/result_repository.dart';
-import '../models/result_model.dart';
+import '../../domain/entities/exam_result_entity.dart';
+import '../../domain/repositories/exam_result_repository.dart';
+import '../models/exam_result_model.dart';
 
-/// Implementation of [ResultRepository].
+/// Implementation of [ExamResultRepository].
 ///
 /// Tries API first, falls back to [DemoDataService].
-class ResultRepositoryImpl implements ResultRepository {
+class ExamResultRepositoryImpl implements ExamResultRepository {
   final Dio _dio;
 
-  ResultRepositoryImpl({Dio? dio})
+  ExamResultRepositoryImpl({Dio? dio})
       : _dio = dio ?? AppConfig.dio;
 
   @override
-  FutureEither<ResultSummary> getResults(String studentId) async {
+  FutureEither<ExamResultSummary> getResults(String studentId) async {
     return runTask(() async {
       final response = await _dio.get('/students/$studentId/results');
       final data = response.data;
       final resultsList = (data['data'] as List)
           .map(
-              (j) => ResultModel.fromJson(j as Map<String, dynamic>).toEntity())
+              (j) => ExamResultModel.fromJson(j as Map<String, dynamic>).toEntity())
           .toList();
 
       final totalMarks = resultsList.fold<int>(0, (sum, r) => sum + r.marks);
@@ -29,7 +29,7 @@ class ResultRepositoryImpl implements ResultRepository {
       final percentage =
           totalPossible > 0 ? (totalMarks / totalPossible) * 100 : 0.0;
 
-      return ResultSummary(
+      return ExamResultSummary(
         examId: 'EXM-ALL',
         examName: 'All Exams',
         results: resultsList,

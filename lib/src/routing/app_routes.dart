@@ -25,7 +25,7 @@ abstract final class AppRoutes {
   static const fees = '/fees';
   static const subjects = '/subjects';
   static const activities = '/activities';
-  static const results = '/results';
+  static const examResults = '/exam-results';
   static const notices = '/notices';
   static const classDetail = '/classes/:id';
   static const childDetail = '/children/:id';

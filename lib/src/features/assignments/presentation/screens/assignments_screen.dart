@@ -62,7 +62,7 @@ class _AssignmentsScreenState extends State<AssignmentsScreen>
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: provider.isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const AppSkeletonList(spacing: 8)
             : TabBarView(
                 controller: _tabController,
                 children: [

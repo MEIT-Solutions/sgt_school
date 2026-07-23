@@ -48,55 +48,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: provider.isLoading
-          ? SkeletonWrapper(
-              isLoading: true,
-              child: ListView.separated(
-                padding: const EdgeInsets.all(16),
-                itemCount: 8,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
-                itemBuilder: (_, __) => Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerLow,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
-                    ),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF42A5F5).withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Icon(Icons.info, color: Color(0xFF42A5F5), size: 20),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              BoneMock.name,
-                              style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              BoneMock.subtitle,
-                              style: theme.textTheme.bodySmall,
-                              maxLines: 2,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            )
+          ? const AppSkeletonList(spacing: 8)
           : provider.error != null
               ? AppErrorWidget(
                   message: provider.error,

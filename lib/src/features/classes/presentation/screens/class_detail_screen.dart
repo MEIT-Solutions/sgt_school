@@ -35,7 +35,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
       backgroundColor: theme.colorScheme.surface,
       appBar: AppTopBar(title: 'teacher.my_students'.tr()),
       body: provider.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const AppSkeletonList(itemCount: 10, spacing: 6)
           : Column(
               children: [
                 // Stats header

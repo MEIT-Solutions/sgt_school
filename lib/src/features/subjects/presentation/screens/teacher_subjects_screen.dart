@@ -30,11 +30,6 @@ class _TeacherSubjectsScreenState extends State<TeacherSubjectsScreen> {
     return context.read<SubjectProvider>().loadTeacherSubjects(teacherId);
   }
 
-  static const _subjectColors = [
-    Color(0xFF5C6BC0), Color(0xFF26A69A), Color(0xFFEF5350),
-    Color(0xFF42A5F5), Color(0xFFFF7043), Color(0xFF66BB6A),
-    Color(0xFFAB47BC), Color(0xFFFFA726),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -47,45 +42,7 @@ class _TeacherSubjectsScreenState extends State<TeacherSubjectsScreen> {
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: provider.isLoading
-          ? SkeletonWrapper(
-              isLoading: true,
-              child: ListView.separated(
-                padding: const EdgeInsets.all(16),
-                itemCount: 8,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
-                itemBuilder: (_, __) => Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerLow,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5)),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF5C6BC0).withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(Icons.menu_book, color: Color(0xFF5C6BC0), size: 22),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(BoneMock.name, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 4),
-                            Text(BoneMock.subtitle, style: theme.textTheme.bodySmall),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            )
+          ? const AppSkeletonList(spacing: 8)
           : provider.error != null
               ? AppErrorWidget(
                   message: provider.error!,
@@ -112,7 +69,7 @@ class _TeacherSubjectsScreenState extends State<TeacherSubjectsScreen> {
                       separatorBuilder: (_, __) => const SizedBox(height: 8),
                       itemBuilder: (context, index) {
                         final subj = provider.teacherSubjects[index];
-                        final color = _subjectColors[index % _subjectColors.length];
+                        final color = AppColors.colorForIndex(index);
 
                         return Container(
                           padding: const EdgeInsets.all(16),

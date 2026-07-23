@@ -26,11 +26,6 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
     return context.read<SubjectProvider>().loadSubjects(session.user?.id ?? '');
   }
 
-  static const _subjectColors = [
-    Color(0xFF5C6BC0), Color(0xFF26A69A), Color(0xFFEF5350),
-    Color(0xFF42A5F5), Color(0xFFFF7043), Color(0xFF66BB6A),
-    Color(0xFFAB47BC), Color(0xFFFFA726),
-  ];
 
   static const _subjectIcons = {
     'calculate': Icons.calculate,
@@ -54,14 +49,14 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: provider.isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const AppSkeletonList(spacing: 8)
             : ListView.separated(
               padding: const EdgeInsets.all(16),
               itemCount: provider.subjects.length,
               separatorBuilder: (_, __) => const SizedBox(height: 8),
               itemBuilder: (context, index) {
                 final subj = provider.subjects[index];
-                final color = _subjectColors[index % _subjectColors.length];
+                final color = AppColors.colorForIndex(index);
                 final icon = _subjectIcons[subj.icon] ?? Icons.book;
 
                 return Container(

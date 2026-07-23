@@ -30,11 +30,6 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
     return context.read<ClassProvider>().loadTeacherClassList(teacherId);
   }
 
-  static const _classColors = [
-    Color(0xFF42A5F5), Color(0xFF26A69A), Color(0xFFAB47BC),
-    Color(0xFFFF7043), Color(0xFF66BB6A), Color(0xFF5C6BC0),
-    Color(0xFFFFA726), Color(0xFFEF5350),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +42,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: provider.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const AppSkeletonList(spacing: 8)
           : provider.error != null
               ? AppErrorWidget(
                   message: provider.error!,
@@ -74,7 +69,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                       separatorBuilder: (_, __) => const SizedBox(height: 8),
                       itemBuilder: (context, index) {
                         final cls = provider.teacherClasses[index];
-                        final color = _classColors[index % _classColors.length];
+                        final color = AppColors.colorForIndex(index);
 
                         return Container(
                           padding: const EdgeInsets.all(16),

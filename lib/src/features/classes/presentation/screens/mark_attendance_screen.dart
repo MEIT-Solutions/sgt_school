@@ -50,7 +50,7 @@ class _MarkAttendanceScreenState extends State<MarkAttendanceScreen> {
       backgroundColor: cs.surface,
       appBar: AppTopBar(title: 'teacher.mark_attendance'.tr()),
       body: provider.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const AppSkeletonList(itemCount: 10, spacing: 6)
           : Column(children: [
               Container(
                 margin: const EdgeInsets.all(16), padding: const EdgeInsets.all(12),

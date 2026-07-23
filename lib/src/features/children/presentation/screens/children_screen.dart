@@ -37,7 +37,7 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: provider.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const AppSkeletonList(itemCount: 4)
           : ListView.separated(
               padding: const EdgeInsets.all(16), itemCount: provider.children.length,
               separatorBuilder: (_, __) => const SizedBox(height: 12),

@@ -1,7 +1,7 @@
-import '../../domain/entities/result_entity.dart';
+import '../../domain/entities/exam_result_entity.dart';
 
-/// DTO for [ResultEntity].
-class ResultModel {
+/// DTO for [ExamResultEntity].
+class ExamResultModel {
   final String id;
   final String subject;
   final int marks;
@@ -10,7 +10,7 @@ class ResultModel {
   final String status;
   final String? admissionNo;
 
-  const ResultModel({
+  const ExamResultModel({
     required this.id,
     required this.subject,
     required this.marks,
@@ -20,9 +20,9 @@ class ResultModel {
     this.admissionNo,
   });
 
-  factory ResultModel.fromJson(Map<String, dynamic> json) {
+  factory ExamResultModel.fromJson(Map<String, dynamic> json) {
     final marksVal = (json['marks_obtained'] as num?)?.toInt() ?? (json['marks'] as num?)?.toInt() ?? 0;
-    return ResultModel(
+    return ExamResultModel(
       id: json['id']?.toString() ?? '',
       subject: json['exam']?.toString() ?? json['subject']?.toString() ?? 'Exam',
       marks: marksVal,
@@ -43,7 +43,7 @@ class ResultModel {
         'admission_no': admissionNo,
       };
 
-  ResultEntity toEntity() => ResultEntity(
+  ExamResultEntity toEntity() => ExamResultEntity(
         id: id,
         subject: subject,
         marks: marks,
@@ -54,17 +54,17 @@ class ResultModel {
       );
 }
 
-/// DTO for [ResultSummary].
-class ResultSummaryModel {
+/// DTO for [ExamResultSummary].
+class ExamResultSummaryModel {
   final String examId;
   final String examName;
-  final List<ResultModel> results;
+  final List<ExamResultModel> results;
   final int totalMarks;
   final int totalPossible;
   final double percentage;
   final String overallGrade;
 
-  const ResultSummaryModel({
+  const ExamResultSummaryModel({
     required this.examId,
     required this.examName,
     required this.results,
@@ -74,12 +74,12 @@ class ResultSummaryModel {
     required this.overallGrade,
   });
 
-  factory ResultSummaryModel.fromJson(Map<String, dynamic> json) {
-    return ResultSummaryModel(
+  factory ExamResultSummaryModel.fromJson(Map<String, dynamic> json) {
+    return ExamResultSummaryModel(
       examId: json['exam_id'] as String? ?? '',
       examName: json['exam_name'] as String? ?? '',
       results: (json['results'] as List<dynamic>?)
-              ?.map((r) => ResultModel.fromJson(r as Map<String, dynamic>))
+              ?.map((r) => ExamResultModel.fromJson(r as Map<String, dynamic>))
               .toList() ??
           [],
       totalMarks: json['total_marks'] as int? ?? 0,
@@ -99,7 +99,7 @@ class ResultSummaryModel {
         'overall_grade': overallGrade,
       };
 
-  ResultSummary toEntity() => ResultSummary(
+  ExamResultSummary toEntity() => ExamResultSummary(
         examId: examId,
         examName: examName,
         results: results.map((r) => r.toEntity()).toList(),
